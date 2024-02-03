@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+
+    "target": "es2016",                   
+
+    "module": "commonjs",                                
+
+    "esModuleInterop": true,         
+    "forceConsistentCasingInFileNames": true,        
+
+    "strict": true,                               
+
+    "skipLibCheck": true,
+                                    
+  }, 
+  "include": [
+    "src/**/*.ts", // шлях до ваших TypeScript файлів
+    "src/**/*.tsx" // якщо використовуєте TypeScript з JSX
+, "src/components/hooks/UseFetch.js", "src/components/Flowbite/redux/user.ts", "src/index.js", "src/components/Test.tsx", "src/components/User/Dishes.tsx"  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

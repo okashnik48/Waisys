@@ -1,0 +1,87 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 10px 16px;
+  background-color: #333; /* Replace with your preferred background color */
+  color: #fff; /* Replace with your preferred text color */
+}
+
+
+.menu-button {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  font-size: 20px;
+  color: #dd8717; /* Replace with your preferred icon color */
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.menu-button:focus {
+  outline: none;
+}
+
+.menu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 220px;
+  padding: 25px;
+  background-color: #fff;
+  border: 1px solid #dd8717;
+  border-radius: 7px;
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.3s;
+}
+
+.menu.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.menu__list {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.menu__item {
+  font-size: 16px;
+  font-weight: 500;
+  color: #747474;
+  cursor: pointer;
+}
+
+.menu__item a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.menu__item:nth-child(n + 2) {
+  margin-top: 10px;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .menu {
+    max-width: 100%;
+  }
+
+  .menu__item {
+    font-size: 14px;
+  }
+
+  .menu-button {
+    font-size: 18px;
+  }
+}
