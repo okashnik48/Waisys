@@ -4,3 +4,7 @@
 4. решить все ts ошибки
 5. убрать styles папку если нада использовать module.scss
 6. убрать неиспользуемые импорты
+
+ANT DESIGN DOCUMNETATION
+
+https://ant.design/components/overview
