@@ -1,6 +1,6 @@
-import { useAppDispatch } from "../../App";
 import { serviceApi } from "../../services/app.service";
-import { ClearUserProperties } from "../Flowbite/redux/user";
+import { ClearUserProperties } from "../../store/slices/user";
+import { useAppDispatch } from "../../store/store-hooks";
 
 export const ClearUserInfo = ()=>{
   

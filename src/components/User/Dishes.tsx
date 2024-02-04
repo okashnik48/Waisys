@@ -1,18 +1,14 @@
 import React, { FC, useEffect, useMemo, useState } from "react";
-import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
-import { ListGroup } from "flowbite-react";
 import { useSelector, useDispatch } from "react-redux";
-import { initPosts, addPost, removePost, setComment, setCountDefault } from "../Flowbite/redux/posts";
-import { addSelectedPost } from "../Flowbite/redux/SelectedPosts";
-import { SetTokens, SetUserProperties } from "../Flowbite/redux/user";
-import Counter from "../Flowbite/tools/Counter";
+import { initPosts, addPost, removePost, setComment, setCountDefault } from "../../store/slices/posts";
+import { addSelectedPost } from "../../store/slices/selected-posts";
+import { SetTokens, SetUserProperties } from "../../store/slices/user";
 import authService from "../../services/auth.service";
 import ordersService from "../../services/orders.service";
 
 import postService from "../../services/posts.service";
-
-import { useAppSelector } from "../../App";
-import { useAppDispatch } from "../../App";
+import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
+import { Button, Input } from "antd";
 
 interface Dish {
   name: string;
@@ -112,9 +108,9 @@ const Dishes: FC = () => {
   }, [searchTags, searchText, posts]);
   return (
     <div className="flex flex-col items-center ">
-      <ListGroup className="w-full md:w-1/2 lg:w-1/3">
+      {/* <ListGroup className="w-full md:w-1/2 lg:w-1/3"> */}
         <div className="bg-gray-800 text-white text-center w-full ">Menu</div>
-        <TextInput
+        <Input
           id="search"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
@@ -152,7 +148,7 @@ const Dishes: FC = () => {
                 alt="post"
               />
               <div className="Post_text mt-2">{post.name}</div>
-              <TextInput
+              <Input
                 id="Coment"
                 value={post.comment}
                 onChange={(e) => dispatch(setComment({ id: post.id, comment: e.target.value }))}
@@ -162,7 +158,7 @@ const Dishes: FC = () => {
               />
               <div>{`Tag: ${post.tags}`}</div>
               <div>{`Price: ${post.price}`}</div>
-              <Counter post={post} />
+              {/* <Counter post={post} /> */}
               <Button
                 className="w-full bg-blue-500 text-white p-2 mt-2"
                 onClick={(e) => AddDish(e, post.id)}
@@ -172,7 +168,7 @@ const Dishes: FC = () => {
             </div>
           );
         })}
-      </ListGroup>
+      {/* </ListGroup> */}
     </div>
   );
 };

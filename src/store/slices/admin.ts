@@ -88,4 +88,4 @@ export const {
   ChangeDish,
 } = AdminSlice.actions;
 
-export default AdminSlice.reducer;
+export const adminReducer = AdminSlice.reducer;

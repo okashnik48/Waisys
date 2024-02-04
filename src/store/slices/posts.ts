@@ -78,4 +78,4 @@ export const {
   setCountDefault,
 } = postsSlice.actions;
 
-export default postsSlice.reducer;
+export const postsReducer = postsSlice.reducer;

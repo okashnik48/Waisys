@@ -1,8 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { useSelector, useDispatch } from 'react-redux';
 
-import { useAppDispatch } from '../../../App';
-import { serviceApi } from '../../../services/app.service';
 
 interface UserState {
   user: {
@@ -11,7 +8,7 @@ interface UserState {
     id: string,
     firstName: string,
     lastName: string,
-    role: string,
+    role: "ADMIN" | "COOK" | "WAITER" | "",
     username: string
   };
 }
@@ -69,4 +66,4 @@ export const { SetTokens, SetUserProperties,  ClearUserProperties} = UserSlice.a
 
 
 
-export default UserSlice.reducer;
+export const userReducer = UserSlice.reducer;

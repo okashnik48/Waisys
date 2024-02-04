@@ -3,9 +3,8 @@ import { useClickOutside } from "../../modules/useClickOutside";
 
 import { Link } from "react-router-dom";
 
-import {SetAddUserModal, SetAddDishModal} from "../Flowbite/redux/admin"
+import {SetAddUserModal, SetAddDishModal} from "../../store/slices/admin"
 
-import { useAppDispatch } from "../../App";
 
 import {
   BsPersonCircle,
@@ -16,8 +15,9 @@ import {
 } from "react-icons/bs";
 
 import "../../styles/M2.css";
-import { ClearUserProperties } from "../Flowbite/redux/user";
+import { ClearUserProperties } from "../../store/slices/user";
 import { serviceApi } from "../../services/app.service";
+import { useAppDispatch } from "../../store/store-hooks";
 
 
 function UserMenu() {

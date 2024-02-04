@@ -4,23 +4,21 @@ import "../../styles/Tailwind.css";
 
 import React from "react";
 
-import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
-import { ListGroup } from "flowbite-react";
 import { useEffect, useMemo, useState } from "react";
 
 
-import { useAppDispatch, useAppSelector } from "../../App";
-import cooklist, {
+import {
   SetDishesList,
   AcceptDish,
   CancelAcceptDish,
   CompleteDish,
-} from "../Flowbite/redux/cooklist";
+} from "../../store/slices/cook-list";
 
 import authService from "../../services/auth.service";
 import orderService from "../../services/orders.service"
 
 import { io } from "socket.io-client";
+import { useAppDispatch } from "../../store/store-hooks";
 
 type ordersGetReply = {
   orders: {
@@ -43,7 +41,7 @@ type Dish = {
 }
 
 const CookPanel = () => {
-  const [Orders, setOtders] = useState<ordersGetReply>;
+  const [Orders, setOtders] = useState<ordersGetReply>();
 
   const [CookList, setCookList] = useState<Record<string, Dish>>({})
   //let CookList = Object.values(useAppSelector((state) => state.cook.cooklist));
@@ -124,19 +122,19 @@ const CookPanel = () => {
   };
   return (
     <div className="flex justify-center">
-      <ListGroup className="w-full md:w-1/2 lg:w-1/3">
+      {/* <ListGroup className="w-full md:w-1/2 lg:w-1/3">
         <ListGroup.Item className="bg-gray-800 text-white md:text-center">
           List of selected Dish
-        </ListGroup.Item>
+        </ListGroup.Item> */}
         {Object.values(CookList).map((dish, index) => {
           return (
             <div key={dish.id} className="p-4 border mb-4">
-              <ListGroup.Item className="text-lg font-semibold">
+              {/* <ListGroup.Item className="text-lg font-semibold">
                 {dish.name}
               </ListGroup.Item>
               <ListGroup.Item className="text-gray-700">
                 {dish.comment}
-              </ListGroup.Item>
+              </ListGroup.Item> */}
               <img
                 src={dish.image}
                 className="max-w-full h-auto mt-2"
@@ -186,7 +184,7 @@ const CookPanel = () => {
             </div>
           );
         })}
-      </ListGroup>
+      {/* </ListGroup> */}
     </div>
   );
 };

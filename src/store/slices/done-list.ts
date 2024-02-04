@@ -24,4 +24,4 @@ const donelistSlice = createSlice({
 
 export const { SetDoneDishesList, DeleteDoneList } = donelistSlice.actions;
 
-export default donelistSlice.reducer;
+export const doneListReducer =  donelistSlice.reducer;

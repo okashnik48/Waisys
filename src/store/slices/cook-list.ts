@@ -39,4 +39,4 @@ const CookSlice = createSlice({
 
 export const { SetDishesList, AcceptDish, CancelAcceptDish, CompleteDish } = CookSlice.actions;
 
-export default CookSlice.reducer;
+export const cookListReducer = CookSlice.reducer;

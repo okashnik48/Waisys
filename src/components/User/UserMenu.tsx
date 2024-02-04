@@ -3,10 +3,9 @@ import { useClickOutside } from "../../modules/useClickOutside";
 
 import { Link } from "react-router-dom";
 
-import { useAppDispatch } from "../../App";
 
 import { serviceApi } from "../../services/app.service";
-import { ClearUserProperties } from "../Flowbite/redux/user";
+import { ClearUserProperties } from "../../store/slices/user";
 
 import {
   BsPersonCircle,
@@ -17,6 +16,7 @@ import {
 } from "react-icons/bs";
 
 import "../../styles/M2.css";
+import { useAppDispatch } from "../../store/store-hooks";
 
 
 function UserMenu() {

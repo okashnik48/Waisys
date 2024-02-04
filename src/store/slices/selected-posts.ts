@@ -62,4 +62,4 @@ export const SelectedPostsSlice = createSlice({
 
 export const { addSelectedPost, removeSelectedPost, addTableNumber, clearSelectedPosts } = SelectedPostsSlice.actions;
 
-export default SelectedPostsSlice.reducer;
+export const selectedPostsReducer = SelectedPostsSlice.reducer;

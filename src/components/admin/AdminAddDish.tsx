@@ -6,13 +6,13 @@ import React from "react";
 
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
 
-import { useAppDispatch, useAppSelector } from "../../App";
 
-import { SetFieldNewDish, SetAddDishModal} from "../Flowbite/redux/admin"
+import { SetFieldNewDish, SetAddDishModal} from "../../store/slices/admin"
 
 import FileUploader from "../../modules/DownLoadImage";
 
 import adminDishesService from "../../services/admin/admin-dishes.service"
+import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
 
 type User = {
   accessToken: string;
@@ -39,12 +39,8 @@ interface Modal {
 
 const AdminAddDish = () => {
   const dispatch = useAppDispatch();
-  let NewDish: NewDish = useAppSelector((state) => {
-    return state.admin.newDish;
-  });
-  let user: User = useAppSelector((state) => {
-    return state.user.user;
-  });
+  let NewDish: NewDish = useAppSelector((state) => state.admin.newDish);
+  let user: User = useAppSelector((state) => state.user.user);
 
   let modalStatus: Modal = useAppSelector((state) =>{
     return state.admin.modalStatus

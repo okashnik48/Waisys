@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
-import {SetFieldNewDish} from '../components/Flowbite/redux/admin'
 
 import { useDispatch } from "react-redux";
+import { SetFieldNewDish } from "../store/slices/admin";
 
 const FileUploader = () => {
   const [image, setImage] = useState();

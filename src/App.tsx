@@ -1,65 +1,39 @@
-import React, { useEffect, useState } from "react";
-
-// import Waiter from "./components/layouts/Waiter";
-import Waiter from "./components/layouts/Waiter";
-import Admin from "./components/layouts/Admin"
-import Coocker from "./components/layouts/Cooker";
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import { Provider, useDispatch, useSelector } from "react-redux";
-
-import postsReducer from "./components/Flowbite/redux/posts"
-import selecetedPostsReducer from "./components/Flowbite/redux/SelectedPosts";
-import userReducer from "./components/Flowbite/redux/user";
-import cookReducer from "./components/Flowbite/redux/cooklist";
-import adminReducer from "./components/Flowbite/redux/admin";
-import adminUserList from "./components/Flowbite/redux/adminUserList";
-import DoneListReducer from "./components/Flowbite/redux/donelist";
-import DeclineListReducer from "./components/Flowbite/redux/declinedDishes";
-import { serviceApi } from "./services/app.service";
-
+import React from "react";
 import RoleRouter from "./components/LoginComponents/RoleRouter";
 
-import type { TypedUseSelectorHook } from 'react-redux'
 
 import "./styles/Tailwind.css";
-
-export const store = configureStore({
-  reducer: combineReducers({
-    [serviceApi.reducerPath]: serviceApi.reducer,
-    posts: postsReducer,
-    selectedPosts: selecetedPostsReducer,
-    user: userReducer,
-    cook: cookReducer,
-    admin: adminReducer,
-    adminUserList: adminUserList,
-    donelist: DoneListReducer,
-    declinedlist: DeclineListReducer,
-  }),
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: false,
-    })
-      .concat([])
-      .concat(serviceApi.middleware),
-  // middleware: (getDefaultMiddleware) =>
-  //   getDefaultMiddleware().concat(serviceApi.middleware),
-});
-
-
-export type AppDispatch = typeof store.dispatch
-export const useAppDispatch: () => AppDispatch = useDispatch
-
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
-
-export type RootState = ReturnType<typeof store.getState>
+import { useAppSelector } from "./store/store-hooks";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { ROUTES_CONFIG } from "./configs/routes-config";
+import NavigationLayout from "./layouts/Navigation";
 
 function App() {
+  const userRole = useAppSelector((state) => state.user.user).role;
+
+  if (!userRole) {
+    return (
+      <BrowserRouter>
+        <Routes>
+          {ROUTES_CONFIG.public.map(({ element, path }, index) => (
+            <Route path={path} element={element} />
+          ))}
+        </Routes>
+      </BrowserRouter>
+    );
+  }
+
   return (
-    <Provider store={store}>
-      <RoleRouter />;
-    </Provider>
+    <NavigationLayout>
+      <BrowserRouter>
+        <Routes>
+          {ROUTES_CONFIG.private[userRole].map(({ element, path }, index) => (
+            <Route path={path} element={element} />
+          ))}
+        </Routes>
+      </BrowserRouter>
+    </NavigationLayout>
   );
 }
-
 
 export default App;

@@ -17,17 +17,17 @@ import { useEffect, useMemo, useState } from "react";
 
 import Alert from "@mui/material/Alert";
 
-import { useAppDispatch, useAppSelector } from "../../App";
 import {
   AddNewUser,
   DeleteUser,
   ChangeUser,
   SetUsersList,
   ChangeCurrentField,
-} from "../Flowbite/redux/adminUserList";
+} from "../../store/slices/admin-user-list";
 
 import authService from "../../services/auth.service";
 import adminUsersService from "../../services/admin/admin-users.service";
+import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
 
 type AlertInfo = {
   status: boolean;

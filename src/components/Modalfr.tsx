@@ -1,21 +1,18 @@
 import React, { FC, useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
 
 import authService from "../services/auth.service";
 //import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
 
-import { SetTokens, SetUserProperties } from "./Flowbite/redux/user"
+import { SetTokens, SetUserProperties } from "../store/slices/user"
 
-import { useNavigate } from "react-router-dom";
-import { store } from "../App";
 
 import userService from "../services/user.service"
 
-import {useAppDispatch, useAppSelector} from "../App"
 
-import { Modal, Typography, TextField, Button } from '@mui/material';
+import { Typography, TextField, Button } from '@mui/material';
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { useAppDispatch, useAppSelector } from "../store/store-hooks";
 
 interface ModalProps {}
 
@@ -25,9 +22,7 @@ const Modalfr: FC<ModalProps> = () => {
 
 const theme = createTheme()
 
-  let user = useAppSelector((state: any) => {
-    return state.user.user;
-  });
+  let user = useAppSelector((state: any) =>  state.user.user);
   const dispatch = useAppDispatch();
 
   const [loginTriger, { isError, isLoading, isSuccess }] = authService.useLoginMutation();

@@ -23,4 +23,4 @@ const declinedListSlice = createSlice({
 
 export const { SetDeclinedDishesList, DeleteDeclinedDish } = declinedListSlice.actions;
 
-export default declinedListSlice.reducer;
+export const declinedListReducer =  declinedListSlice.reducer;

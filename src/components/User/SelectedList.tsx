@@ -1,16 +1,14 @@
 import React, { FC, useEffect, useState } from "react";
-import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
-import { ListGroup } from "flowbite-react";
 
-import { useAppDispatch, useAppSelector } from "../../App";
 
 import ordersService from "../../services/orders.service";
-import { RootState } from "../../App";
 import {
   addTableNumber,
   removeSelectedPost,
   clearSelectedPosts,
-} from "../Flowbite/redux/SelectedPosts";
+} from "../../store/slices/selected-posts";
+import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
+import { Button, Input } from "antd";
 
 interface Dish {
   id: string;
@@ -26,11 +24,11 @@ interface Dish {
 
 
 const SelectedList: FC = () => {
-  const user = useAppSelector((state: RootState) => state.user.user);
+  const user = useAppSelector((state) => state.user.user);
   const ListDish: Dish[] = Object.values(
-    useAppSelector((state: RootState) => state.selectedPosts.selectedPosts)
+    useAppSelector((state) => state.selectedPosts.selectedPosts)
   );
-  const Table = useAppSelector((state: RootState) => state.selectedPosts.tableNumber);
+  const Table = useAppSelector((state) => state.selectedPosts.tableNumber);
   const dispatch = useAppDispatch();
 
   const [totalPrice, SetTotalPrice] = useState<number>(0);
@@ -78,10 +76,10 @@ const SelectedList: FC = () => {
 
   return (
     <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 m-4 h-full w-full md:w-96">
-      <ListGroup className="w-full">
-        <ListGroup.Item>List of selected Dish</ListGroup.Item>
+      {/* <ListGroup className="w-full"> */}
+        {/* <ListGroup.Item>List of selected Dish</ListGroup.Item> */}
 
-        {ListDish.map((post: Dish) => {
+        {/* {ListDish.map((post: Dish) => {
           return (
             <div className="task p-4" key={post.id}>
               <div className="mb-2">{post.name}</div>
@@ -102,7 +100,7 @@ const SelectedList: FC = () => {
           );
         })}
         <div>{`Total price: ${totalPrice}`}</div>
-      </ListGroup>
+      </ListGroup> */}
       <div className="mt-4">
         <button
           onClick={ConfirmOrder}
@@ -110,7 +108,7 @@ const SelectedList: FC = () => {
         >
           Confirm Order
         </button>
-        <TextInput
+        <Input
           id="TableNumber"
           value={Table}
           onChange={(e) => dispatch(addTableNumber(e.target.value))}

@@ -34,7 +34,7 @@ const initialState: AdminUsersState = {
   },
 };
 
-export const AdminUsersSlice = createSlice({
+export const AdminUsersListSlice = createSlice({
   name: "users",
   initialState,
   reducers: {
@@ -67,6 +67,6 @@ export const {
   ChangeUser,
   ChangeCurrentField,
   SetFieldNewUser,
-} = AdminUsersSlice.actions;
+} = AdminUsersListSlice.actions;
 
-export default AdminUsersSlice.reducer;
+export const adminUsersListReducer = AdminUsersListSlice.reducer;

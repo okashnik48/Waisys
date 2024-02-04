@@ -2,8 +2,8 @@ import {
   createApi,
   fetchBaseQuery,
 } from "@reduxjs/toolkit/query/react";
+import { RootState } from "../store/store-hooks";
 
-import { RootState } from "../App";
 
 export const ROOT_URL = "https://waisys.dev.m0e.space/api/";
 

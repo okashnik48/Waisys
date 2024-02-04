@@ -7,15 +7,15 @@ import React from "react";
 import { ListGroup } from "flowbite-react";
 import { useEffect, useMemo, useState, useRef } from "react";
 
-import { SetFieldNewUser } from "../Flowbite/redux/adminUserList";
-import { SetTokens, SetUserProperties } from "../Flowbite/redux/user";
+import { SetFieldNewUser } from "../../store/slices/admin-user-list";
+import { SetTokens, SetUserProperties } from "../../store/slices/user";
 import { useClickOutside } from "../../modules/useClickOutside";
-import { SetAddUserModal} from "../Flowbite/redux/admin"
+import { SetAddUserModal} from "../../store/slices/admin"
 
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
 import adminUsersService from "../../services/admin/admin-users.service"
+import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
 
-import { useAppDispatch, useAppSelector } from "../../App";
 
 interface User {
   accessToken: string,
