@@ -24,7 +24,7 @@ function App() {
   }
 
   return (
-    <NavigationLayout>
+    <NavigationLayout role={userRole}>
       <BrowserRouter>
         <Routes>
           {ROUTES_CONFIG.private[userRole].map(({ element, path }, index) => (
