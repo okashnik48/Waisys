@@ -13,7 +13,7 @@ import { useClickOutside } from "../../modules/useClickOutside";
 import { SetAddUserModal} from "../Flowbite/redux/admin"
 
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
-import adminUsersService from "../../services/admin/adminUsers.service"
+import adminUsersService from "../../services/admin/admin-users.service"
 
 import { useAppDispatch, useAppSelector } from "../../App";
 

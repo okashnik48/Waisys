@@ -16,7 +16,7 @@ import {
 
 import authService from "../../services/auth.service";
 import postService from "../../services/posts.service";
-import adminDishesService from "../../services/admin/adminDishes.service";
+import adminDishesService from "../../services/admin/admin-dishes.service";
 
 import { useAppDispatch, useAppSelector } from "../../App";
 

@@ -18,7 +18,7 @@ import {
 } from "../Flowbite/redux/adminUserList";
 
 import authService from "../../services/auth.service";
-import adminUsersService from "../../services/admin/adminUsers.service";
+import adminUsersService from "../../services/admin/admin-users.service";
 
 
 interface User {

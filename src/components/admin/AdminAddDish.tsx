@@ -12,7 +12,7 @@ import { SetFieldNewDish, SetAddDishModal} from "../Flowbite/redux/admin"
 
 import FileUploader from "../../modules/DownLoadImage";
 
-import adminDishesService from "../../services/admin/adminDishes.service"
+import adminDishesService from "../../services/admin/admin-dishes.service"
 
 type User = {
   accessToken: string;
