@@ -18,7 +18,9 @@ const baseQuery = fetchBaseQuery({
 
       const token  = state.user.user.accessToken;
 
-      console.log(state.user)
+      // setInterval(() => {
+
+      // }, 2000);
 
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);

@@ -66,7 +66,7 @@ const AdminDishesList = () => {
   };
   const ChangeCurrentDish = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, itemId: string) => {
     e.preventDefault();
-    changeDishTriger({body: posts[itemId] })
+    changeDishTriger({id: itemId, body: posts[itemId] })
       .unwrap()
       .then(() => {
         dispatch(ChangeDish({ id: itemId, post: posts[itemId] }));
@@ -122,7 +122,7 @@ const AdminDishesList = () => {
                   SetFieldForChangedDish({
                     id: post.id,
                     fieldname: "price",
-                    value: e.target.value,
+                    value: parseInt(e.target.value),
                   })
                 )
               }

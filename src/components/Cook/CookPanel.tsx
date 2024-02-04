@@ -10,33 +10,50 @@ import { useEffect, useMemo, useState } from "react";
 
 
 import { useAppDispatch, useAppSelector } from "../../App";
-import {
+import cooklist, {
   SetDishesList,
   AcceptDish,
   CancelAcceptDish,
   CompleteDish,
 } from "../Flowbite/redux/cooklist";
-import { SetTokens, SetUserProperties } from "../Flowbite/redux/user";
 
 import authService from "../../services/auth.service";
 import orderService from "../../services/orders.service"
 
 import { io } from "socket.io-client";
 
+type ordersGetReply = {
+  orders: {
+    id: number;
+    dishes: {
+      id: string;
+      comment: string;
+      quantity: number;
+    }[];
+    createdBy: string;
+    isDone: boolean;
+    tableNumber: number;
+  }[];
+};
+
+type Dish = {
+  id: string,
+  comment: string,
+  isDone: boolean,
+}
+
 const CookPanel = () => {
-  let user = useAppSelector((state) => {
-    return state.user.user;
-  });
-  let CookList = Object.values(useAppSelector((state) => state.cook.cooklist));
-  let Table = useAppSelector((state) => state.selectedPosts.tableNumber);
+  const [Orders, setOtders] = useState<ordersGetReply>;
+
+  const [CookList, setCookList] = useState<Record<string, Dish>>({})
+  //let CookList = Object.values(useAppSelector((state) => state.cook.cooklist));
   const dispatch = useAppDispatch();
 
   const socket = io({ transports: ["websocket"] });
 
   const [isConnected, setIsConnected] = useState(socket.connected);
 
-  const [refreshTokenTriger, {}] = authService.useChangeAccessTokenMutation();
-  const { data: orders, error: loadDishesError, isLoading: isDishesLoading, refetch: updateOrdersList } = orderService.useGetOrdersQuery(user.accessToken)
+  const { data: orders, error: loadDishesError, isLoading: isDishesLoading, refetch: updateOrdersList } = orderService.useGetOrdersQuery('')
   const [changeOrderStatusTriger, {}] = orderService.usePatchOrderMutation()
   useEffect(() => {
     function onConnect() {
@@ -48,8 +65,18 @@ const CookPanel = () => {
       setIsConnected(false);
     }
 
-    function onFooEvent(value) {
-      dispatch(SetDishesList(value.data));
+    function onFooEvent(value: ordersGetReply) {
+      console.log(value)
+      value.map((order) => {
+        setCookList({
+          ...CookList,
+          [order.id]: {
+            id: order.id,
+            comment: order.comment,
+            isDone: order.isDone,
+          },
+        });
+      })
     }
 
     socket.on("connect", onConnect);
@@ -66,7 +93,17 @@ const CookPanel = () => {
 
   useEffect(() => {
       updateOrdersList().unwrap().then((data) => {
-        dispatch(SetDishesList(data))
+        console.log(data)
+        data.map((order) => {
+          setCookList({
+            ...CookList,
+            [order.id]: {
+              id: order.id,
+              comment: order.comment,
+              isDone: order.isDone,
+            },
+          });
+        })
       })
       .catch((error) =>{
         console.log(error)
@@ -74,7 +111,11 @@ const CookPanel = () => {
 
   }, []);
   const ChangeDishStatus = (id, ChangedStatus) => {
-      updateOrdersList({id: id, accessToken: user.accessToken, body: {isAccepted: ChangedStatus}}).unwrap().then((data) => {
+    changeOrderStatusTriger({id: id, body: {isAccepted: ChangedStatus}}).unwrap().then((data) => {
+      setCookList({
+        ...CookList,
+        [id]: {...CookList[id], isAccepted: ChangedStatus},
+      });
         console.log(data)
       })
       .catch((error) =>{
@@ -87,7 +128,7 @@ const CookPanel = () => {
         <ListGroup.Item className="bg-gray-800 text-white md:text-center">
           List of selected Dish
         </ListGroup.Item>
-        {CookList.map((dish, index) => {
+        {Object.values(CookList).map((dish, index) => {
           return (
             <div key={dish.id} className="p-4 border mb-4">
               <ListGroup.Item className="text-lg font-semibold">

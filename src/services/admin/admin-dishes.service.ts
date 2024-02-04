@@ -14,7 +14,10 @@ type CreateDishRequest = {
     body: Dish,
 }
 
-type ChangeDishRequest = CreateDishRequest
+type ChangeDishRequest = {
+    id: string,
+    body: Dish
+}
 
 type DeleteDishRequest = {
     id: string,
@@ -31,7 +34,7 @@ const adminDishesService = serviceApi.injectEndpoints({
         }),
         changeDish: builder.mutation<any, ChangeDishRequest>({
             query: (Request) => ({
-                url: 'admin/dishes',
+                url: `admin/dishes/${Request.id}`,
                 method: 'PATCH',
                 body: Request.body
             }),

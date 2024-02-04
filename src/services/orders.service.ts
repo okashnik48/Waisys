@@ -1,4 +1,3 @@
-import internal from "stream";
 import { serviceApi } from "./app.service";
 
 type ordersGetRequest = {
@@ -6,7 +5,7 @@ type ordersGetRequest = {
 }
 type ordersGetReply = {
     orders: {
-      id: number;
+      id: string;
       dishes: {
         id: string;
         comment: string;

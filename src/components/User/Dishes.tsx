@@ -23,8 +23,8 @@ interface Dish {
   tags: string;
   id: string;
   post: string;
-  count: number;
-  comment: string;
+  count?: number;
+  comment?: string;
 }
 
 
@@ -51,13 +51,8 @@ const Dishes: FC = () => {
   const posts: Record<string, Dish> = useAppSelector((state) => {
     return state.posts.posts;
   });
-  const user: User = useAppSelector((state) => {
-    return state.user.user;
-  });
 
   const dispatch = useAppDispatch();
-
-  const [refreshTokenTriger, { error: refreshTokenError, isLoading: isRefreshTokenLoading }] = authService.useChangeAccessTokenMutation();
   const {refetch: updateDishesList } = dispatch(postService.endpoints.dishes.initiate(""))
 
   

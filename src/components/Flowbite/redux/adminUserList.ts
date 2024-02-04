@@ -44,8 +44,8 @@ export const AdminUsersSlice = createSlice({
     AddNewUser: (state, action: PayloadAction<User>) => {
       state.userlist[action.payload.id] = action.payload;
     },
-    DeleteUser: (state, action: PayloadAction<{ postid: string; id: number }>) => {
-      delete state.userlist[action.payload.postid][action.payload.id];
+    DeleteUser: (state, action: PayloadAction<{ id: string }>) => {
+      delete state.userlist[action.payload.id];
     },
     ChangeUser: (state, action: PayloadAction<{ user: User }>) => {
       state.userlist[action.payload.user.id] = action.payload.user;

@@ -21,17 +21,17 @@ function CookMenu() {
   const [isOpen, setOpen] = useState(false);
   const menuRef = useRef(null);
 
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
 
   useClickOutside(menuRef, () => {
     if (isOpen) setTimeout(() => setOpen(false), 50);
   });
-  const ClearUserInfo = (e: React.MouseEvent<HTMLAnchorElement>)=>{
+  const ClearUserInfo = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    localStorage.clear()
+    localStorage.clear();
     dispatch(serviceApi.util.resetApiState());
-    dispatch(ClearUserProperties())
-  }
+    dispatch(ClearUserProperties());
+  };
   return (
     <header className="header relative z-50">
       <button className="menu-button" onClick={() => setOpen(!isOpen)}>

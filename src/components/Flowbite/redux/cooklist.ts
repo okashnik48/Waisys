@@ -1,6 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { useSelector, useDispatch } from 'react-redux';
 
+type Dish = {
+  id: string;
+  comment: string;
+}
+
 interface CooklistState {
   cooklist: {
     [id: string]: {
