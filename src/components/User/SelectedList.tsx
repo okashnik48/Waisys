@@ -8,7 +8,8 @@ import {
   clearSelectedPosts,
 } from "../../store/slices/selected-posts";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
-import { Button, Input } from "antd";
+import { List, Button, Input } from 'antd';
+
 
 interface Dish {
   id: string;
@@ -70,54 +71,60 @@ const SelectedList: FC = () => {
         body: { dishes: updatedListDish, tableNumber: parseInt(Table) },
       };
       postOrderTriger(NewOrder);
+      dispatch(clearSelectedPosts())
       console.log(NewOrder);
     }
   };
 
   return (
-    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 m-4 h-full w-full md:w-96">
-      {/* <ListGroup className="w-full"> */}
-        {/* <ListGroup.Item>List of selected Dish</ListGroup.Item> */}
-
-        {/* {ListDish.map((post: Dish) => {
-          return (
-            <div className="task p-4" key={post.id}>
-              <div className="mb-2">{post.name}</div>
-              <div className="mb-2">{post.comment}</div>
-              <img
-                src={post.image}
-                className="w-full mb-2 rounded-md"
-                alt="Dish Image"
-              />
-              <div className="Post_text mb-2">{post.description}</div>
-              <div className="w-full mb-2">
-                <Button onClick={(e) => DeleteDish(e, post.selectedPostId)}>
-                  Delete
-                </Button>
+    <div style={{
+      position: 'static',
+      top: '50%',
+      left: '50%',
+      margin: '1rem',
+      width: '100%',
+      maxWidth: '24rem' // You can adjust this value to fit your design needs
+  }}>
+      <List style={{ width: '100%' }}>
+          <List.Item style={{ textAlign: 'center' }}>List of selected Dishes</List.Item>
+  
+          {ListDish.map((post: Dish) => (
+              <div style={{ background: 'white', borderRadius: '0.5rem', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', padding: '1rem', marginBottom: '1rem' }} key={post.id}>
+                  <div style={{ marginBottom: '0.5rem' }}>{post.name}</div>
+                  <div style={{ marginBottom: '0.5rem' }}>{post.comment}</div>
+                  <img
+                      src={post.image}
+                      style={{ width: '100%', marginBottom: '0.5rem', borderRadius: '0.5rem' }}
+                      alt="Dish Image"
+                  />
+                  <div style={{ marginBottom: '0.5rem' }}>{post.description}</div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                      <Button onClick={(e: React.MouseEvent<HTMLButtonElement>) => DeleteDish(e, post.selectedPostId)}>
+                          Delete
+                      </Button>
+                      <span>{post.count}</span>
+                  </div>
               </div>
-              <div>{post.count}</div>
-            </div>
-          );
-        })}
-        <div>{`Total price: ${totalPrice}`}</div>
-      </ListGroup> */}
-      <div className="mt-4">
-        <button
-          onClick={ConfirmOrder}
-          className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 mr-2"
-        >
-          Confirm Order
-        </button>
-        <Input
-          id="TableNumber"
-          value={Table}
-          onChange={(e) => dispatch(addTableNumber(e.target.value))}
-          placeholder="Table Number"
-          required
-          className="w-full p-2 mb-2 rounded-md border border-blue-300 focus:ring focus:border-blue-500"
-        />
+          ))}
+          <div style={{ textAlign: 'center' }}>{`Total price: ${totalPrice}`}</div>
+      </List>
+      <div style={{ marginTop: '1rem', textAlign: 'center' }}>
+          <Button
+              onClick={ConfirmOrder}
+              style={{ backgroundColor: '#007bff', color: 'white', padding: '0.5rem 1rem', borderRadius: '0.5rem', cursor: 'pointer', marginRight: '0.5rem' }}
+          >
+              Confirm Order
+          </Button>
+          <Input
+              id="TableNumber"
+              value={Table}
+              onChange={(e) => dispatch(addTableNumber(e.target.value))}
+              placeholder="Table Number"
+              required
+              style={{ width: '100%', padding: '0.5rem', marginBottom: '0.5rem', borderRadius: '0.5rem', border: '1px solid #007bff' }}
+          />
       </div>
-    </div>
+  </div>
   );
 };
 

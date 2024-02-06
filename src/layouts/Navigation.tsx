@@ -27,13 +27,11 @@ export default function NavigationLayout({
 
   const dispatch = useAppDispatch()
 
-  const AddUserHandler = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) =>{
-    e.preventDefault()
+  const AddUserHandler = () =>{
     dispatch(SetAddUserModal({status: true}))
   }
   
-  const AddDishHandler = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) =>{
-    e.preventDefault()
+  const AddDishHandler  = () =>{
     dispatch(SetAddDishModal({status: true}))
   }
   
@@ -43,53 +41,108 @@ export default function NavigationLayout({
     dispatch(serviceApi.util.resetApiState());
     dispatch(ClearUserProperties())
   }
-  const items: MenuProps["items"] = [
-    {
-      label: (
-        <Link to="/admin-panel" rel="noopener noreferrer">
-          Dishes
-        </Link>
-      ),
-      key: "dishes",
-      icon: <MailOutlined />,
-    },
-    {
-      label: (
-        <Link to="admin-user-list" rel="noopener noreferrer">
-          Users
-        </Link>
-      ),
-      key: "users",
-      icon: <AppstoreOutlined />,
-    },
-    {
-      label: (
-        <div onClick={AddDishHandler} rel="noopener noreferrer">
-          Add Dish
-        </div>
-      ),
-      key: "add-dish",
-      icon: <AppstoreOutlined />,
-    },
-    {
-      label: (
-        <div onClick={AddUserHandler} rel="noopener noreferrer">
-          Add User
-        </div>
-      ),
-      key: "add-user",
-      icon: <AppstoreOutlined />,
-    },
-    {
-      label: (
-        <Link to= "/login" onClick={ClearUserInfo} rel="noopener noreferrer">
-          Exit
-        </Link>
-      ),
-      key: "exit",
-      icon: <AppstoreOutlined />,
-    },
-  ];
+  const switchMenu = {
+    "ADMIN": [
+      {
+        label: (
+          <Link to="/admin-panel" rel="noopener noreferrer">
+            Dishes
+          </Link>
+        ),
+        key: "dishes",
+        icon: <MailOutlined />,
+      },
+      {
+        label: (
+          <Link to="/admin-user-list" rel="noopener noreferrer">
+            Users
+          </Link>
+        ),
+        key: "users",
+        icon: <AppstoreOutlined />,
+      },
+      {
+        label: "Add Dish",
+        key: "add-dish",
+        icon: <AppstoreOutlined />,
+        onClick: AddDishHandler,
+      },
+      {
+        label: "Add User",
+        key: "add-user",
+        icon: <AppstoreOutlined />,
+        onClick: AddUserHandler,
+      },
+      {
+        label: (
+          <Link to= "/login" onClick={ClearUserInfo} rel="noopener noreferrer">
+            Exit
+          </Link>
+        ),
+        key: "exit",
+        icon: <AppstoreOutlined />,
+      },
+    ],
+    "COOK": [
+      {
+        label: (
+          <Link to= "/login" onClick={ClearUserInfo} rel="noopener noreferrer">
+            Exit
+          </Link>
+        ),
+        key: "exit",
+        icon: <AppstoreOutlined />,
+      },
+    ],
+    "WAITER": [
+      {
+        label: (
+          <Link to="dishes" rel="noopener noreferrer">
+            Dish List
+          </Link>
+        ),
+        key: "dishes",
+        icon: <MailOutlined />,
+      },
+      {
+        label: (
+          <Link to="selected-list" rel="noopener noreferrer">
+            Selected Dish List
+          </Link>
+        ),
+        key: "users",
+        icon: <AppstoreOutlined />,
+      },
+      {
+        label: (
+          <Link to="" rel="noopener noreferrer">
+            Ready Dishes
+          </Link>
+        ),
+        key: "users",
+        icon: <AppstoreOutlined />,
+      },
+      {
+        label: (
+          <Link to="" rel="noopener noreferrer">
+            Decline Dishes
+          </Link>
+        ),
+        key: "users",
+        icon: <AppstoreOutlined />,
+      },
+      {
+        label: (
+          <Link to= "/login" onClick={ClearUserInfo} rel="noopener noreferrer">
+            Exit
+          </Link>
+        ),
+        key: "exit",
+        icon: <AppstoreOutlined />,
+      },
+    ]
+  }
+  const items: MenuProps["items"] = switchMenu[role];
 
   const onClick: MenuProps["onClick"] = (e) => {
     console.log("click ", e);

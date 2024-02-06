@@ -1,31 +1,19 @@
 "use client";
 
-import "../../styles/Tailwind.css";
 
 import React from "react";
 
-import {
-  TextField,
-  Button,
-  Select,
-  MenuItem,
-  Container,
-  Box,
-} from "@mui/material";
+import { Alert, Button, Input, Select } from 'antd';
 
 import { useEffect, useMemo, useState } from "react";
 
-import Alert from "@mui/material/Alert";
 
 import {
-  AddNewUser,
   DeleteUser,
-  ChangeUser,
   SetUsersList,
   ChangeCurrentField,
 } from "../../store/slices/admin-user-list";
 
-import authService from "../../services/auth.service";
 import adminUsersService from "../../services/admin/admin-users.service";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
 
@@ -118,158 +106,165 @@ const AdminUserList = () => {
   }, [searchText, users]);
 
   return (
-    <>
-      {alertProps.status && (
-        <Alert
-          severity={alertProps.type}
-          style={{ position: "fixed", top: 0, right: 0, zIndex: 50 }}
-          onClose={(e) => {
-            e.preventDefault()
-            alertProps.status = false}}
-        >
-          {alertProps.text}
-        </Alert>
-      )}
-      <Container sx={{ display: "flex", justifyContent: "center", mt: 4, width: "60%" }}>
-        <Box
-          sx={{
-            width: "75%",
-            p: 4,
-            bgcolor: "background.paper",
-            borderRadius: "8px",
-            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-          }}
-        >
-          <h2 className="text-2xl font-bold mb-4">User List</h2>
+<>
+  {alertProps.status && (
+    <Alert
+      message={alertProps.text}
+      type={alertProps.type}
+      style={{ position: "fixed", top: 0, right: 0, zIndex: 50 }}
+      onClose={(e) => {
+        e.preventDefault();
+        alertProps.status = false;
+      }}
+    />
+  )}
+  <div style={{ display: "flex", justifyContent: "center", marginTop: "4%", width: "60%" }}>
+  <Input
+        style={{ margin: "1%" }}
+        size="large"
+        placeholder={searchText}
+        onChange={(e) => {
+          setSearchText(e.target.value);
+        }}
+      />
+    <div
+      style={{
+        width: "75%",
+        padding: "16px",
+        backgroundColor: "#fff",
+        borderRadius: "8px",
+        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+      }}
+    >
+      <h2 className="text-2xl font-bold mb-4">User List</h2>
 
-          <Box mb={4}>
-            <TextField
-              id="search"
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-              label="Search"
-              fullWidth
-              required
-            />
-          </Box>
+      <div style={{ marginBottom: "16px" }}>
+        <Input.Search
+          id="search"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          placeholder="Search"
+          style={{ width: "100%" }}
+        />
+      </div>
 
-          {SearchedUsers.map((post) => (
-            <Box key={post.id} item-id={post.id} className="task">
-              <TextField
-                id="firstName"
-                onChange={(e) =>
-                  dispatch(
-                    ChangeCurrentField({
-                      id: post.id,
-                      value: e.target.value,
-                      fieldname: "firstName",
-                    })
-                  )
-                }
-                value={post.firstName}
-                label="First Name"
-                fullWidth
-              />
+      {SearchedUsers.map((post) => (
+        <div key={post.id} item-id={post.id} className="task" style={{ marginBottom: '16px' }} >
+          <Input
+            id="firstName"
+            onChange={(e) =>
+              dispatch(
+                ChangeCurrentField({
+                  id: post.id,
+                  value: e.target.value,
+                  fieldname: "firstName",
+                })
+              )
+            }
+            value={post.firstName}
+            placeholder="First Name"
+            style={{ marginBottom: "16px" }}
+          />
 
-              <TextField
-                id="lastName"
-                onChange={(e) =>
-                  dispatch(
-                    ChangeCurrentField({
-                      id: post.id,
-                      value: e.target.value,
-                      fieldname: "lastName",
-                    })
-                  )
-                }
-                value={post.lastName}
-                label="Last Name"
-                fullWidth
-              />
+          <Input
+            id="lastName"
+            onChange={(e) =>
+              dispatch(
+                ChangeCurrentField({
+                  id: post.id,
+                  value: e.target.value,
+                  fieldname: "lastName",
+                })
+              )
+            }
+            value={post.lastName}
+            placeholder="Last Name"
+            style={{ marginBottom: "16px" }}
+          />
 
-              <TextField
-                id="username"
-                onChange={(e) =>
-                  dispatch(
-                    ChangeCurrentField({
-                      id: post.id,
-                      value: e.target.value,
-                      fieldname: "username",
-                    })
-                  )
-                }
-                value={post.username}
-                label="Username"
-                fullWidth
-              />
+          <Input
+            id="username"
+            onChange={(e) =>
+              dispatch(
+                ChangeCurrentField({
+                  id: post.id,
+                  value: e.target.value,
+                  fieldname: "username",
+                })
+              )
+            }
+            value={post.username}
+            placeholder="Username"
+            style={{ marginBottom: "16px" }}
+          />
 
-              <TextField
-                id="password"
-                onChange={(e) =>
-                  dispatch(
-                    ChangeCurrentField({
-                      id: post.id,
-                      value: e.target.value,
-                      fieldname: "password",
-                    })
-                  )
-                }
-                value={post.password}
-                label="Password"
-                fullWidth
-                type="password"
-              />
+          <Input.Password
+            id="password"
+            onChange={(e) =>
+              dispatch(
+                ChangeCurrentField({
+                  id: post.id,
+                  value: e.target.value,
+                  fieldname: "password",
+                })
+              )
+            }
+            value={post.password}
+            placeholder="Password"
+            style={{ marginBottom: "16px" }}
+          />
 
-              <Box mb={4}>
-                <label
-                  htmlFor="countries"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Role
-                </label>
-                <Select
-                  id="countries"
-                  value={post.role}
-                  onChange={(e) =>
-                    dispatch(
-                      ChangeCurrentField({
-                        id: post.id,
-                        value: e.target.value,
-                        fieldname: "role",
-                      })
-                    )
-                  }
-                  className="input-field"
-                >
-                  <MenuItem value="WAITER">Waiter</MenuItem>
-                  <MenuItem value="COOK">Cooker</MenuItem>
-                  <MenuItem value="ADMIN">Admin</MenuItem>
-                </Select>
-              </Box>
+          <div style={{ marginBottom: "16px" }}>
+            <label
+              htmlFor="countries"
+              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >
+              Role
+            </label>
+            <Select
+              id="countries"
+              value={post.role}
+              onChange={(value) =>
+                dispatch(
+                  ChangeCurrentField({
+                    id: post.id,
+                    value,
+                    fieldname: "role",
+                  })
+                )
+              }
+              style={{ width: "100%" }}
+            >
+              <Select.Option value="WAITER">Waiter</Select.Option>
+              <Select.Option value="COOK">Cooker</Select.Option>
+              <Select.Option value="ADMIN">Admin</Select.Option>
+            </Select>
+          </div>
 
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={(e) => {
-                  ChangeUserHandler(e, post);
-                }}
-              >
-                CONFIRM
-              </Button>
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={(e) => {
-                  DeleteUserHandler(e, post.id);
-                }}
-              >
-                DELETE
-              </Button>
-            </Box>
-          ))}
-        </Box>
-      </Container>
-    </>
+          <Button
+            type="primary"
+            onClick={(e) => {
+              ChangeUserHandler(e, post);
+            }}
+            style={{ marginRight: "8px" }}
+          >
+            CONFIRM
+          </Button>
+          <Button
+              type="primary"
+              danger
+            onClick={(e) => {
+              DeleteUserHandler(e, post.id);
+            }}
+          >
+            DELETE
+          </Button>
+        </div>
+      ))}
+    </div>
+  </div>
+</>
+
   );
 };
 export default AdminUserList;

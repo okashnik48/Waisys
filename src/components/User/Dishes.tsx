@@ -1,14 +1,12 @@
 import React, { FC, useEffect, useMemo, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { initPosts, addPost, removePost, setComment, setCountDefault } from "../../store/slices/posts";
 import { addSelectedPost } from "../../store/slices/selected-posts";
-import { SetTokens, SetUserProperties } from "../../store/slices/user";
-import authService from "../../services/auth.service";
-import ordersService from "../../services/orders.service";
 
 import postService from "../../services/posts.service";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
-import { Button, Input } from "antd";
+import { List, Input, Select, Button } from 'antd';
+
+import Counter from "../../modules/Counter";
 
 interface Dish {
   name: string;
@@ -22,13 +20,6 @@ interface Dish {
   count?: number;
   comment?: string;
 }
-
-
-interface User{
-  accessToken: string;
-  refreshToken: string;
-}
-
 interface SelectedPost {
   name: string;
   description: string;
@@ -76,7 +67,7 @@ const Dishes: FC = () => {
 
 
   const [searchText, setSearchText] = useState("");
-  const [searchTags, SetsearchTags] = useState("");
+  const [searchTags, setSearchTags] = useState("");
   let SearchedPosts: Dish[] = [];
 
   const AddDish = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, itemId: string) => {
@@ -107,10 +98,10 @@ const Dishes: FC = () => {
     return Newposts;
   }, [searchTags, searchText, posts]);
   return (
-    <div className="flex flex-col items-center ">
-      {/* <ListGroup className="w-full md:w-1/2 lg:w-1/3"> */}
-        <div className="bg-gray-800 text-white text-center w-full ">Menu</div>
-        <Input
+    <div className="flex flex-col items-center">
+      <List className="w-full md:w-1/2 lg:w-1/3">
+        <List.Item className="bg-gray-800 text-white text-center w-full">Menu</List.Item>
+        <Input.Search
           id="search"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
@@ -124,51 +115,45 @@ const Dishes: FC = () => {
         >
           Tags
         </label>
-        <select
+        <Select
           id="countries"
-          onChange={(event) => {
-            SetsearchTags(event.target.value);
-          }}
+          onChange={(value) => setSearchTags(value)}
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          defaultValue=""
         >
-          <option value="" selected>
-            None
-          </option>
-          <option value="cold">Cold</option>
-          <option value="hot">Hot</option>
-          <option value="salad">Salad</option>
-        </select>
-        {SearchedPosts.map((post: Dish, index: number) => {
-          console.log(post);
-          return (
-            <div className="task border p-2 my-2" key={post.id} >
-              <img
-                src={post.image}
-                className="max-w-full h-auto mb-2"
-                alt="post"
-              />
-              <div className="Post_text mt-2">{post.name}</div>
-              <Input
-                id="Coment"
-                value={post.comment}
-                onChange={(e) => dispatch(setComment({ id: post.id, comment: e.target.value }))}
-                placeholder="Comment"
-                required
-                className="border p-2 mt-2"
-              />
-              <div>{`Tag: ${post.tags}`}</div>
-              <div>{`Price: ${post.price}`}</div>
-              {/* <Counter post={post} /> */}
-              <Button
-                className="w-full bg-blue-500 text-white p-2 mt-2"
-                onClick={(e) => AddDish(e, post.id)}
-              >
-                Add
-              </Button>
-            </div>
-          );
-        })}
-      {/* </ListGroup> */}
+          <Select.Option value="">None</Select.Option>
+          <Select.Option value="cold">Cold</Select.Option>
+          <Select.Option value="hot">Hot</Select.Option>
+          <Select.Option value="salad">Salad</Select.Option>
+        </Select>
+        {SearchedPosts.map((post: Dish, index: number) => (
+          <div className="task border p-2 my-2" key={post.id} >
+            <img
+              src={post.image}
+              className="max-w-full h-auto mb-2"
+              alt="post"
+            />
+            <div className="Post_text mt-2">{post.name}</div>
+            <Input
+              id="Coment"
+              value={post.comment}
+              onChange={(e) => dispatch(setComment({ id: post.id, comment: e.target.value }))}
+              placeholder="Comment"
+              required
+              className="border p-2 mt-2"
+            />
+            <div>{`Tag: ${post.tags}`}</div>
+            <div>{`Price: ${post.price}`}</div>
+            <Counter post = {post} />
+            <Button
+              className="w-full bg-blue-500 text-white p-2 mt-2"
+              onClick={(e: React.MouseEvent<HTMLButtonElement>) => AddDish(e, post.id)}
+            >
+              Add
+            </Button>
+          </div>
+        ))}
+      </List>
     </div>
   );
 };

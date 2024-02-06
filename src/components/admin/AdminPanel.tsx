@@ -1,7 +1,5 @@
 "use client";
 
-import "../../styles/Tailwind.css";
-
 import React from "react";
 
 import { useEffect, useMemo, useState } from "react";
@@ -13,13 +11,11 @@ import {
   ChangeDish,
 } from "../../store/slices/admin";
 
-import authService from "../../services/auth.service";
 import postService from "../../services/posts.service";
 import adminDishesService from "../../services/admin/admin-dishes.service";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
-import NavigationLayout from "../../layouts/Navigation";
 
-import { List, Input, Select, Button, Image, Typography, Col, Row  } from "antd";
+import { List, Input, Select, Button, Image, Typography, Col, Row } from "antd";
 
 interface Post {
   id: string;
@@ -86,17 +82,29 @@ const AdminDishesList = () => {
     );
   }, [searchText, posts]);
   return (
-    <div className="flex-container flex-col items-center">
+    <div className="flex-container flex-col items-center justify-content-center">
+      <Input
+        style={{ margin: "1%" }}
+        size="large"
+        placeholder={searchText}
+        onChange={(e) => {
+          setSearchText(e.target.value);
+        }}
+      />
       <List
         dataSource={Object.values(SearchedPosts)}
-        header={<div className="list-group-item">Menu</div>}
+        header={
+          <div style={{ fontSize: "xx-large" }} className="list-group-item">
+            Menu
+          </div>
+        }
         renderItem={(post) => (
           <List.Item key={post.id} className="task list-group-item">
             <Row align="middle" justify="center">
-              <Col >
+              <Col>
                 <Image width={400} src={post.image} />
               </Col>
-              <Col >
+              <Col>
                 <div className="list-item-content">
                   <Typography.Title level={5}>Name</Typography.Title>
                   <Input
@@ -105,7 +113,7 @@ const AdminDishesList = () => {
                       dispatch(
                         SetFieldForChangedDish({
                           id: post.id,
-                          fieldname: 'name',
+                          fieldname: "name",
                           value: e.target.value,
                         })
                       )
@@ -120,7 +128,7 @@ const AdminDishesList = () => {
                       dispatch(
                         SetFieldForChangedDish({
                           id: post.id,
-                          fieldname: 'price',
+                          fieldname: "price",
                           value: parseInt(e.target.value),
                         })
                       )
@@ -135,7 +143,7 @@ const AdminDishesList = () => {
                       dispatch(
                         SetFieldForChangedDish({
                           id: post.id,
-                          fieldname: 'description',
+                          fieldname: "description",
                           value: e.target.value,
                         })
                       )
@@ -151,26 +159,40 @@ const AdminDishesList = () => {
                       dispatch(
                         SetFieldForChangedDish({
                           id: post.id,
-                          fieldname: 'tags',
+                          fieldname: "tags",
                           value: e,
                         })
                       );
                     }}
                     options={[
-                      { value: 'hot', label: 'hot' },
-                      { value: 'cold', label: 'cold' },
-                      { value: 'salad', label: 'salad' },
-                      { value: 'none', label: 'Disabled', disabled: true },
+                      { value: "hot", label: "hot" },
+                      { value: "cold", label: "cold" },
+                      { value: "salad", label: "salad" },
+                      { value: "none", label: "Disabled", disabled: true },
                     ]}
                   />
                   <Button
-                    style={{ backgroundColor: 'rgba(0, 200, 0, 0.7)' }}
+                    style={{ backgroundColor: "rgba(0, 200, 0, 0.7)" }}
                     className="Confirm list-group-item"
-                    onClick={(e) => ChangeCurrentDish(e, post.id)}
+                    onClick={(e) =>
+                      ChangeCurrentDish(
+                        e as React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                        post.id
+                      )
+                    }
                   >
                     Confirm
                   </Button>
-                  <Button type="primary" danger onClick={(e) => DeleteDish(e, post.id)}>
+                  <Button
+                    type="primary"
+                    danger
+                    onClick={(e) =>
+                      DeleteDish(
+                        e as React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                        post.id
+                      )
+                    }
+                  >
                     Delete
                   </Button>
                 </div>
@@ -180,7 +202,6 @@ const AdminDishesList = () => {
         )}
       />
     </div>
-
   );
 };
 export default AdminDishesList;
