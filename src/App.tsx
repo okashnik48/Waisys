@@ -1,5 +1,4 @@
 import React from "react";
-import RoleRouter from "./components/LoginComponents/RoleRouter";
 
 
 import "./styles/Tailwind.css";
@@ -26,21 +25,17 @@ function App() {
   }
 
   return (
-    
-      <BrowserRouter>
-<NavigationLayout role={userRole}>
+    <BrowserRouter>
+      <NavigationLayout role={userRole}>
         <Routes>
-
           {ROUTES_CONFIG.private[userRole].map(({ element, path }, index) => (
             <Route path={path} element={element} />
           ))}
-          
         </Routes>
         <AdminAddDish />
         <AdminModalAdd />
-</NavigationLayout>
-      </BrowserRouter>
-    
+      </NavigationLayout>
+    </BrowserRouter>
   );
 }
 

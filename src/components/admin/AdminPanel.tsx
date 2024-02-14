@@ -15,8 +15,9 @@ import postService from "../../services/posts.service";
 import adminDishesService from "../../services/admin/admin-dishes.service";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
 
-import { List, Input, Select, Button, Image, Typography, Col, Row } from "antd";
+import { Input, Select, Button, Image, Typography, Col, Row } from "antd";
 
+import "../../styles/admin/admin-styles.css";
 interface Post {
   id: string;
   name: string;
@@ -65,6 +66,7 @@ const AdminDishesList = () => {
     itemId: string
   ) => {
     e.preventDefault();
+    console.log(posts[itemId]);
     changeDishTriger({ id: itemId, body: posts[itemId] })
       .unwrap()
       .then(() => {
@@ -82,98 +84,116 @@ const AdminDishesList = () => {
     );
   }, [searchText, posts]);
   return (
-    <div className="flex-container flex-col items-center justify-content-center">
-      <Input
-        style={{ margin: "1%" }}
-        size="large"
-        placeholder={searchText}
-        onChange={(e) => {
-          setSearchText(e.target.value);
-        }}
-      />
-      <List
-        dataSource={Object.values(SearchedPosts)}
-        header={
-          <div style={{ fontSize: "xx-large" }} className="list-group-item">
-            Menu
-          </div>
-        }
-        renderItem={(post) => (
-          <List.Item key={post.id} className="task list-group-item">
-            <Row align="middle" justify="center">
-              <Col>
-                <Image width={400} src={post.image} />
-              </Col>
-              <Col>
-                <div className="list-item-content">
-                  <Typography.Title level={5}>Name</Typography.Title>
-                  <Input
-                    id="Name"
-                    onChange={(e) =>
-                      dispatch(
-                        SetFieldForChangedDish({
-                          id: post.id,
-                          fieldname: "name",
-                          value: e.target.value,
-                        })
-                      )
-                    }
-                    value={post.name}
-                    className="list-group-item post-text"
-                  />
-                  <Typography.Title level={5}>Price</Typography.Title>
-                  <Input
-                    id="Price"
-                    onChange={(e) =>
-                      dispatch(
-                        SetFieldForChangedDish({
-                          id: post.id,
-                          fieldname: "price",
-                          value: parseInt(e.target.value),
-                        })
-                      )
-                    }
-                    value={String(post.price)}
-                    className="list-group-item post-text"
-                  />
-                  <Typography.Title level={5}>Description</Typography.Title>
-                  <Input
-                    id="Description"
-                    onChange={(e) =>
-                      dispatch(
-                        SetFieldForChangedDish({
-                          id: post.id,
-                          fieldname: "description",
-                          value: e.target.value,
-                        })
-                      )
-                    }
-                    value={post.description}
-                    className="list-group-item post-text"
-                  />
-                  <Typography.Title level={5}>Tag</Typography.Title>
-                  <Select
-                    value={post.tags}
-                    id="countries"
-                    onChange={(e) => {
-                      dispatch(
-                        SetFieldForChangedDish({
-                          id: post.id,
-                          fieldname: "tags",
-                          value: e,
-                        })
-                      );
-                    }}
-                    options={[
-                      { value: "hot", label: "hot" },
-                      { value: "cold", label: "cold" },
-                      { value: "salad", label: "salad" },
-                      { value: "none", label: "Disabled", disabled: true },
-                    ]}
-                  />
+    <div>
+      <Row>
+        <Col md={{ span: 12, offset: 6 }}>
+          <h1>Menu</h1>
+          <Input
+            size="large"
+            placeholder={searchText}
+            style={{ marginBottom: "10px" }}
+            onChange={(e) => {
+              setSearchText(e.target.value);
+            }}
+          />
+          {SearchedPosts.map((post) => (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                marginLeft: "15%",
+              }}
+            >
+              <div
+                style={{
+                  marginLeft: "20px",
+                  marginBottom: "20px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Image
+                  width={560}
+                  src={post.image}
+                  style={{ display: "block" }}
+                />
+              </div>
+
+              <div style={{ marginLeft: "20px", marginBottom: "20px" }}>
+                <Typography.Title level={5}>Name</Typography.Title>
+                <Input
+                  id="Name"
+                  size="large"
+                  onChange={(e) =>
+                    dispatch(
+                      SetFieldForChangedDish({
+                        id: post.id,
+                        fieldname: "name",
+                        value: e.target.value,
+                      })
+                    )
+                  }
+                  value={post.name}
+                />
+                <Typography.Title level={5}>Price</Typography.Title>
+                <Input
+                  id="Price"
+                  size="large"
+                  onChange={(e) =>
+                    dispatch(
+                      SetFieldForChangedDish({
+                        id: post.id,
+                        fieldname: "price",
+                        value: parseInt(e.target.value),
+                      })
+                    )
+                  }
+                  value={String(post.price)}
+                />
+                <Typography.Title level={5}>Description</Typography.Title>
+                <Input.TextArea
+                  id="Description"
+                  size="large"
+                  onChange={(e) =>
+                    dispatch(
+                      SetFieldForChangedDish({
+                        id: post.id,
+                        fieldname: "description",
+                        value: e.target.value,
+                      })
+                    )
+                  }
+                  value={post.description}
+                  autoSize
+                />
+                <Typography.Title level={5}>Tag</Typography.Title>
+                <Select
+                  value={post.tags}
+                  size="large"
+                  id="countries"
+                  onChange={(value) => {
+                    dispatch(
+                      SetFieldForChangedDish({
+                        id: post.id,
+                        fieldname: "tags",
+                        value: value,
+                      })
+                    );
+                  }}
+                  options={[
+                    { value: "hot", label: "hot" },
+                    { value: "cold", label: "cold" },
+                    { value: "salad", label: "salad" },
+                    { value: "none", label: "Disabled", disabled: true },
+                  ]}
+                />
+                <div style={{ marginTop: "10px" }}>
                   <Button
-                    style={{ backgroundColor: "rgba(0, 200, 0, 0.7)" }}
-                    className="Confirm list-group-item"
+                    style={{
+                      backgroundColor: "rgba(0, 200, 0, 0.7)",
+                      marginRight: "10px",
+                    }}
                     onClick={(e) =>
                       ChangeCurrentDish(
                         e as React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -196,11 +216,11 @@ const AdminDishesList = () => {
                     Delete
                   </Button>
                 </div>
-              </Col>
-            </Row>
-          </List.Item>
-        )}
-      />
+              </div>
+            </div>
+          ))}
+        </Col>
+      </Row>
     </div>
   );
 };

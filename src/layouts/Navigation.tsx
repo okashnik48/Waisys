@@ -115,11 +115,11 @@ export default function NavigationLayout({
       },
       {
         label: (
-          <Link to="" rel="noopener noreferrer">
+          <Link to="done-list" rel="noopener noreferrer">
             Ready Dishes
           </Link>
         ),
-        key: "users",
+        key: "done-list",
         icon: <AppstoreOutlined />,
       },
       {
@@ -128,7 +128,7 @@ export default function NavigationLayout({
             Decline Dishes
           </Link>
         ),
-        key: "users",
+        key: "decline-list",
         icon: <AppstoreOutlined />,
       },
       {

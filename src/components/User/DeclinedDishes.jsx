@@ -1,16 +1,10 @@
-"use client";
-
-import "../../styles/Tailwind.css";
 
 import React from "react";
 
-import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
-import { ListGroup } from "flowbite-react";
 import { useEffect, useMemo, useState } from "react";
 
 
 import { useSelector, useDispatch } from "react-redux";
-import { SetTokens, SetUserProperties } from "../Flowbite/redux/user";
 
 import authService from "../../services/auth.service";
 
@@ -36,8 +30,6 @@ const DoneDishesList = () => {
 
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [fooEvents, setFooEvents] = useState([]);
-
-  const [refreshTokenTriger, { error: refreshTokenError, isLoading: isRefreshTokenLoading }] = authService.useChangeAccessTokenMutation();
 
   useEffect(() => {
     function onConnect() {

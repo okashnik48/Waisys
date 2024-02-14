@@ -5,6 +5,7 @@ import Dishes from "../components/User/Dishes";
 import SelectedList from "../components/User/SelectedList";
 import AdminDishesList from "../components/admin/AdminPanel";
 import AdminUserList from "../components/admin/AdminUserList";
+import DoneDishesList from "../components/User/DoneList";
 
 export const ROUTES_CONFIG = {
   public: [
@@ -36,6 +37,10 @@ export const ROUTES_CONFIG = {
       {
         path: "selected-list",
         element: <SelectedList />,
+      },
+      {
+        path: "done-list",
+        element: <DoneDishesList />,
       },
       {
         path: "*",

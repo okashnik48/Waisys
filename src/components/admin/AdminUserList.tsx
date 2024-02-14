@@ -1,12 +1,10 @@
 "use client";
 
-
 import React from "react";
 
-import { Alert, Button, Input, Select } from 'antd';
+import { Alert, Button, Col, Input, Row, Select, Typography } from "antd";
 
 import { useEffect, useMemo, useState } from "react";
-
 
 import {
   DeleteUser,
@@ -86,13 +84,13 @@ const AdminUserList = () => {
       .then(() => {
         alertProps.status = true;
         alertProps.type = "success";
-        alertProps.text = "User is removed"
+        alertProps.text = "User is removed";
         dispatch(DeleteUser({ id: userId }));
       })
       .catch((data) => {
         alertProps.status = true;
         alertProps.type = "error";
-        alertProps.text = "Error" + data
+        alertProps.text = "Error" + data;
         console.log(data);
       });
   };
@@ -106,165 +104,156 @@ const AdminUserList = () => {
   }, [searchText, users]);
 
   return (
-<>
-  {alertProps.status && (
-    <Alert
-      message={alertProps.text}
-      type={alertProps.type}
-      style={{ position: "fixed", top: 0, right: 0, zIndex: 50 }}
-      onClose={(e) => {
-        e.preventDefault();
-        alertProps.status = false;
-      }}
-    />
-  )}
-  <div style={{ display: "flex", justifyContent: "center", marginTop: "4%", width: "60%" }}>
-  <Input
-        style={{ margin: "1%" }}
-        size="large"
-        placeholder={searchText}
-        onChange={(e) => {
-          setSearchText(e.target.value);
-        }}
-      />
-    <div
-      style={{
-        width: "75%",
-        padding: "16px",
-        backgroundColor: "#fff",
-        borderRadius: "8px",
-        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-      }}
-    >
-      <h2 className="text-2xl font-bold mb-4">User List</h2>
-
-      <div style={{ marginBottom: "16px" }}>
-        <Input.Search
-          id="search"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          placeholder="Search"
-          style={{ width: "100%" }}
+    <>
+      {alertProps.status && (
+        <Alert
+          message={alertProps.text}
+          type={alertProps.type}
+          style={{ position: "fixed", top: 0, right: 0, zIndex: 50 }}
+          onClose={(e) => {
+            e.preventDefault();
+            alertProps.status = false;
+          }}
         />
-      </div>
-
-      {SearchedUsers.map((post) => (
-        <div key={post.id} item-id={post.id} className="task" style={{ marginBottom: '16px' }} >
-          <Input
-            id="firstName"
-            onChange={(e) =>
-              dispatch(
-                ChangeCurrentField({
-                  id: post.id,
-                  value: e.target.value,
-                  fieldname: "firstName",
-                })
-              )
-            }
-            value={post.firstName}
-            placeholder="First Name"
-            style={{ marginBottom: "16px" }}
+      )}
+      <div>
+      <Row>
+        <Col md={{ span: 12, offset: 6 }}>
+        <h1>User List</h1>
+        <div style={{ marginBottom: "16px" }}>
+        <Input
+            size="large"
+            placeholder={searchText}
+            style={{ marginBottom: "10px" }}
+            onChange={(e) => {
+              setSearchText(e.target.value);
+            }}
           />
-
-          <Input
-            id="lastName"
-            onChange={(e) =>
-              dispatch(
-                ChangeCurrentField({
-                  id: post.id,
-                  value: e.target.value,
-                  fieldname: "lastName",
-                })
-              )
-            }
-            value={post.lastName}
-            placeholder="Last Name"
-            style={{ marginBottom: "16px" }}
-          />
-
-          <Input
-            id="username"
-            onChange={(e) =>
-              dispatch(
-                ChangeCurrentField({
-                  id: post.id,
-                  value: e.target.value,
-                  fieldname: "username",
-                })
-              )
-            }
-            value={post.username}
-            placeholder="Username"
-            style={{ marginBottom: "16px" }}
-          />
-
-          <Input.Password
-            id="password"
-            onChange={(e) =>
-              dispatch(
-                ChangeCurrentField({
-                  id: post.id,
-                  value: e.target.value,
-                  fieldname: "password",
-                })
-              )
-            }
-            value={post.password}
-            placeholder="Password"
-            style={{ marginBottom: "16px" }}
-          />
-
-          <div style={{ marginBottom: "16px" }}>
-            <label
-              htmlFor="countries"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
-              Role
-            </label>
-            <Select
-              id="countries"
-              value={post.role}
-              onChange={(value) =>
-                dispatch(
-                  ChangeCurrentField({
-                    id: post.id,
-                    value,
-                    fieldname: "role",
-                  })
-                )
-              }
-              style={{ width: "100%" }}
-            >
-              <Select.Option value="WAITER">Waiter</Select.Option>
-              <Select.Option value="COOK">Cooker</Select.Option>
-              <Select.Option value="ADMIN">Admin</Select.Option>
-            </Select>
           </div>
+          <div>
+          {SearchedUsers.map((post) => (
+            <div
+              key={post.id}
+              item-id={post.id}
+              className="task"
+              style={{ marginBottom: "16px" }}
+            >
+              <Input
+                id="firstName"
+                size="large"
+                onChange={(e) =>
+                  dispatch(
+                    ChangeCurrentField({
+                      id: post.id,
+                      value: e.target.value,
+                      fieldname: "firstName",
+                    })
+                  )
+                }
+                value={post.firstName}
+                placeholder="First Name"
+                style={{ marginBottom: "16px" }}
+              />
 
-          <Button
-            type="primary"
-            onClick={(e) => {
-              ChangeUserHandler(e, post);
-            }}
-            style={{ marginRight: "8px" }}
-          >
-            CONFIRM
-          </Button>
-          <Button
-              type="primary"
-              danger
-            onClick={(e) => {
-              DeleteUserHandler(e, post.id);
-            }}
-          >
-            DELETE
-          </Button>
-        </div>
-      ))}
-    </div>
-  </div>
-</>
+              <Input
+                id="lastName"
+                size="large"
+                onChange={(e) =>
+                  dispatch(
+                    ChangeCurrentField({
+                      id: post.id,
+                      value: e.target.value,
+                      fieldname: "lastName",
+                    })
+                  )
+                }
+                value={post.lastName}
+                placeholder="Last Name"
+                style={{ marginBottom: "16px" }}
+              />
 
+              <Input
+                id="username"
+                size="large"
+                onChange={(e) =>
+                  dispatch(
+                    ChangeCurrentField({
+                      id: post.id,
+                      value: e.target.value,
+                      fieldname: "username",
+                    })
+                  )
+                }
+                value={post.username}
+                placeholder="Username"
+                style={{ marginBottom: "16px" }}
+              />
+
+              <Input.Password
+                id="password"
+                size="large"
+                onChange={(e) =>
+                  dispatch(
+                    ChangeCurrentField({
+                      id: post.id,
+                      value: e.target.value,
+                      fieldname: "password",
+                    })
+                  )
+                }
+                value={post.password}
+                placeholder="Password"
+                style={{ marginBottom: "16px" }}
+              />
+
+              <div style={{ marginBottom: "16px" }}>
+              <Typography.Title level={5}>Role</Typography.Title>
+                <Select
+                size="large"
+                  id="countries"
+                  value={post.role}
+                  onChange={(value) =>
+                    dispatch(
+                      ChangeCurrentField({
+                        id: post.id,
+                        value,
+                        fieldname: "role",
+                      })
+                    )
+                  }
+                  style={{ width: "100%" }}
+                >
+                  <Select.Option value="WAITER">Waiter</Select.Option>
+                  <Select.Option value="COOK">Cooker</Select.Option>
+                  <Select.Option value="ADMIN">Admin</Select.Option>
+                </Select>
+              </div>
+
+              <Button
+                type="primary"
+                onClick={(e) => {
+                  ChangeUserHandler(e, post);
+                }}
+                style={{ marginRight: "8px" }}
+              >
+                CONFIRM
+              </Button>
+              <Button
+                type="primary"
+                danger
+                onClick={(e) => {
+                  DeleteUserHandler(e, post.id);
+                }}
+              >
+                DELETE
+              </Button>
+            </div>
+          ))}
+          </div>
+        </Col>
+      </Row>
+      </div>
+    </>
   );
 };
 export default AdminUserList;

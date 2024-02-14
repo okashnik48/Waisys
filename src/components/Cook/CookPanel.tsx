@@ -1,58 +1,37 @@
 "use client";
 
-import "../../styles/Tailwind.css";
-
 import React from "react";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
-
-import {
-  SetDishesList,
-  AcceptDish,
-  CancelAcceptDish,
-  CompleteDish,
-} from "../../store/slices/cook-list";
-
-import authService from "../../services/auth.service";
-import orderService from "../../services/orders.service"
+import orderService from "../../services/orders.service";
 
 import { io } from "socket.io-client";
-import { useAppDispatch } from "../../store/store-hooks";
+import {Button, Image, Typography, Col, Row } from "antd";
 
-type ordersGetReply = {
-  orders: {
-    id: number;
-    dishes: {
-      id: string;
-      comment: string;
-      quantity: number;
-    }[];
-    createdBy: string;
-    isDone: boolean;
-    tableNumber: number;
-  }[];
+type OrderDish = {
+  name: string;
+  image: string;
+  description: string;
+  id: string;
+  comment: string;
+  quantity: number;
+  isAccepted?: boolean;
+  isCompleted?: boolean;
+  isDeclined?: boolean;
+  [key: string]: any;
 };
-
-type Dish = {
-  id: string,
-  comment: string,
-  isDone: boolean,
-}
+type ordersGetReply = Record<string, OrderDish>;
 
 const CookPanel = () => {
-  const [Orders, setOtders] = useState<ordersGetReply>();
-
-  const [CookList, setCookList] = useState<Record<string, Dish>>({})
-  //let CookList = Object.values(useAppSelector((state) => state.cook.cooklist));
-  const dispatch = useAppDispatch();
+  const [CookList, setCookList] = useState<Record<string, OrderDish>>({});
 
   const socket = io({ transports: ["websocket"] });
 
   const [isConnected, setIsConnected] = useState(socket.connected);
 
-  const { data: orders, error: loadDishesError, isLoading: isDishesLoading, refetch: updateOrdersList } = orderService.useGetOrdersQuery('')
-  const [changeOrderStatusTriger, {}] = orderService.usePatchOrderMutation()
+  const { refetch: updateOrdersList } = orderService.useGetOrdersQuery("");
+  const [changeOrderStatusTriger, {}] = orderService.usePatchOrderMutation();
   useEffect(() => {
     function onConnect() {
       console.log("Connect");
@@ -63,18 +42,20 @@ const CookPanel = () => {
       setIsConnected(false);
     }
 
-    function onFooEvent(value: ordersGetReply) {
-      console.log(value)
-      value.map((order) => {
-        setCookList({
-          ...CookList,
-          [order.id]: {
-            id: order.id,
-            comment: order.comment,
-            isDone: order.isDone,
-          },
+    function onFooEvent(data: ordersGetReply) {
+      Object.values(data).map((order) => {
+        setCookList((prevCookList) => {
+          return {
+            ...prevCookList,
+            [order.id]: {
+              ...order,
+              isAccepted: false,
+              isCompleted: false,
+              isDeclined: false,
+            },
+          };
         });
-      })
+      });
     }
 
     socket.on("connect", onConnect);
@@ -88,103 +69,111 @@ const CookPanel = () => {
     };
   }, []);
 
-
   useEffect(() => {
-      updateOrdersList().unwrap().then((data) => {
-        console.log(data)
-        data.map((order) => {
-          setCookList({
-            ...CookList,
-            [order.id]: {
-              id: order.id,
-              comment: order.comment,
-              isDone: order.isDone,
-            },
+    updateOrdersList()
+      .unwrap()
+      .then((data) => {
+        Object.values(data).map((order) => {
+          setCookList((prevCookList) => {
+            return {
+              ...prevCookList,
+              [order.id]: {
+                ...order,
+                isAccepted: false,
+                isCompleted: false,
+                isDeclined: false,
+              },
+            };
           });
-        })
+        });
+        console.log(CookList);
       })
-      .catch((error) =>{
-        console.log(error)
-      })
-
-  }, []);
-  const ChangeDishStatus = (id, ChangedStatus) => {
-    changeOrderStatusTriger({id: id, body: {isAccepted: ChangedStatus}}).unwrap().then((data) => {
-      setCookList({
-        ...CookList,
-        [id]: {...CookList[id], isAccepted: ChangedStatus},
+      .catch((error) => {
+        console.log(error);
       });
-        console.log(data)
+  }, []);
+  const ChangeDishStatus = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: string, ChangedStatus: string) => {
+    e.preventDefault();
+    console.log(CookList)
+    changeOrderStatusTriger({ id: id, body: { [ChangedStatus]: !CookList[id][ChangedStatus] } })
+      .unwrap()
+      .then((data) => {
+        if (ChangedStatus == "isCompleted" || ChangedStatus == "isDeclined"){
+            const ChangedCookList = CookList;
+            delete ChangedCookList[id];
+            setCookList(ChangedCookList)
+        }
+        else{
+                  setCookList({
+          ...CookList,
+          [id]: { ...CookList[id], [ChangedStatus]: !CookList[id][ChangedStatus]  },
+        });
+        }
       })
-      .catch((error) =>{
-        console.log(error)
-      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   return (
-    <div className="flex justify-center">
-      {/* <ListGroup className="w-full md:w-1/2 lg:w-1/3">
-        <ListGroup.Item className="bg-gray-800 text-white md:text-center">
-          List of selected Dish
-        </ListGroup.Item> */}
-        {Object.values(CookList).map((dish, index) => {
-          return (
-            <div key={dish.id} className="p-4 border mb-4">
-              {/* <ListGroup.Item className="text-lg font-semibold">
-                {dish.name}
-              </ListGroup.Item>
-              <ListGroup.Item className="text-gray-700">
-                {dish.comment}
-              </ListGroup.Item> */}
-              <img
-                src={dish.image}
-                className="max-w-full h-auto mt-2"
-                alt="Dish"
-              />
-              <div className="Post_text mt-2 text-gray-700">
-                {dish.description}
+    <div>
+      <Row>
+        <Col md={{ span: 12, offset: 6 }}>
+          <h1>List of selected Dish</h1>
+
+          {Object.values(CookList).map((post) => (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                marginLeft: "15%",
+              }}
+            >
+              <div
+                style={{
+                  marginLeft: "20px",
+                  marginBottom: "20px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Image
+                  width={560}
+                  src={post.image}
+                  style={{ display: "block" }}
+                />
               </div>
-              <div className="text-gray-700">{dish.quantity}</div>
-              <div className="flex flex-col md:flex-row md:justify-between mt-2">
-                <button
-                  className={`bg-blue-500 text-white p-2 mt-2 md:mr-2 ${
-                    dish.isAccepted ? "hidden" : ""
-                  }`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    dispatch(AcceptDish({ id: dish.id }));
-                    ChangeDishStatus(dish.id, "isAccepted");
+
+              <div style={{ marginLeft: "20px", marginBottom: "20px" }}>
+                <Typography.Title level={5}>{post.name}</Typography.Title>
+                <Typography.Title level={5}>{post.comment}</Typography.Title>
+                <div
+                  style={{
+                    marginTop: "10px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
                 >
-                  Accept
-                </button>
-                <button
-                  className={`bg-red-500 text-white p-2 mt-2 md:mr-2 ${
-                    dish.isAccepted ? "hidden" : ""
-                  }`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    ChangeDishStatus(dish.id, "isDeclined");
-                  }}
-                >
-                  Decline
-                </button>
-                <button
-                  className={`bg-green-500 text-white p-2 mt-2 ${
-                    !dish.isAccepted ? "hidden" : ""
-                  }`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    dispatch(CompleteDish({ id: dish.id }));
-                    ChangeDishStatus(dish.id, "isCompleted");
-                  }}
-                >
-                  Complete
-                </button>
+                  {!post.isAccepted ? (
+                    <Button 
+                    type="primary"
+                    size="large"
+                    style={{ display: "block" }} onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {ChangeDishStatus(e, post.id, "isAccepted")}}> Accept </Button>
+                  ) : (
+                    <Button size = "large" style={{ backgroundColor: "rgba(0, 200, 0, 0.7)", display: "block" }} onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {ChangeDishStatus(e, post.id, "isCompleted")}}> Complete </Button>
+                  )}
+                  <Button                     
+                  type="primary"
+                    danger 
+                    size="large"
+                    style={{ display: "block" }} onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {ChangeDishStatus(e, post.id, "isDeclined")}}> Decline </Button>
+                </div>
               </div>
             </div>
-          );
-        })}
-      {/* </ListGroup> */}
+          ))}
+        </Col>
+      </Row>
     </div>
   );
 };

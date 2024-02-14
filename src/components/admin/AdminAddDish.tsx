@@ -88,7 +88,7 @@ const AdminAddDish = () => {
           </div>
           <div className="mb-2 block">
             <label htmlFor="description">Description</label>
-            <Input
+            <Input.TextArea
               id="description"
               onChange={(e) => {
                 dispatch(
@@ -99,6 +99,7 @@ const AdminAddDish = () => {
                 );
               }}
               value={NewDish.description}
+              autoSize
             />
           </div>
           <div className="mb-2 block">

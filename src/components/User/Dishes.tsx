@@ -1,10 +1,16 @@
 import React, { FC, useEffect, useMemo, useState } from "react";
-import { initPosts, addPost, removePost, setComment, setCountDefault } from "../../store/slices/posts";
+import {
+  initPosts,
+  addPost,
+  removePost,
+  setComment,
+  setCountDefault,
+} from "../../store/slices/posts";
 import { addSelectedPost } from "../../store/slices/selected-posts";
 
 import postService from "../../services/posts.service";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
-import { List, Input, Select, Button } from 'antd';
+import { Image, Input, Select, Button, Col, Row, Typography } from "antd";
 
 import Counter from "../../modules/Counter";
 
@@ -40,16 +46,13 @@ const Dishes: FC = () => {
   });
 
   const dispatch = useAppDispatch();
-  const {refetch: updateDishesList } = dispatch(postService.endpoints.dishes.initiate(""))
+  const { refetch: updateDishesList } = dispatch(
+    postService.endpoints.dishes.initiate("")
+  );
 
-  
   useEffect(() => {
-    // refreshTokenTriger({refreshToken: user.refreshToken}).unwrap()
-    //   .then(({ accessToken, refreshToken }) => {
-    //     dispatch(SetTokens({ accessToken, refreshToken }))
-    //   });
-
-    updateDishesList().unwrap()
+    updateDishesList()
+      .unwrap()
       .then((dishesData) => {
         const DishesPosts: Dish[] = Object.values(dishesData);
         console.log(DishesPosts);
@@ -62,15 +65,16 @@ const Dishes: FC = () => {
       .catch((error) => {
         console.error("Loadind dishes error", error);
       });
-
   }, []);
-
 
   const [searchText, setSearchText] = useState("");
   const [searchTags, setSearchTags] = useState("");
   let SearchedPosts: Dish[] = [];
 
-  const AddDish = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, itemId: string) => {
+  const AddDish = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    itemId: string
+  ) => {
     e.preventDefault();
     const selectedPostId = crypto.randomUUID();
     const NewSelectedPost: SelectedPost = {
@@ -81,7 +85,7 @@ const Dishes: FC = () => {
       addSelectedPost({ post: NewSelectedPost, listId: selectedPostId })
     );
     dispatch(setComment({ id: itemId, comment: "" }));
-    dispatch(setCountDefault({id: itemId}));
+    dispatch(setCountDefault({ id: itemId }));
   };
 
   SearchedPosts = useMemo(() => {
@@ -98,66 +102,100 @@ const Dishes: FC = () => {
     return Newposts;
   }, [searchTags, searchText, posts]);
   return (
-    <div className="flex flex-col items-center">
-      <List className="w-full md:w-1/2 lg:w-1/3">
-        <List.Item className="bg-gray-800 text-white text-center w-full">Menu</List.Item>
-        <Input.Search
-          id="search"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          placeholder="Search"
-          required
-          className="border p-2 my-2"
-        />
-        <label
-          htmlFor="countries"
-          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-        >
-          Tags
-        </label>
-        <Select
-          id="countries"
-          onChange={(value) => setSearchTags(value)}
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          defaultValue=""
-        >
-          <Select.Option value="">None</Select.Option>
-          <Select.Option value="cold">Cold</Select.Option>
-          <Select.Option value="hot">Hot</Select.Option>
-          <Select.Option value="salad">Salad</Select.Option>
-        </Select>
-        {SearchedPosts.map((post: Dish, index: number) => (
-          <div className="task border p-2 my-2" key={post.id} >
-            <img
-              src={post.image}
-              className="max-w-full h-auto mb-2"
-              alt="post"
-            />
-            <div className="Post_text mt-2">{post.name}</div>
-            <Input
-              id="Coment"
-              value={post.comment}
-              onChange={(e) => dispatch(setComment({ id: post.id, comment: e.target.value }))}
-              placeholder="Comment"
-              required
-              className="border p-2 mt-2"
-            />
-            <div>{`Tag: ${post.tags}`}</div>
-            <div>{`Price: ${post.price}`}</div>
-            <Counter post = {post} />
-            <Button
-              className="w-full bg-blue-500 text-white p-2 mt-2"
-              onClick={(e: React.MouseEvent<HTMLButtonElement>) => AddDish(e, post.id)}
+    <div>
+      <Row>
+        <Col md={{ span: 12, offset: 6 }}>
+          <h1>Menu</h1>
+          <Input.Search
+            id="search"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            placeholder="Search"
+            size="large"
+          />
+          <div style={{ display: "inline-block", marginRight: "10px" }}>
+            <Typography.Title
+              level={3}
+              style={{ marginBottom: "5px", display: "inline-block" }}
             >
-              Add
-            </Button>
+              Tag
+            </Typography.Title>
+            <Select
+              id="countries"
+              onChange={(value) => setSearchTags(value)}
+              defaultValue=""
+              style={{
+                width: "150px",
+                display: "inline-block",
+                marginLeft: "10px",
+              }}
+            >
+              <Select.Option value="">None</Select.Option>
+              <Select.Option value="cold">Cold</Select.Option>
+              <Select.Option value="hot">Hot</Select.Option>
+              <Select.Option value="salad">Salad</Select.Option>
+            </Select>
           </div>
-        ))}
-      </List>
+
+          {SearchedPosts.map((post: Dish) => (
+            <div key={post.id}>
+              <Image
+                width = {560}
+                src={post.image}
+              />
+              <Typography.Title level={3}>{post.name}</Typography.Title>
+              <Input
+                id="Coment"
+                value={post.comment}
+                onChange={(e) =>
+                  dispatch(setComment({ id: post.id, comment: e.target.value }))
+                }
+                placeholder="Comment"
+                required
+                size="large"
+              />
+              <Typography.Title
+                level={3}
+              >{`Tag: ${post.tags}`}</Typography.Title>
+              <Typography.Title
+                level={3}
+              >{`Price: ${post.price}`}</Typography.Title>
+              <div style={{ display: "inline-block", marginRight: "10px" }}>
+                <Typography.Title
+                  style={{ marginBottom: "5px", display: "inline-block" }}
+                  level={3}
+                >
+                  Count:{" "}
+                </Typography.Title>
+                <div
+                  style={{
+                    width: "150px",
+                    display: "inline-block",
+                    marginLeft: "10px",
+                  }}
+                >
+                  <Counter post={post} />
+                </div>
+              </div>
+
+              <Button
+                size="large"
+                style={{
+                  backgroundColor: "rgba(0, 200, 0, 0.7)",
+                  display: "block",
+                }}
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+                  AddDish(e, post.id)
+                }
+              >
+                Add
+              </Button>
+            </div>
+          ))}
+        </Col>
+      </Row>
     </div>
   );
 };
 
 export default Dishes;
-
-

@@ -1,6 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
 
-
 import ordersService from "../../services/orders.service";
 import {
   addTableNumber,
@@ -8,8 +7,7 @@ import {
   clearSelectedPosts,
 } from "../../store/slices/selected-posts";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
-import { List, Button, Input } from 'antd';
-
+import { Image, Button, Input, Row, Col, Typography } from "antd";
 
 interface Dish {
   id: string;
@@ -21,8 +19,6 @@ interface Dish {
   description: string;
   selectedPostId: string;
 }
-
-
 
 const SelectedList: FC = () => {
   const user = useAppSelector((state) => state.user.user);
@@ -46,10 +42,7 @@ const SelectedList: FC = () => {
     dispatch(removeSelectedPost({ listId: id }));
   };
 
-  const [
-    postOrderTriger,
-    { error: postOrderError, isLoading: isPostOrderLoading },
-  ] = ordersService.usePostOrderMutation();
+  const [postOrderTriger, {}] = ordersService.usePostOrderMutation();
 
   const ConfirmOrder = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -71,60 +64,122 @@ const SelectedList: FC = () => {
         body: { dishes: updatedListDish, tableNumber: parseInt(Table) },
       };
       postOrderTriger(NewOrder);
-      dispatch(clearSelectedPosts())
+      dispatch(clearSelectedPosts());
       console.log(NewOrder);
     }
   };
 
   return (
-    <div style={{
-      position: 'static',
-      top: '50%',
-      left: '50%',
-      margin: '1rem',
-      width: '100%',
-      maxWidth: '24rem' // You can adjust this value to fit your design needs
-  }}>
-      <List style={{ width: '100%' }}>
-          <List.Item style={{ textAlign: 'center' }}>List of selected Dishes</List.Item>
-  
+    <div>
+      <Row>
+        <Col md={{ span: 12, offset: 6 }}>
+          <h1 style={{ textAlign: "center" }} >List of selected Dishes</h1>
           {ListDish.map((post: Dish) => (
-              <div style={{ background: 'white', borderRadius: '0.5rem', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', padding: '1rem', marginBottom: '1rem' }} key={post.id}>
-                  <div style={{ marginBottom: '0.5rem' }}>{post.name}</div>
-                  <div style={{ marginBottom: '0.5rem' }}>{post.comment}</div>
-                  <img
-                      src={post.image}
-                      style={{ width: '100%', marginBottom: '0.5rem', borderRadius: '0.5rem' }}
-                      alt="Dish Image"
-                  />
-                  <div style={{ marginBottom: '0.5rem' }}>{post.description}</div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                      <Button onClick={(e: React.MouseEvent<HTMLButtonElement>) => DeleteDish(e, post.selectedPostId)}>
-                          Delete
-                      </Button>
-                      <span>{post.count}</span>
-                  </div>
+            <div
+              style={{
+                background: "white",
+                borderRadius: "0.5rem",
+                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                padding: "1rem",
+                marginBottom: "1rem",
+              }}
+              key={post.id}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Typography.Title level={2}>{post.name}</Typography.Title>
+                
               </div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                              {post.comment != "" && (
+                <Typography.Title
+                  level={3}
+                  style={{ marginBottom: "0.5rem" }}
+                >{`comment: ${post.comment}`}</Typography.Title>
+              )}
+                </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Image
+                  width={600}
+                  src={post.image}
+                  style={{
+                    width: "100%",
+                    marginBottom: "0.5rem",
+                    borderRadius: "0.5rem",
+                  }}
+                  alt="Dish Image"
+                />
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "0.5rem",
+                }}
+              >
+                <Button
+                  type="primary"
+                  danger
+                  size = "large"
+                  onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+                    DeleteDish(e, post.selectedPostId)
+                  }
+                >
+                  Delete
+                </Button>
+                <Typography.Title level={2}>{post.count}</Typography.Title >
+              </div>
+            </div>
           ))}
-          <div style={{ textAlign: 'center' }}>{`Total price: ${totalPrice}`}</div>
-      </List>
-      <div style={{ marginTop: '1rem', textAlign: 'center' }}>
-          <Button
-              onClick={ConfirmOrder}
-              style={{ backgroundColor: '#007bff', color: 'white', padding: '0.5rem 1rem', borderRadius: '0.5rem', cursor: 'pointer', marginRight: '0.5rem' }}
-          >
-              Confirm Order
-          </Button>
-          <Input
-              id="TableNumber"
-              value={Table}
-              onChange={(e) => dispatch(addTableNumber(e.target.value))}
-              placeholder="Table Number"
-              required
-              style={{ width: '100%', padding: '0.5rem', marginBottom: '0.5rem', borderRadius: '0.5rem', border: '1px solid #007bff' }}
-          />
-      </div>
-  </div>
+          <Typography.Title
+            level={2}
+            style={{ textAlign: "center" }}
+          >{`Total price: ${totalPrice}`}</Typography.Title>
+          <div style={{ marginTop: "1rem", textAlign: "center" }}>
+            <div style={{ marginBottom: "1rem" }}>
+              <Input
+                value={Table}
+                onChange={(e) => dispatch(addTableNumber(e.target.value))}
+                placeholder="Table Number"
+                size="large"
+                style={{ width: 100 }}
+              />
+            </div>
+            <div>
+              <Button
+                onClick={ConfirmOrder}
+                size="large"
+                style={{
+                  backgroundColor: "rgba(0, 200, 0, 0.7)",
+                }}
+              >
+                Confirm Order
+              </Button>
+            </div>
+          </div>
+        </Col>
+      </Row>
+    </div>
   );
 };
 

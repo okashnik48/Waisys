@@ -1,84 +1,90 @@
 import { serviceApi } from "./app.service";
 
-type ordersGetRequest = {
-    accessToken: string,
+type OrderDish = {
+    name: string,
+    image: string,
+    description: string,
+    id: string;
+    comment: string;
+    quantity: number;
 }
-type ordersGetReply = {
-    orders: {
-      id: string;
-      dishes: {
-        id: string;
-        comment: string;
-        quantity: number;
-      }[];
-      createdBy: string;
-      isDone: boolean;
-      tableNumber: number;
-    }[];
-  };
+type ordersGetReply = Record<string, OrderDish>;
 
-  type DishToCreateOrder = {
-    id: string,
+type DishToCreateOrder = {
+  id: string;
+  comment: string;
+  quantity: number;
+};
+
+type DishCreateRequest = {
+  body: {
+    dishes: Array<DishToCreateOrder>;
+    tableNumber: number;
+  };
+};
+type DishChangeRequest = {
+  id: string;
+  body: {
+    isAccepted?: boolean;
+    isCompleted?: boolean;
+    isDeclined?: boolean;
+  };
+};
+type DeleteOrderRequest = {
+  id: string;
+};
+type CompletedDish = {
+    tableNumber: number,
+    name: string,
+    description: string,
+    image: string,
     comment: string,
     quantity: number
-  }
-
-  type DishCreateRequest = {
-    accessToken: string,
-    body: {
-        dishes: Array<DishToCreateOrder>, 
-        tableNumber: number
-    },
-};
-type DishChangeRequest = 
-{
-    id: string,
-    accessToken: string,
-    body: {
-        isAccepted?: boolean,
-        isCompleted?: boolean,
-        isDeclined?: boolean
-    }
-  }
-type DeleteOrderRequest ={
-    accessToken: string,
-    id: string,
 }
+type CompletedDishesReply = Record<string, CompletedDish>
 const ordersService = serviceApi.injectEndpoints({
-    endpoints: (builder) => ({
-        getOrders: builder.query<ordersGetReply, ordersGetRequest>({
-            query: (accessToken) => ({
-                url: 'orders',
-                headers: { Authorization: `Bearer ${accessToken}` },
-                method: 'GET',
-            }),
+  endpoints: (builder) => ({
+    getOrders: builder.query<ordersGetReply, any>({
+      query: () => ({
+        url: "orders",
+        method: "GET",
+      }),
+    }),
+    PostOrder: builder.mutation<any, DishCreateRequest>({
+      query: (Request) => ({
+        url: "orders",
+        method: "POST",
+        body: Request.body,
+      }),
+    }),
+    PatchOrder: builder.mutation<any, DishChangeRequest>({
+      query: (Request) => ({
+        url: `orders/dishes/${Request.id}`,
+        method: "PATCH",
+        body: Request.body,
+      }),
+    }),
+    DeleteOrder: builder.mutation<any, DeleteOrderRequest>({
+      query: (Request) => ({
+        url: `orders:${Request.id}`,
+        method: "PATCH",
+      }),
+    }),
+    GetCompletedDishes : builder.query<CompletedDishesReply, any>(
+      {
+        query: () => ({
+          url: "orders/dishes/completed",
+          method: "GET"
+        })
+      }),
+      DeleteDeliveredDish: builder.mutation<any, string>(
+        {
+          query: (id) => ({
+            url: `orders/dishes/${id}`,
+            method: "Delete"
+          })
         }),
-        PostOrder: builder.mutation<any, DishCreateRequest>({
-            query: (Request) => ({
-                url: 'orders',
-                headers: { Authorization: `Bearer ${Request.accessToken}` },
-                method: 'POST',
-                body: Request.body,
-            }),
-        }),
-        PatchOrder: builder.mutation<any, DishChangeRequest>({
-            query: (Request) => ({
-                url: `orders/${Request.id}`,
-                headers: { Authorization: `Bearer ${Request.accessToken}` },
-                method: 'PATCH',
-                body: Request.body
-            }),
-        }),
-        DeleteOrder: builder.mutation<any, DeleteOrderRequest>(
-            {
-                query: (Request) => ({
-                    url: `orders:${Request.id}`,
-                    headers: { Authorization: `Bearer ${Request.accessToken}` },
-                    method: 'PATCH',
-                }),
-            }
-        )
-    })
-})
+  }),
+});
 
 export default ordersService;
