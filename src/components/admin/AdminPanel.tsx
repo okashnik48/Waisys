@@ -16,8 +16,6 @@ import adminDishesService from "../../services/admin/admin-dishes.service";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
 
 import { Input, Select, Button, Image, Typography, Col, Row } from "antd";
-
-import "../../styles/admin/admin-styles.css";
 interface Post {
   id: string;
   name: string;

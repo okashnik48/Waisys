@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import orderService from "../../services/orders.service";
 
 import { io } from "socket.io-client";
-import {Button, Image, Typography, Col, Row } from "antd";
+import { Button, Image, Typography, Col, Row } from "antd";
 
 type OrderDish = {
   name: string;
@@ -92,22 +92,31 @@ const CookPanel = () => {
         console.log(error);
       });
   }, []);
-  const ChangeDishStatus = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: string, ChangedStatus: string) => {
+  const ChangeDishStatus = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    id: string,
+    ChangedStatus: string
+  ) => {
     e.preventDefault();
-    console.log(CookList)
-    changeOrderStatusTriger({ id: id, body: { [ChangedStatus]: !CookList[id][ChangedStatus] } })
+    console.log(CookList);
+    changeOrderStatusTriger({
+      id: id,
+      body: { [ChangedStatus]: !CookList[id][ChangedStatus] },
+    })
       .unwrap()
       .then((data) => {
-        if (ChangedStatus == "isCompleted" || ChangedStatus == "isDeclined"){
-            const ChangedCookList = CookList;
-            delete ChangedCookList[id];
-            setCookList(ChangedCookList)
-        }
-        else{
-                  setCookList({
-          ...CookList,
-          [id]: { ...CookList[id], [ChangedStatus]: !CookList[id][ChangedStatus]  },
-        });
+        if (ChangedStatus === "isCompleted" || ChangedStatus === "isDeclined") {
+          const ChangedCookList = CookList;
+          delete ChangedCookList[id];
+          setCookList(ChangedCookList);
+        } else {
+          setCookList({
+            ...CookList,
+            [id]: {
+              ...CookList[id],
+              [ChangedStatus]: !CookList[id][ChangedStatus],
+            },
+          });
         }
       })
       .catch((error) => {
@@ -145,8 +154,9 @@ const CookPanel = () => {
               </div>
 
               <div style={{ marginLeft: "20px", marginBottom: "20px" }}>
-                <Typography.Title level={5}>{post.name}</Typography.Title>
-                <Typography.Title level={5}>{post.comment}</Typography.Title>
+                <Typography.Title level={3}>{post.name}</Typography.Title>
+                <Typography.Title level={3}>{post.comment}</Typography.Title>
+                <Typography.Title level={3}>{post.quantity}</Typography.Title>
                 <div
                   style={{
                     marginTop: "10px",
@@ -156,18 +166,50 @@ const CookPanel = () => {
                   }}
                 >
                   {!post.isAccepted ? (
-                    <Button 
-                    type="primary"
-                    size="large"
-                    style={{ display: "block" }} onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {ChangeDishStatus(e, post.id, "isAccepted")}}> Accept </Button>
+                    <Button
+                      type="primary"
+                      size="large"
+                      style={{ display: "block" }}
+                      onClick={(
+                        e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+                      ) => {
+                        ChangeDishStatus(e, post.id, "isAccepted");
+                      }}
+                    >
+                      {" "}
+                      Accept{" "}
+                    </Button>
                   ) : (
-                    <Button size = "large" style={{ backgroundColor: "rgba(0, 200, 0, 0.7)", display: "block" }} onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {ChangeDishStatus(e, post.id, "isCompleted")}}> Complete </Button>
+                    <Button
+                      size="large"
+                      style={{
+                        backgroundColor: "rgba(0, 200, 0, 0.7)",
+                        display: "block",
+                      }}
+                      onClick={(
+                        e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+                      ) => {
+                        ChangeDishStatus(e, post.id, "isCompleted");
+                      }}
+                    >
+                      {" "}
+                      Complete{" "}
+                    </Button>
                   )}
-                  <Button                     
-                  type="primary"
-                    danger 
+                  <Button
+                    type="primary"
+                    danger
                     size="large"
-                    style={{ display: "block" }} onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {ChangeDishStatus(e, post.id, "isDeclined")}}> Decline </Button>
+                    style={{ display: "block" }}
+                    onClick={(
+                      e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+                    ) => {
+                      ChangeDishStatus(e, post.id, "isDeclined");
+                    }}
+                  >
+                    {" "}
+                    Decline{" "}
+                  </Button>
                 </div>
               </div>
             </div>

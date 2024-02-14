@@ -6,7 +6,6 @@
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@microsoft/fetch-event-source": "^2.0.1",
-    "@mui/material": "^5.15.7",
     "@reduxjs/toolkit": "^2.0.1",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -28,10 +27,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "build:css": "postcss src/styles/TailwindDev.css -o src/styles/Tailwind.css",
-    "watch:css": "postcss src/styles/TailwindDev.css -o src/styles/Tailwind.css -w",
-    "start": "npm-run-all -p watch:css start-js",
-    "start-js": "react-scripts start",
+    "start": "react-scripts start",
     "build-js": "react-scripts build",
     "build": "npm-run-all build:css build-js",
     "test": "react-scripts test --env=jsdom",

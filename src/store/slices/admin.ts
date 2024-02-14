@@ -57,14 +57,14 @@ const AdminSlice = createSlice({
       state,
       action: PayloadAction<{ id: string; fieldname: string; value: string | number }>
     ) => {
-      console.log(action.payload)
-      state.posts[action.payload.id][action.payload.fieldname] = action.payload.value;
+      //чого так? чого не можна написати fieldname: keyof Post
+      (state.posts[action.payload.id] as any)[action.payload.fieldname] = action.payload.value;
     },
     SetFieldNewDish: (
       state,
       action: PayloadAction<{ fieldname: string; value: string | number }>
     ) => {
-      state.newDish[action.payload.fieldname]  = action.payload.value;
+      (state.newDish as any)[action.payload.fieldname]  = action.payload.value;
     },
     SetAddUserModal: (state, action: PayloadAction<{ status: boolean }>) => {
       state.modalStatus.modalAddUSerStatus = action.payload.status;

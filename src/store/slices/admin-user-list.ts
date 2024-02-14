@@ -51,7 +51,7 @@ export const AdminUsersListSlice = createSlice({
       state.userlist[action.payload.user.id] = action.payload.user;
     },
     ChangeCurrentField: (state, action: PayloadAction<{ id: string; fieldname: string; value: string }>) => {
-      state.userlist[action.payload.id][action.payload.fieldname] = action.payload.value;
+      (state.userlist[action.payload.id] as any)[action.payload.fieldname] = action.payload.value;
     },
     SetFieldNewUser: (state, action: PayloadAction<{ fieldname: string; value: string }>) => {
       state.newuser[action.payload.fieldname] = action.payload.value;

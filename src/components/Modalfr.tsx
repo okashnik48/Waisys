@@ -1,50 +1,45 @@
 import React, { FC, useEffect, useState } from "react";
 
 import authService from "../services/auth.service";
-//import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
 
-import { SetTokens, SetUserProperties } from "../store/slices/user"
+import { Form, Input, Button, Typography } from "antd";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
 
+import { SetTokens, SetUserProperties } from "../store/slices/user";
 
-import userService from "../services/user.service"
+import userService from "../services/user.service";
 
-
-import { Typography, TextField, Button } from '@mui/material';
-
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { useAppDispatch, useAppSelector } from "../store/store-hooks";
+
+const { Title } = Typography;
 
 interface ModalProps {}
 
 const Modalfr: FC<ModalProps> = () => {
-  const [loginInput, setloginInput] = useState<string>("");
-  const [passwordInput, setpasswordInput] = useState<string>("");
+  const [loginInput, setLoginInput] = useState<string>("");
+  const [passwordInput, setPasswordInput] = useState<string>("");
 
-const theme = createTheme()
-
-  let user = useAppSelector((state: any) =>  state.user.user);
+  let user = useAppSelector((state: any) => state.user.user);
   const dispatch = useAppDispatch();
 
-  const [loginTriger, { isError, isLoading, isSuccess }] = authService.useLoginMutation();
-    const [refreshTokenTriger, {}] = authService.useChangeAccessTokenMutation()
-    //const { refetch: updateUserInfo } = dispatch(userService.endpoints.userInfo.initiate(""))
+  const [loginTriger, { isError, isLoading, isSuccess }] =
+    authService.useLoginMutation();
+
   useEffect(() => {
-    type ChangeTokenRequest = {
-      refreshToken: string,
-  }
-    
-  type Tokens = {
-    accessToken: string;
-    refreshToken: string;
-  }
-  
-  const storedTokensString = localStorage.getItem("tokens");
-  const storedTokens: Tokens | null = storedTokensString ? JSON.parse(storedTokensString) : null;
-    
-    console.log(storedTokens)
+    type Tokens = {
+      accessToken: string;
+      refreshToken: string;
+    };
+
+    const storedTokensString = localStorage.getItem("tokens");
+    const storedTokens: Tokens | null = storedTokensString
+      ? JSON.parse(storedTokensString)
+      : null;
+
+    console.log(storedTokens);
 
     if (storedTokens !== null) {
-      console.log("WORK")
+      console.log("WORK");
       const { accessToken, refreshToken } = storedTokens;
       dispatch(SetTokens({ accessToken, refreshToken }));
 
@@ -53,8 +48,6 @@ const theme = createTheme()
         .then((data) => {
           dispatch(SetUserProperties(data));
         });
-
-            
     } else {
       console.error("No tokens found in localStorage");
     }
@@ -69,70 +62,79 @@ const theme = createTheme()
     })
       .unwrap()
       .then(({ accessToken, refreshToken }) => {
-        dispatch(SetTokens({ accessToken, refreshToken }))
-        localStorage.setItem("tokens",JSON.stringify({ accessToken, refreshToken }));
-        console.log(user)
-        dispatch(userService.endpoints.userInfo.initiate(''))
-        .unwrap()
-        .then((data) => {
-          dispatch(SetUserProperties(data));
-        });
+        dispatch(SetTokens({ accessToken, refreshToken }));
+        localStorage.setItem(
+          "tokens",
+          JSON.stringify({ accessToken, refreshToken })
+        );
+        console.log(user);
+        dispatch(userService.endpoints.userInfo.initiate(""))
+          .unwrap()
+          .then((data) => {
+            dispatch(SetUserProperties(data));
+          });
       })
       .catch((error) => {
         console.error("Login error", error);
       });
   };
+
   return (
-    <ThemeProvider theme={theme}>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          minHeight: '100vh',
-        }}
-      >
-        <div style={{ margin: '16px', width: '300px' }}>
-          <Typography variant="h5" color="textPrimary">
-            Login
-          </Typography>
-          <div style={{ marginTop: '16px' }}>
-            <TextField
-              id="UserLogin"
-              label="Your login"
-              fullWidth
-              required
-              variant="outlined"
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "100vh",
+      }}
+    >
+      <div style={{ margin: "16px", width: "300px" }}>
+        <Title level={3}>Login</Title>
+        <Form
+          name="normal_login"
+          initialValues={{ remember: true }}
+          onFinish={loginHandler}
+        >
+          <Form.Item
+            name="username"
+            rules={[{ required: true, message: "Please input your login!" }]}
+          >
+            <Input
+              prefix={<UserOutlined className="site-form-item-icon" />}
+              size = "large"
+              placeholder="Your login"
               value={loginInput}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setloginInput(event.target.value);
-              }}
+              onChange={(e) => setLoginInput(e.target.value)}
             />
-          </div>
-          <div style={{ marginTop: '16px' }}>
-            <TextField
-              id="password"
-              label="Your password"
+          </Form.Item>
+          <Form.Item
+            name="password"
+            rules={[{ required: true, message: "Please input your password!" }]}
+          >
+            <Input
+              prefix={<LockOutlined className="site-form-item-icon" />}
               type="password"
-              fullWidth
-              required
-              variant="outlined"
+              placeholder="Your password"
               value={passwordInput}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setpasswordInput(event.target.value);
-              }}
+              size = "large"
+              onChange={(e) => setPasswordInput(e.target.value)}
             />
-          </div>
-          <div style={{ marginTop: '16px' }}>
-            <Button variant="contained" color="primary" onClick={(e) =>{loginHandler(e)}}>
+          </Form.Item>
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className="login-form-button"
+              onClick={loginHandler}
+            >
               Log in to your account
             </Button>
-          </div>
-        </div>
+          </Form.Item>
+        </Form>
       </div>
-    </ThemeProvider>
-    );
+    </div>
+  );
 };
 
 export default Modalfr;

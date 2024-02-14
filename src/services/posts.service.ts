@@ -9,8 +9,7 @@ type dishesReply = {
     tags: string;
     id: string;
     post: string;
-    count?: number;
-    comment?: string;
+
   }[]
 
 const postService = serviceApi.injectEndpoints({

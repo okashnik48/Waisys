@@ -84,6 +84,13 @@ const ordersService = serviceApi.injectEndpoints({
             method: "Delete"
           })
         }),
+        GetDeclineddDishes : builder.query<CompletedDishesReply, any>(
+          {
+            query: () => ({
+              url: "orders/dishes/declined",
+              method: "GET"
+            })
+          }),
   }),
 });
 

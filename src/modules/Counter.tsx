@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Button } from "antd";
 import { useAppDispatch } from "../store/store-hooks";
 import { counterDecrement, counterIncrement } from "../store/slices/posts";
@@ -32,8 +32,10 @@ const Counter: React.FC<Dish> = ({ post }) => {
   };
 
   return (
-    <div style={{ display: "flex", alignItems: "center" }}>
-      <Button onClick={handleDecrement}>-</Button>
+    <div style={{ display: "flex", alignItems: "center", marginTop: "15px", marginLeft: "10px" }}>
+      <Button size="middle" onClick={handleDecrement}>
+        -
+      </Button>
       <h1>{post.count}</h1>
       <Button onClick={handleIncrement}>+</Button>
     </div>

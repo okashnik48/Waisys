@@ -1,7 +1,5 @@
 "use client";
 
-import "../../styles/Tailwind.css";
-
 import React from "react";
 
 import { Modal, Input, Select, Button } from "antd";
@@ -130,6 +128,7 @@ const AdminAddDish = () => {
                 );
               }}
               value={NewDish.tags[0] || "none"}
+              
             >
               <Select.Option value="none">none</Select.Option>
               <Select.Option value="cold">cold</Select.Option>

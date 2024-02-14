@@ -3,7 +3,6 @@ import type { MenuProps } from "antd";
 import {
   AppstoreOutlined,
   MailOutlined,
-  SettingOutlined,
 } from "@ant-design/icons";
 import React, { PropsWithChildren, useState } from "react";
 import { Link } from "react-router-dom";
@@ -124,7 +123,7 @@ export default function NavigationLayout({
       },
       {
         label: (
-          <Link to="" rel="noopener noreferrer">
+          <Link to="declin-list" rel="noopener noreferrer">
             Decline Dishes
           </Link>
         ),

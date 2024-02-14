@@ -19,7 +19,7 @@ const baseQuery = fetchBaseQuery({
       const token  = state.user.user.accessToken;
 
       // setInterval(() => {
-
+      
       // }, 2000);
 
       if (token) {

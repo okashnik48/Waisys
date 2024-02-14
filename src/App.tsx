@@ -1,7 +1,5 @@
 import React from "react";
 
-
-import "./styles/Tailwind.css";
 import { useAppSelector } from "./store/store-hooks";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ROUTES_CONFIG } from "./configs/routes-config";

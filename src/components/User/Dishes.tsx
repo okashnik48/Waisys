@@ -1,19 +1,24 @@
+/* eslint-disable array-callback-return */
 import React, { FC, useEffect, useMemo, useState } from "react";
-import {
-  initPosts,
-  addPost,
-  removePost,
-  setComment,
-  setCountDefault,
-} from "../../store/slices/posts";
+import { addPost, setComment, setCountDefault } from "../../store/slices/posts";
 import { addSelectedPost } from "../../store/slices/selected-posts";
 
 import postService from "../../services/posts.service";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
-import { Image, Input, Select, Button, Col, Row, Typography } from "antd";
+import { Image, Input, Select, Button, Col, Row, Typography, Card } from "antd";
 
 import Counter from "../../modules/Counter";
 
+interface ReplyDish {
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+  createdAt: string;
+  tags: string;
+  id: string;
+  post: string;
+}
 interface Dish {
   name: string;
   description: string;
@@ -23,8 +28,8 @@ interface Dish {
   tags: string;
   id: string;
   post: string;
-  count?: number;
-  comment?: string;
+  count: number;
+  comment: string;
 }
 interface SelectedPost {
   name: string;
@@ -54,9 +59,9 @@ const Dishes: FC = () => {
     updateDishesList()
       .unwrap()
       .then((dishesData) => {
-        const DishesPosts: Dish[] = Object.values(dishesData);
+        const DishesPosts: ReplyDish[] = Object.values(dishesData);
         console.log(DishesPosts);
-        DishesPosts.map((post: Dish) => {
+        DishesPosts.map((post: ReplyDish) => {
           dispatch(
             addPost({ id: post.id, post: { ...post, comment: "", count: 1 } })
           );
@@ -138,59 +143,79 @@ const Dishes: FC = () => {
           </div>
 
           {SearchedPosts.map((post: Dish) => (
-            <div key={post.id}>
-              <Image
-                width = {560}
-                src={post.image}
-              />
-              <Typography.Title level={3}>{post.name}</Typography.Title>
-              <Input
-                id="Coment"
-                value={post.comment}
-                onChange={(e) =>
-                  dispatch(setComment({ id: post.id, comment: e.target.value }))
-                }
-                placeholder="Comment"
-                required
-                size="large"
-              />
-              <Typography.Title
-                level={3}
-              >{`Tag: ${post.tags}`}</Typography.Title>
-              <Typography.Title
-                level={3}
-              >{`Price: ${post.price}`}</Typography.Title>
-              <div style={{ display: "inline-block", marginRight: "10px" }}>
-                <Typography.Title
-                  style={{ marginBottom: "5px", display: "inline-block" }}
-                  level={3}
-                >
-                  Count:{" "}
+            <Card key={post.id}>
+              <div
+                style={{
+                  alignItems: "center",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <Typography.Title level={2}>{post.name}</Typography.Title>
+              </div>
+              <div
+                style={{
+                  alignItems: "center",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <Image alt={post.name} src={post.image} />
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Typography.Title style={{ marginLeft: "10px" }} level={3}>
+                  {" "}
+                  {`Tag: ${post.tags}`}
                 </Typography.Title>
+                <Typography.Title level={3} style={{ marginLeft: "10px" }}>
+                  {" "}
+                  {`Price: ${post.price}`}{" "}
+                </Typography.Title>
+              </div>
+              <div style={{ marginLeft: "40%", width: "200px"}}>
+                <Input
+                  id="Coment"
+                  value={post.comment}
+                  onChange={(e) =>
+                    dispatch(
+                      setComment({ id: post.id, comment: e.target.value })
+                    )
+                  }
+                  placeholder="Comment"
+                  required
+                  size="large"
+                />
                 <div
                   style={{
-                    width: "150px",
-                    display: "inline-block",
-                    marginLeft: "10px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
+                  <Typography.Title level={3}>Count:</Typography.Title>
                   <Counter post={post} />
                 </div>
+                <Button
+                  size="large"
+                  style={{
+                    backgroundColor: "rgba(0, 200, 0, 0.7)",
+                    marginTop: "10px",
+                    width: "100%",
+                  }}
+                  onClick={(
+                    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+                  ) => AddDish(e, post.id)}
+                >
+                  Add
+                </Button>
               </div>
-
-              <Button
-                size="large"
-                style={{
-                  backgroundColor: "rgba(0, 200, 0, 0.7)",
-                  display: "block",
-                }}
-                onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-                  AddDish(e, post.id)
-                }
-              >
-                Add
-              </Button>
-            </div>
+            </Card>
           ))}
         </Col>
       </Row>
