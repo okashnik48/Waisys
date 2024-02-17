@@ -11,13 +11,27 @@ import userService from "../services/user.service";
 
 import { useAppDispatch, useAppSelector } from "../store/store-hooks";
 
+import { Alert } from "antd";
+
 const { Title } = Typography;
+
+interface AlertProps {
+  type?: "success" | "info" | "warning" | "error";
+  message: string;
+  description: string;
+}
 
 interface ModalProps {}
 
 const Modalfr: FC<ModalProps> = () => {
   const [loginInput, setLoginInput] = useState<string>("");
   const [passwordInput, setPasswordInput] = useState<string>("");
+
+  const [alertProps, setAlertProps] = useState<AlertProps>({
+    message: "",
+    description: "",
+  });
+  const [showAlert, setShowAlert] = useState<boolean>(false);
 
   let user = useAppSelector((state: any) => state.user.user);
   const dispatch = useAppDispatch();
@@ -74,8 +88,15 @@ const Modalfr: FC<ModalProps> = () => {
             dispatch(SetUserProperties(data));
           });
       })
-      .catch((error) => {
-        console.error("Login error", error);
+      .catch(({ data }) => {
+        setShowAlert(true);
+        console.log(data);
+        console.log(data.message);
+        setAlertProps({
+          type: "error",
+          message: "Login error",
+          description: data.message,
+        });
       });
   };
 
@@ -89,6 +110,17 @@ const Modalfr: FC<ModalProps> = () => {
         minHeight: "100vh",
       }}
     >
+      <div style={{ position: "absolute", top: 0, right: 0 }}>
+        {showAlert && (
+          <Alert
+            type={alertProps.type}
+            description={alertProps.description}
+            message={alertProps.message}
+            onClose={() => setShowAlert(false)}
+            closable
+          />
+        )}
+      </div>
       <div style={{ margin: "16px", width: "300px" }}>
         <Title level={3}>Login</Title>
         <Form
@@ -102,7 +134,7 @@ const Modalfr: FC<ModalProps> = () => {
           >
             <Input
               prefix={<UserOutlined className="site-form-item-icon" />}
-              size = "large"
+              size="large"
               placeholder="Your login"
               value={loginInput}
               onChange={(e) => setLoginInput(e.target.value)}
@@ -117,7 +149,7 @@ const Modalfr: FC<ModalProps> = () => {
               type="password"
               placeholder="Your password"
               value={passwordInput}
-              size = "large"
+              size="large"
               onChange={(e) => setPasswordInput(e.target.value)}
             />
           </Form.Item>
