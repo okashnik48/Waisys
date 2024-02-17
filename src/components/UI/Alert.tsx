@@ -7,20 +7,23 @@ interface AlertProps {
   alertDescription: string;
 }
 
-const App: React.FC<AlertProps> = ({
-  alertType,
-  alertMessage,
-  alertDescription,
-}) => {
+type ArrayAlertProps = Record<string, AlertProps>;
+
+const App: React.FC<ArrayAlertProps> = (AlertArray) => {
+  
   return (
-    <Space direction="vertical" style={{ width: "100%" }}>
-      <Alert
-        message={alertMessage}
-        description={alertDescription}
-        type={alertType}
-        closable
-      />
-    </Space>
+    <div  style={{ position: 'absolute', top: 0, right: 0 }}>
+      {Object.entries(AlertArray).map(([key, alert]) => (
+        <Alert
+          key={key}
+          message={alert.alertMessage}
+          description={alert.alertDescription}
+          type={alert.alertType}
+          style={{ marginBottom: '10px' }}
+          closable
+        />
+      ))}
+    </div>
   );
 };
 
