@@ -31,8 +31,9 @@ const AdminDishesList = () => {
   });
   const dispatch = useAppDispatch();
   const { refetch: updateDishesList } = postService.useDishesQuery("");
-  const [deleteDishTriger, {}] = adminDishesService.useDeleteDishMutation();
-  const [changeDishTriger, {}] = adminDishesService.useChangeDishMutation();
+  const [deleteDishTriger] = adminDishesService.useDeleteDishMutation();
+  const [changeDishTriger ] = adminDishesService.useChangeDishMutation();
+  
   useEffect(() => {
     updateDishesList()
       .unwrap()

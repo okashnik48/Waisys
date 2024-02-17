@@ -108,8 +108,15 @@ const Dishes: FC = () => {
   }, [searchTags, searchText, posts]);
   return (
     <div>
-      <Row>
-        <Col md={{ span: 12, offset: 6 }}>
+      <div
+        style={{
+          maxWidth: '800px',
+          margin: '0 auto'
+        }}
+      >
+
+      {/* <Row>
+        <Col md={{ span: 12, offset: 6 }}> */}
           <h1>Menu</h1>
           <Input.Search
             id="search"
@@ -217,8 +224,10 @@ const Dishes: FC = () => {
               </div>
             </Card>
           ))}
-        </Col>
-      </Row>
+        {/* </Col>
+      </Row> */}
+      </div>
+
     </div>
   );
 };

@@ -11,7 +11,7 @@ import userService from "../services/user.service";
 
 import { useAppDispatch, useAppSelector } from "../store/store-hooks";
 
-import Alert from "../components/UI/Alert"
+import Alert from "../ui-kit/Alert"
 
 const { Title } = Typography;
 

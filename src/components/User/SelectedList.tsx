@@ -42,7 +42,7 @@ const SelectedList: FC = () => {
     dispatch(removeSelectedPost({ listId: id }));
   };
 
-  const [postOrderTriger, {}] = ordersService.usePostOrderMutation();
+  const [postOrderTriger] = ordersService.usePostOrderMutation();
 
   const ConfirmOrder = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();

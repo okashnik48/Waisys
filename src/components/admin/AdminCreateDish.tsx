@@ -24,11 +24,11 @@ interface ModalType {
   modalAddUSerStatus: boolean;
 }
 
-const AdminAddDish = () => {
+const AdminCreateDish = () => {
   const dispatch = useAppDispatch();
-  let NewDish: NewDish = useAppSelector((state) => state.admin.newDish);
+  const NewDish: NewDish = useAppSelector((state) => state.admin.newDish);
 
-  let modalStatus: ModalType = useAppSelector((state) => {
+  const modalStatus: ModalType = useAppSelector((state) => {
     return state.admin.modalStatus;
   });
 
@@ -36,12 +36,12 @@ const AdminAddDish = () => {
     return Object.values(NewDish).some((value) => !value);
   };
 
-  const [AddDishTriger, {}] = adminDishesService.useCreateDishMutation();
+  const [AddDishTrigger] = adminDishesService.useCreateDishMutation();
 
   const AddNewDish = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     if (!hasEmptyField()) {
-      AddDishTriger({ body: NewDish })
+      AddDishTrigger({ body: NewDish })
         .unwrap()
         .then((data) => {
           console.log(data);
@@ -152,4 +152,4 @@ const AdminAddDish = () => {
     </Modal>
   );
 };
-export default AdminAddDish;
+export default AdminCreateDish;

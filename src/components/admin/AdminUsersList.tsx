@@ -30,7 +30,7 @@ interface User {
   password: string;
 }
 
-const AdminUserList = () => {
+const AdminUsersList = () => {
   const dispatch = useAppDispatch();
   const [searchText, setSearchText] = useState("");
   let SearchedUsers = [];
@@ -256,4 +256,4 @@ const AdminUserList = () => {
     </>
   );
 };
-export default AdminUserList;
+export default AdminUsersList;

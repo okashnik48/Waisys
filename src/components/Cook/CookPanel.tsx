@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 
 import { useEffect, useState } from "react";
 
@@ -8,6 +8,7 @@ import orderService from "../../services/orders.service";
 
 import { io } from "socket.io-client";
 import { Button, Image, Typography, Col, Row } from "antd";
+import { useAppDispatch } from "../../store/store-hooks";
 
 type OrderDish = {
   name: string;
@@ -24,14 +25,17 @@ type OrderDish = {
 type ordersGetReply = Record<string, OrderDish>;
 
 const CookPanel = () => {
-  const [CookList, setCookList] = useState<Record<string, OrderDish>>({});
-
+  // const [CookList, setCookList] = useState<Record<string, OrderDish>>({});
+  const dispatch = useAppDispatch();
   const socket = io({ transports: ["websocket"] });
 
   const [isConnected, setIsConnected] = useState(socket.connected);
 
-  const { refetch: updateOrdersList } = orderService.useGetOrdersQuery("");
-  const [changeOrderStatusTriger, {}] = orderService.usePatchOrderMutation();
+  const { data } = orderService.useGetOrdersQuery("", {});
+
+  
+  const [changeOrderStatusTriger] = orderService.usePatchOrderMutation();
+
   useEffect(() => {
     function onConnect() {
       console.log("Connect");
@@ -69,29 +73,30 @@ const CookPanel = () => {
     };
   }, []);
 
-  useEffect(() => {
-    updateOrdersList()
-      .unwrap()
-      .then((data) => {
-        Object.values(data).map((order) => {
-          setCookList((prevCookList) => {
-            return {
-              ...prevCookList,
-              [order.id]: {
-                ...order,
-                isAccepted: false,
-                isCompleted: false,
-                isDeclined: false,
-              },
-            };
-          });
-        });
-        console.log(CookList);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+  // useEffect(() => {
+  //   updateOrdersList()
+  //     .unwrap()
+  //     .then((data) => {
+  //       Object.values(data).map((order) => {
+  //         setCookList((prevCookList) => {
+  //           return {
+  //             ...prevCookList,
+  //             [order.id]: {
+  //               ...order,
+  //               isAccepted: false,
+  //               isCompleted: false,
+  //               isDeclined: false,
+  //             },
+  //           };
+  //         });
+  //       });
+  //       console.log(CookList);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // }, []);
+
   const ChangeDishStatus = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     id: string,
@@ -103,26 +108,30 @@ const CookPanel = () => {
       id: id,
       body: { [ChangedStatus]: !CookList[id][ChangedStatus] },
     })
-      .unwrap()
-      .then((data) => {
-        if (ChangedStatus === "isCompleted" || ChangedStatus === "isDeclined") {
-          const ChangedCookList = CookList;
-          delete ChangedCookList[id];
-          setCookList(ChangedCookList);
-        } else {
-          setCookList({
-            ...CookList,
-            [id]: {
-              ...CookList[id],
-              [ChangedStatus]: !CookList[id][ChangedStatus],
-            },
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      // .unwrap()
+      // .then((data) => {
+      //   dispatch(orderService.util.updateQueryData("getOrders", id, (draft) => {
+            
+      //   }))
+      //   if (ChangedStatus === "isCompleted" || ChangedStatus === "isDeclined") {
+      //     const ChangedCookList = CookList;
+      //     delete ChangedCookList[id];
+      //     setCookList(ChangedCookList);
+      //   } else {
+      //     setCookList({
+      //       ...CookList,
+      //       [id]: {
+      //         ...CookList[id],
+      //         [ChangedStatus]: !CookList[id][ChangedStatus],
+      //       },
+      //     });
+      //   }
+      // })
+      // .catch((error) => {
+      //   console.log(error);
+      // });
   };
+
   return (
     <div>
       <Row>
@@ -176,8 +185,9 @@ const CookPanel = () => {
                         ChangeDishStatus(e, post.id, "isAccepted");
                       }}
                     >
-                      {" "}
-                      Accept{" "}
+                      &nbsp;
+                      Accept
+                      &nbsp;
                     </Button>
                   ) : (
                     <Button
