@@ -7,6 +7,9 @@ type OrderDish = {
   id: string;
   comment: string;
   quantity: number;
+  isAccepted?: boolean;
+  isCompleted?: boolean;
+  isDeclined?: boolean;
 };
 type ordersGetReply = Record<string, OrderDish>;
 
@@ -94,7 +97,7 @@ const ordersService = serviceApi.injectEndpoints({
         method: "Delete",
       }),
     }),
-    GetDeclineddDishes: builder.query<CompletedDishesReply, any>({
+    GetDeclinedDishes: builder.query<CompletedDishesReply, any>({
       query: () => ({
         url: "orders/dishes/declined",
         method: "GET",

@@ -13,7 +13,7 @@ interface Post {
   price: number;
   image: string;
   createdAt: string;
-  tags: string;
+  tags: Record<string, string>;
   id: string;
   post: string;
   count: number;

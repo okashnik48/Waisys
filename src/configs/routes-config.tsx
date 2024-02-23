@@ -5,6 +5,7 @@ import Dishes from "../components/User/Dishes";
 import SelectedList from "../components/User/SelectedList";
 import AdminDishesList from "../components/admin/AdminDishesList";
 import AdminUsersList from "../components/admin/AdminUsersList";
+import AdminTagsList from "../components/admin/AdminTagsList";
 import DoneDishesList from "../components/User/DoneList";
 import DeclinedDishesList from "../components/User/DeclinedDishes";
 
@@ -24,6 +25,10 @@ export const ROUTES_CONFIG = {
       {
         path: "admin-user-list",
         element: <AdminUsersList />,
+      },
+      {
+        path: "admin-tags-list",
+        element: <AdminTagsList />,
       },
       {
         path: "*",

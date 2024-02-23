@@ -7,8 +7,8 @@ import { useEffect, useState } from "react";
 import orderService from "../../services/orders.service";
 
 import { io } from "socket.io-client";
-import { Button, Image, Typography, Col, Row } from "antd";
-import { useAppDispatch } from "../../store/store-hooks";
+import { Button, Image, Typography, Col, Row, Empty } from "antd";
+import { toast } from "react-toastify";
 
 type OrderDish = {
   name: string;
@@ -25,15 +25,24 @@ type OrderDish = {
 type ordersGetReply = Record<string, OrderDish>;
 
 const CookPanel = () => {
-  // const [CookList, setCookList] = useState<Record<string, OrderDish>>({});
-  const dispatch = useAppDispatch();
   const socket = io({ transports: ["websocket"] });
 
   const [isConnected, setIsConnected] = useState(socket.connected);
 
-  const { data } = orderService.useGetOrdersQuery("", {});
+  const { data: CookList, refetch: updateCookList} = orderService.useGetOrdersQuery(
+    "",
+    {
+      // selectFromResult: ({ data }) => ({
+      //   CookList: Object.values(data || {}).map((order: OrderDish) => ({
+      //     ...order,
+      //     isAccepted: false,
+      //     isCompleted: false,
+      //     isDeclined: false,
+      //   })),
+      // }),
+    }
+  );
 
-  
   const [changeOrderStatusTriger] = orderService.usePatchOrderMutation();
 
   useEffect(() => {
@@ -46,99 +55,50 @@ const CookPanel = () => {
       setIsConnected(false);
     }
 
-    function onFooEvent(data: ordersGetReply) {
-      Object.values(data).map((order) => {
-        setCookList((prevCookList) => {
-          return {
-            ...prevCookList,
-            [order.id]: {
-              ...order,
-              isAccepted: false,
-              isCompleted: false,
-              isDeclined: false,
-            },
-          };
-        });
-      });
-    }
-
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
-    socket.on("cook.orders.create", onFooEvent);
+    socket.on("cook.orders.create", updateCookList);
 
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
-      socket.off("cook.orders.create", onFooEvent);
+      socket.off("cook.orders.create", updateCookList);
     };
   }, []);
 
-  // useEffect(() => {
-  //   updateOrdersList()
-  //     .unwrap()
-  //     .then((data) => {
-  //       Object.values(data).map((order) => {
-  //         setCookList((prevCookList) => {
-  //           return {
-  //             ...prevCookList,
-  //             [order.id]: {
-  //               ...order,
-  //               isAccepted: false,
-  //               isCompleted: false,
-  //               isDeclined: false,
-  //             },
-  //           };
-  //         });
-  //       });
-  //       console.log(CookList);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // }, []);
-
+  useMemo(() => {
+console.log(CookList)
+  }, [CookList]);
   const ChangeDishStatus = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     id: string,
     ChangedStatus: string
   ) => {
     e.preventDefault();
-    console.log(CookList);
     changeOrderStatusTriger({
       id: id,
-      body: { [ChangedStatus]: !CookList[id][ChangedStatus] },
+      body: { [ChangedStatus]: true },
     })
-      // .unwrap()
-      // .then((data) => {
-      //   dispatch(orderService.util.updateQueryData("getOrders", id, (draft) => {
-            
-      //   }))
-      //   if (ChangedStatus === "isCompleted" || ChangedStatus === "isDeclined") {
-      //     const ChangedCookList = CookList;
-      //     delete ChangedCookList[id];
-      //     setCookList(ChangedCookList);
-      //   } else {
-      //     setCookList({
-      //       ...CookList,
-      //       [id]: {
-      //         ...CookList[id],
-      //         [ChangedStatus]: !CookList[id][ChangedStatus],
-      //       },
-      //     });
-      //   }
-      // })
-      // .catch((error) => {
-      //   console.log(error);
-      // });
+      .unwrap()
+      .then((data) => {
+        updateCookList();
+        toast.success("Success")
+      })
+      .catch(({data}) => {
+        toast.error(data.message);
+      });
   };
 
   return (
     <div>
       <Row>
         <Col md={{ span: 12, offset: 6 }}>
-          <h1>List of selected Dish</h1>
-
-          {Object.values(CookList).map((post) => (
+          <h1 >List of selected Dish</h1>
+          {CookList && Object.keys(CookList).length === 0? <Empty imageStyle={{height: 400, width:  "auto"}}/>
+          :
+          Object.keys(CookList??{}).map((id) => {
+            const post =CookList[id] 
+            return (
             <div
               style={{
                 display: "flex",
@@ -185,9 +145,7 @@ const CookPanel = () => {
                         ChangeDishStatus(e, post.id, "isAccepted");
                       }}
                     >
-                      &nbsp;
-                      Accept
-                      &nbsp;
+                      &nbsp; Accept &nbsp;
                     </Button>
                   ) : (
                     <Button
@@ -223,7 +181,7 @@ const CookPanel = () => {
                 </div>
               </div>
             </div>
-          ))}
+          )})}
         </Col>
       </Row>
     </div>

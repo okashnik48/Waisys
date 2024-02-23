@@ -1,12 +1,12 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface Post {
-  id: string
+  id: string;
   name: string;
   description: string;
   price: number;
   image: string;
-  tags: string; 
+  tags: Record<string, string>;
 }
 
 type NewDish = {
@@ -14,7 +14,7 @@ type NewDish = {
   description: string;
   price: number | null;
   image: string;
-  tags: string;
+  tags: Record<string, string>;
 };
 
 type ModalStatus = {
@@ -31,11 +31,11 @@ interface PostsState {
 const initialState: PostsState = {
   posts: {},
   newDish: {
-    name: '',
-    description: '',
+    name: "",
+    description: "",
     price: null,
-    image: '',
-    tags: '',
+    image: "",
+    tags: {},
   },
   modalStatus: {
     modalAddDishStatus: false,
@@ -44,7 +44,7 @@ const initialState: PostsState = {
 };
 
 const AdminSlice = createSlice({
-  name: 'admin',
+  name: "admin",
   initialState,
   reducers: {
     AddNewPost: (state, action: PayloadAction<Post>) => {
@@ -55,16 +55,24 @@ const AdminSlice = createSlice({
     },
     SetFieldForChangedDish: (
       state,
-      action: PayloadAction<{ id: string; fieldname: string; value: string | number }>
+      action: PayloadAction<{
+        id: string;
+        fieldname: string;
+        value: string | number | Record<string, string>;
+      }>
     ) => {
       //чого так? чого не можна написати fieldname: keyof Post
-      (state.posts[action.payload.id] as any)[action.payload.fieldname] = action.payload.value;
+      (state.posts[action.payload.id] as any)[action.payload.fieldname] =
+        action.payload.value;
     },
     SetFieldNewDish: (
       state,
-      action: PayloadAction<{ fieldname: string; value: string | number }>
+      action: PayloadAction<{
+        fieldname: string;
+        value: string | number | Record<string, string>;
+      }>
     ) => {
-      (state.newDish as any)[action.payload.fieldname]  = action.payload.value;
+      (state.newDish as any)[action.payload.fieldname] = action.payload.value;
     },
     SetAddUserModal: (state, action: PayloadAction<{ status: boolean }>) => {
       state.modalStatus.modalAddUSerStatus = action.payload.status;

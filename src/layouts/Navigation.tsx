@@ -61,6 +61,15 @@ export default function NavigationLayout({
         icon: <AppstoreOutlined />,
       },
       {
+        label: (
+          <Link to="/admin-tags-list" rel="noopener noreferrer">
+            Tags
+          </Link>
+        ),
+        key: "tags",
+        icon: <AppstoreOutlined />,
+      },
+      {
         label: "Add Dish",
         key: "add-dish",
         icon: <AppstoreOutlined />,

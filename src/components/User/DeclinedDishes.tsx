@@ -2,7 +2,7 @@ import React from "react";
 
 import { useEffect, useState } from "react";
 
-import { Image, Button, Row, Col, Typography } from "antd";
+import { Image, Button, Row, Col, Typography, Empty } from "antd";
 
 import ordersService from "../../services/orders.service";
 
@@ -63,7 +63,7 @@ const DoneDishesList = () => {
     };
   }, []);
 
-  const { refetch: GetDeclinedList } = ordersService.useGetDeclineddDishesQuery('')
+  const { refetch: GetDeclinedList } = ordersService.useGetDeclinedDishesQuery('')
   const [DeletedeclinedDishTriger, {}] = ordersService.useDeleteDeliveredDishMutation()
 
   useEffect(() => {
@@ -91,6 +91,11 @@ const DoneDishesList = () => {
           <Typography.Title level={1} style={{ textAlign: "center" }}>
             Declined Dishes
           </Typography.Title>
+          {Object.keys(DeclinedList).length === 0 ? (
+          <Empty />
+        )
+        :(
+          <>
           {Object.keys(DeclinedList).map((id) => {
             const post = DeclinedList[id];
             return (
@@ -180,6 +185,7 @@ const DoneDishesList = () => {
               </div>
             );
           })}
+          </>)}
         </Col>
       </Row>
     </div>

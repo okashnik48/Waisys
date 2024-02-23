@@ -17,11 +17,6 @@ const baseQuery = fetchBaseQuery({
       if (!state) return headers;
 
       const token  = state.user.user.accessToken;
-
-      // setInterval(() => {
-      
-      // }, 2000);
-
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }
@@ -36,6 +31,7 @@ const baseQuery = fetchBaseQuery({
 
 export const serviceApi = createApi({
   baseQuery: baseQuery,
+  tagTypes: ["orders"],
   reducerPath: "api",
   refetchOnFocus: false, // true, TRUE only for production
   refetchOnReconnect: true,

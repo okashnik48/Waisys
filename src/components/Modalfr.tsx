@@ -11,17 +11,9 @@ import userService from "../services/user.service";
 
 import { useAppDispatch, useAppSelector } from "../store/store-hooks";
 
-import Alert from "../ui-kit/Alert"
+import { toast } from "react-toastify";
 
 const { Title } = Typography;
-
-interface AlertProps {
-  alertType: "success" | "info" | "warning" | "error" | undefined;
-  alertMessage: string;
-  alertDescription: string;
-}
-
-type ArrayAlertProps = Record<string, AlertProps>;
 
 interface ModalProps {}
 
@@ -29,41 +21,11 @@ const Modalfr: FC<ModalProps> = () => {
   const [loginInput, setLoginInput] = useState<string>("");
   const [passwordInput, setPasswordInput] = useState<string>("");
 
-  const [AlertArray, setAlertProps] = useState<ArrayAlertProps>({});
-
   let user = useAppSelector((state: any) => state.user.user);
   const dispatch = useAppDispatch();
 
   const [loginTriger, { isError, isLoading, isSuccess }] =
     authService.useLoginMutation();
-
-  useEffect(() => {
-    type Tokens = {
-      accessToken: string;
-      refreshToken: string;
-    };
-
-    const storedTokensString = localStorage.getItem("tokens");
-    const storedTokens: Tokens | null = storedTokensString
-      ? JSON.parse(storedTokensString)
-      : null;
-
-    console.log(storedTokens);
-
-    if (storedTokens !== null) {
-      console.log("WORK");
-      const { accessToken, refreshToken } = storedTokens;
-      dispatch(SetTokens({ accessToken, refreshToken }));
-
-      dispatch(userService.endpoints.userInfo.initiate({ accessToken }))
-        .unwrap()
-        .then((data) => {
-          dispatch(SetUserProperties(data));
-        });
-    } else {
-      console.error("No tokens found in localStorage");
-    }
-  }, []);
 
   const loginHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -87,13 +49,7 @@ const Modalfr: FC<ModalProps> = () => {
           });
       })
       .catch(({ data }) => {
-        const newKey = Date.now().toString();
-        setAlertProps(prevAlertProps => ({
-          ...prevAlertProps,[newKey]:{
-            alertType: "error",
-            alertMessage: "Login error",
-            alertDescription: data.message,
-          }}))
+        toast.error(data.message);
       });
   };
 
@@ -107,7 +63,6 @@ const Modalfr: FC<ModalProps> = () => {
         minHeight: "100vh",
       }}
     >
-      <Alert {...AlertArray}/>
       <div style={{ margin: "16px", width: "300px" }}>
         <Title level={3}>Login</Title>
         <Form

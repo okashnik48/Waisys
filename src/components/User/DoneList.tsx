@@ -13,7 +13,7 @@ import { useAppSelector, useAppDispatch } from "../../store/store-hooks";
 
 import ordersService from "../../services/orders.service";
 
-import { Button, Col, Image, Row, Typography } from "antd";
+import { Button, Col, Empty, Image, Row, Typography } from "antd";
 type CompletedDish = {
   tableNumber: number;
   name: string;
@@ -90,6 +90,11 @@ const DoneDishesList = () => {
           <Typography.Title level={1} style={{ textAlign: "center" }}>
             Completed Dishes
           </Typography.Title>
+          {Object.keys(DoneList).length === 0 ? (
+          <Empty />
+        )
+        :(
+          <>
           {Object.keys(DoneList).map((id) => {
             const post = DoneList[id];
             return (
@@ -179,6 +184,7 @@ const DoneDishesList = () => {
               </div>
             );
           })}
+          </>)}
         </Col>
       </Row>
     </div>

@@ -7,8 +7,8 @@ import {
   clearSelectedPosts,
 } from "../../store/slices/selected-posts";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
-import { Image, Button, Input, Row, Col, Typography } from "antd";
-
+import { Image, Button, Input, Row, Col, Typography, Empty } from "antd";
+import { toast } from "react-toastify";
 interface Dish {
   id: string;
   name: string;
@@ -42,15 +42,13 @@ const SelectedList: FC = () => {
     dispatch(removeSelectedPost({ listId: id }));
   };
 
-  const [postOrderTriger] = ordersService.usePostOrderMutation();
+  const [postOrderTrigger] = ordersService.usePostOrderMutation();
 
   const ConfirmOrder = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    if (parseInt(Table) === -1) {
-      alert("Set table number");
-    } else if (ListDish.length === 0) {
-      alert("Choose dishes");
+    if (Table === "") {
+      toast.info("Set table number")
     } else {
       const updatedListDish = ListDish.map((dish: Dish) => {
         return {
@@ -60,12 +58,14 @@ const SelectedList: FC = () => {
         };
       });
       const NewOrder = {
-        accessToken: user.accessToken,
         body: { dishes: updatedListDish, tableNumber: parseInt(Table) },
       };
-      postOrderTriger(NewOrder);
-      dispatch(clearSelectedPosts());
-      console.log(NewOrder);
+      postOrderTrigger(NewOrder).then(() => {
+        toast.success("success");
+        dispatch(clearSelectedPosts());
+      }).catch((error) => {
+        toast.error(error.message);
+      });
     }
   };
 
@@ -73,7 +73,12 @@ const SelectedList: FC = () => {
     <div>
       <Row>
         <Col md={{ span: 12, offset: 6 }}>
-          <h1 style={{ textAlign: "center" }} >List of selected Dishes</h1>
+        <h1 style={{ textAlign: "center" }} >List of selected Dishes</h1>
+        {Object.keys(ListDish).length === 0 ? (
+          <Empty />
+        )
+        :
+        (<>
           {ListDish.map((post: Dish) => (
             <div
               style={{
@@ -177,6 +182,7 @@ const SelectedList: FC = () => {
               </Button>
             </div>
           </div>
+          </>)}
         </Col>
       </Row>
     </div>

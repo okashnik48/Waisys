@@ -2,19 +2,12 @@ import React from "react";
 import { Button } from "antd";
 import { useAppDispatch } from "../store/store-hooks";
 import { counterDecrement, counterIncrement } from "../store/slices/posts";
-
+import { MinusOutlined, PlusOutlined} from '@ant-design/icons';
 interface Dish {
   post: {
     name: string;
-    description: string;
-    price: number;
-    image: string;
-    createdAt: string;
-    tags: string;
     id: string;
-    post: string;
-    count?: number;
-    comment?: string;
+    count: number;
   };
 }
 
@@ -33,11 +26,9 @@ const Counter: React.FC<Dish> = ({ post }) => {
 
   return (
     <div style={{ display: "flex", alignItems: "center", marginTop: "15px", marginLeft: "10px" }}>
-      <Button size="middle" onClick={handleDecrement}>
-        -
-      </Button>
+      <Button size="middle" onClick={handleDecrement} icon={<MinusOutlined />} />
       <h1>{post.count}</h1>
-      <Button onClick={handleIncrement}>+</Button>
+      <Button size="middle" onClick={handleIncrement} icon = {<PlusOutlined/>} />
     </div>
   );
 };
