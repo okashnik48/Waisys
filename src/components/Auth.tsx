@@ -17,20 +17,20 @@ const { Title } = Typography;
 
 interface ModalProps {}
 
-const Modalfr: FC<ModalProps> = () => {
+const Auth: FC<ModalProps> = () => {
   const [loginInput, setLoginInput] = useState<string>("");
   const [passwordInput, setPasswordInput] = useState<string>("");
 
   let user = useAppSelector((state: any) => state.user.user);
   const dispatch = useAppDispatch();
 
-  const [loginTriger, { isError, isLoading, isSuccess }] =
+  const [loginTrigger] =
     authService.useLoginMutation();
 
   const loginHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    loginTriger({
+    loginTrigger({
       password: passwordInput,
       username: loginInput,
     })
@@ -111,4 +111,4 @@ const Modalfr: FC<ModalProps> = () => {
   );
 };
 
-export default Modalfr;
+export default Auth;

@@ -1,19 +1,19 @@
 import React from "react";
-import CookPanel from "../components/Cook/CookPanel";
-import Modalfr from "../components/Modalfr";
-import Dishes from "../components/User/Dishes";
-import SelectedList from "../components/User/SelectedList";
+import CookPanel from "../components/cooker/CookPanel";
+import Auth from "../components/Auth";
+import Dishes from "../components/waiter/Dishes";
+import SelectedList from "../components/waiter/SelectedList";
 import AdminDishesList from "../components/admin/AdminDishesList";
 import AdminUsersList from "../components/admin/AdminUsersList";
 import AdminTagsList from "../components/admin/AdminTagsList";
-import DoneDishesList from "../components/User/DoneList";
-import DeclinedDishesList from "../components/User/DeclinedDishes";
+import DoneDishesList from "../components/waiter/DoneList";
+import DeclinedDishesList from "../components/waiter/DeclinedDishes";
 
 export const ROUTES_CONFIG = {
   public: [
     {
       path: "*",
-      element: <Modalfr />,
+      element: <Auth />,
     },
   ],
   private: {

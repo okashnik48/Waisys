@@ -267,7 +267,7 @@ const AdminDishesList = () => {
                   options={tagOptions}
                 />
               </div>
-              {/* <Space>
+              <Space>
                 <Input
                   key={post.id}
                   style={{ width: "100px" }}
@@ -347,7 +347,7 @@ const AdminDishesList = () => {
                 >
                   add
                 </Button>
-              </Space> */}
+              </Space>
             </div>
             <div style={{ marginTop: "10px" }}>
               <Button

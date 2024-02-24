@@ -15,7 +15,7 @@ import {
 
 import { SetFieldNewDish, SetAddDishModal } from "../../store/slices/admin";
 
-import FileUploader from "../../modules/DownLoadImage";
+import FileUploader from "./DownLoadImage";
 
 import adminDishesService from "../../services/admin/admin-dishes.service";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";

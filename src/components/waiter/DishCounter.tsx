@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "antd";
-import { useAppDispatch } from "../store/store-hooks";
-import { counterDecrement, counterIncrement } from "../store/slices/posts";
+import { useAppDispatch } from "../../store/store-hooks";
+import { counterDecrement, counterIncrement } from "../../store/slices/posts";
 import { MinusOutlined, PlusOutlined} from '@ant-design/icons';
 interface Dish {
   post: {
@@ -11,11 +11,12 @@ interface Dish {
   };
 }
 
-const Counter: React.FC<Dish> = ({ post }) => {
+const DishCounter: React.FC<Dish> = ({ post }) => {
   const dispatch = useAppDispatch();
+  
   const handleDecrement = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (post.count != 1) {
+    if (post.count !== 1) {
       dispatch(counterDecrement({ id: post.id }));
     }
   };
@@ -33,4 +34,4 @@ const Counter: React.FC<Dish> = ({ post }) => {
   );
 };
 
-export default Counter;
+export default DishCounter;

@@ -1,4 +1,5 @@
 import { serviceApi } from "./app.service";
+import { toast } from "react-toastify";
 
 type OrderDish = {
   name: string;
@@ -54,29 +55,30 @@ const ordersService = serviceApi.injectEndpoints({
       }),
       providesTags: ["orders"],
     }),
-    PostOrder: builder.mutation<any, DishCreateRequest>({
+    PostOrder: builder.mutation<null, DishCreateRequest>({
       query: (Request) => ({
         url: "orders",
         method: "POST",
         body: Request.body,
       }),
+      invalidatesTags: ["orders"],
     }),
-    PatchOrder: builder.mutation<any, DishChangeRequest>({
+    PatchOrder: builder.mutation<null, DishChangeRequest>({
       query: (Request) => ({
         url: `orders/dishes/${Request.id}`,
         method: "PATCH",
         body: Request.body,
       }),
-      // onQueryStarted: async ({ id, body }, { dispatch, queryFulfilled }) => {
-      // queryFulfilled.then(() => {
-      //   dispatch(ordersService.util.updateQueryData("getOrders", undefined, (draft) => {
-      //     draft![id] = {
-      //       ...draft![id],
-      //       ...body,
-      //     }
-      //   }))
-      // })
-      // }
+      invalidatesTags: ["orders"],
+      onQueryStarted(arg, api) {
+        api.queryFulfilled
+          .then(() => {
+            toast.success("Success");
+          })
+          .catch(({data}) => {
+            toast.error(data.error);
+          });
+      },
     }),
     DeleteOrder: builder.mutation<any, DeleteOrderRequest>({
       query: (Request) => ({

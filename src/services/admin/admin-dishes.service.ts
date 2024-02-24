@@ -36,6 +36,7 @@ const adminDishesService = serviceApi.injectEndpoints({
         method: "POST",
         body: Request.body,
       }),
+      // invalidatesTags: ["tags"],
     }),
     changeDish: builder.mutation<any, ChangeDishRequest>({
       query: (Request) => ({
@@ -43,18 +44,21 @@ const adminDishesService = serviceApi.injectEndpoints({
         method: "PATCH",
         body: Request.body,
       }),
+      // invalidatesTags: ["tags"],
     }),
     deleteDish: builder.mutation<any, DeleteDishRequest>({
       query: (Request) => ({
         url: `admin/dishes/${Request.id}`,
         method: "DELETE",
       }),
+      // invalidatesTags: ["tags"],
     }),
     getTags: builder.query<TagsReply, any>({
       query: () => ({
         url: "tags",
         method: "GET",
       }),
+      providesTags: ["tags"],
     }),
     addTag: builder.mutation<AddTagRequest, any>({
       query: (body) => ({
@@ -62,6 +66,7 @@ const adminDishesService = serviceApi.injectEndpoints({
         method: "POST",
         body
       }),
+      invalidatesTags: ["tags"],
     }),
     changeTags: builder.mutation<any, TagsReply>({
       query: (body) => ({
@@ -69,12 +74,14 @@ const adminDishesService = serviceApi.injectEndpoints({
         method: "PATCH",
         body
       }),
+      invalidatesTags: ["tags"],
     }),
     deleteTag: builder.mutation<any, string>({
       query: (name) => ({
         url: `tags/${name}`,
         method: "DELETE",
       }),
+      invalidatesTags: ["tags"],
     }),
   }),
 });

@@ -16,15 +16,20 @@ const AdminTagsList: FC = () => {
   const [ChangeTagsTrigger] = adminDishesService.useChangeTagsMutation();
   const [DeleteTagTrigger] = adminDishesService.useDeleteTagMutation();
   const [AddTagTrigger] = adminDishesService.useAddTagMutation();
-  const [tagsList, setTagsList] = useState<Record<string, string>>({});
+  // const [tagsList, setTagsList] = useState<Record<string, string>>({});
   const [customTag, setCustomTag] = useState<TagOptions>({
     name: "",
     color: "#2B84DB",
   });
-  useMemo(() => {
-    setTagsList(data ? data : {});
+
+  const tagsList = useMemo(() => {
+    return data ? data : {};
   }, [data]);
-  const ChangeHandler = (e: React.MouseEvent<HTMLElement, MouseEvent>, label: string) => {
+
+  const ChangeHandler = (
+    e: React.MouseEvent<HTMLElement, MouseEvent>,
+    label: string
+  ) => {
     e.preventDefault();
     ChangeTagsTrigger({ [label]: tagsList[label] })
       .then(() => {
@@ -34,7 +39,11 @@ const AdminTagsList: FC = () => {
         toast.error(data.error);
       });
   };
-  const DeleteTagHandler = (e: React.MouseEvent<HTMLElement, MouseEvent>, label: string) => {
+
+  const DeleteTagHandler = (
+    e: React.MouseEvent<HTMLElement, MouseEvent>,
+    label: string
+  ) => {
     e.preventDefault();
     DeleteTagTrigger(label)
       .unwrap()
