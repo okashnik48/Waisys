@@ -74,7 +74,7 @@ const Dishes: FC = () => {
   );
   const { data: tagList } = adminDishesService.useGetTagsQuery("");
   const [selectTagsOptions, SetSelectTagsOptions] = useState<TagsOptions[]>([]);
-  const [sortOption, setSortOption] = useState<"name" | "price" | "">("");
+  const [sortOption, setSortOption] = useState<"name" | "priceDesc" | "priceAsc" | "">("");
   useMemo(() => {
     if (tagList) {
       console.log(tagList);
@@ -146,14 +146,21 @@ const Dishes: FC = () => {
     }
 
     if (sortOption) {
-      Newposts.sort((a, b) => {
-        if (sortOption === "name") {
-          return a[sortOption].localeCompare(b[sortOption]);
-        } else if (sortOption === "price") {
-          return a[sortOption] - b[sortOption];
+      if (sortOption === "name") {
+        Newposts.sort((a, b) =>{
+        return a[sortOption].localeCompare(b[sortOption]);
+        })
+      } 
+      else if (sortOption === "priceAsc") {
+        Newposts.sort((a, b) =>{
+          return a.price - b.price;
+        })
         }
-        return 0;
-      });
+      else if (sortOption === "priceDesc"){
+        Newposts.sort((a, b) =>{
+          return  b.price - a.price;
+        })
+      }
     }
     return Newposts;
   }, [searchTags, searchText, posts, sortOption]);
@@ -225,8 +232,13 @@ const Dishes: FC = () => {
                   }}
                   options={[
                     {
-                      value: "price",
-                      label: "price",
+                      value: "priceDesc",
+                      label: "price desc",
+                    },
+                    
+                    {
+                      value: "priceAsc",
+                      label: "price asc",
                     },
                     {
                       value: "name",
@@ -240,7 +252,9 @@ const Dishes: FC = () => {
                 />
               </div>
             </div>
-
+            {SearchedPosts.length === 0? (<Empty />)
+            : (   
+              <>
             {SearchedPosts.map((post: Dish) => (
               <Card key={post.id}>
                 <div
@@ -338,6 +352,9 @@ const Dishes: FC = () => {
                 </div>
               </Card>
             ))}
+            </>
+            )
+            }
           </>
         )}
       </div>

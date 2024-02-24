@@ -94,12 +94,6 @@ const AdminDishesList = () => {
       .then((DishList) => {
         DishList.map((Dish) => {
           dispatch(AddNewPost(Dish));
-          setCustomTag((prevProps) => {
-            return {
-              ...prevProps,
-              [Dish.id]: { label: "", value: "#FFFFFF" },
-            };
-          });
         });
       });
   }, []);
