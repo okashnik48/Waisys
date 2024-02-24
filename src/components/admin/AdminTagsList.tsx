@@ -22,9 +22,7 @@ const AdminTagsList: FC = () => {
     color: "#2B84DB",
   });
 
-  const tagsList = useMemo(() => {
-    return data ? data : {};
-  }, [data]);
+  const tagsList = useMemo(() => data ? data : {}, [data]);
 
   const ChangeHandler = (
     e: React.MouseEvent<HTMLElement, MouseEvent>,
@@ -48,12 +46,12 @@ const AdminTagsList: FC = () => {
     DeleteTagTrigger(label)
       .unwrap()
       .then(() => {
-        console.log(tagsList);
-        setTagsList((prevProps) => {
-          const updatedTagsList = { ...prevProps };
-          delete updatedTagsList[label];
-          return updatedTagsList;
-        });
+        // console.log(tagsList);
+        // setTagsList((prevProps) => {
+        //   const updatedTagsList = { ...prevProps };
+        //   delete updatedTagsList[label];
+        //   return updatedTagsList;
+        // });
 
         toast.success("Success");
       })
@@ -66,12 +64,12 @@ const AdminTagsList: FC = () => {
     AddTagTrigger(customTag)
       .then(() => {
         toast.success("Success");
-        setTagsList((prevProps) => {
-          return {
-            ...prevProps,
-            [customTag.name]: customTag.color,
-          };
-        });
+        // setTagsList((prevProps) => {
+        //   return {
+        //     ...prevProps,
+        //     [customTag.name]: customTag.color,
+        //   };
+        // });
         setCustomTag({ name: "", color: "#2B84DB" });
       })
       .catch(({ data }) => {

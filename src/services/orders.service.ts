@@ -71,6 +71,9 @@ const ordersService = serviceApi.injectEndpoints({
       }),
       invalidatesTags: ["orders"],
       onQueryStarted(arg, api) {
+
+        // set up a function for query fulfilled for all mutations in this services
+        // this func will be in the src level as util
         api.queryFulfilled
           .then(() => {
             toast.success("Success");
