@@ -241,11 +241,11 @@ const AdminDishesList = () => {
                   }}
                   dropdownStyle={{ width: "auto" }}
                   onChange={(values, options) => {
-                    const selectedTags = options.map((option) => {
+                    const selectedTags = options.map((option: {label: string, value: string}) => {
                       return {
                         [option.label]: option.value
                       };
-                    }).reduce((acc, curr) => {
+                    }).reduce((acc: Record<string, string>, curr: Record<string, string>) => {
                       return {...acc, ...curr};
                     }, {});
                     dispatch(

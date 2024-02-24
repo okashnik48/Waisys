@@ -74,7 +74,7 @@ const Dishes: FC = () => {
   );
   const { data: tagList } = adminDishesService.useGetTagsQuery("");
   const [selectTagsOptions, SetSelectTagsOptions] = useState<TagsOptions[]>([]);
-
+  const [sortOption, setSortOption] = useState<"name" | "price" | "">("");
   useMemo(() => {
     if (tagList) {
       console.log(tagList);
@@ -112,7 +112,7 @@ const Dishes: FC = () => {
   }, []);
 
   const [searchText, setSearchText] = useState("");
-  const [searchTags, setSearchTags] = useState<string []>([]);
+  const [searchTags, setSearchTags] = useState<string[]>([]);
   let SearchedPosts: Dish[] = [];
 
   const AddDish = (
@@ -139,11 +139,24 @@ const Dishes: FC = () => {
     );
     if (searchTags.length !== 0) {
       Newposts = Newposts.filter((dish: Dish) => {
-        return searchTags.every(element => Object.keys(dish.tags).includes(element))
+        return searchTags.every((element) =>
+          Object.keys(dish.tags).includes(element)
+        );
+      });
+    }
+
+    if (sortOption) {
+      Newposts.sort((a, b) => {
+        if (sortOption === "name") {
+          return a[sortOption].localeCompare(b[sortOption]);
+        } else if (sortOption === "price") {
+          return a[sortOption] - b[sortOption];
+        }
+        return 0;
       });
     }
     return Newposts;
-  }, [searchTags, searchText, posts]);
+  }, [searchTags, searchText, posts, sortOption]);
   return (
     <div>
       <div
@@ -168,27 +181,64 @@ const Dishes: FC = () => {
               placeholder="Search"
               size="large"
             />
-            <div style={{ display: "inline-block", marginRight: "10px" }}>
-              <Typography.Title
-                level={3}
-                style={{ marginBottom: "5px", display: "inline-block" }}
-              >
-                Tag
-              </Typography.Title>
-              <Select
-                id="tags"
-                mode="multiple"
-                onChange={(value) => {
-                  console.log(value);
-                  setSearchTags(value);
-                }}
-                style={{
-                  minWidth: "150px",
-                  display: "inline-block",
-                  marginLeft: "10px",
-                }}
-                options={selectTagsOptions}
-              />
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
+              <div style={{ marginRight: "10px" }}>
+                <div>
+                  <Typography.Title
+                    level={3}
+                    style={{ marginBottom: "5px", display: "inline-block" }}
+                  >
+                    Tag
+                  </Typography.Title>
+                  <Select
+                    id="tags"
+                    mode="multiple"
+                    onChange={(value) => {
+                      console.log(value);
+                      setSearchTags(value);
+                    }}
+                    style={{
+                      minWidth: "150px",
+                      display: "inline-block",
+                      marginLeft: "10px",
+                    }}
+                    options={selectTagsOptions}
+                  />
+                </div>
+              </div>
+              <div>
+                <Typography.Title
+                  level={3}
+                  style={{ marginBottom: "5px", display: "inline-block" }}
+                >
+                  Sort by
+                </Typography.Title>
+                <Select
+                  id="sort"
+                  style={{
+                    minWidth: "150px",
+                    display: "inline-block",
+                    marginLeft: "10px",
+                  }}
+                  onChange={(value) => {
+                    setSortOption(value);
+                  }}
+                  options={[
+                    {
+                      value: "price",
+                      label: "price",
+                    },
+                    {
+                      value: "name",
+                      label: "name",
+                    },
+                    {
+                      value: "",
+                      label: "none",
+                    },
+                  ]}
+                />
+              </div>
             </div>
 
             {SearchedPosts.map((post: Dish) => (
