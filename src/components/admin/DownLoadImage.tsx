@@ -1,6 +1,6 @@
 import React, { useState} from "react";
 import { useDispatch } from "react-redux";
-import { SetFieldNewDish } from "../store/slices/admin";
+import { SetFieldNewDish } from "../../store/slices/admin";
 
 import { Image as ImageAnt, Form, Upload, Button } from "antd";
 import { UploadOutlined } from "@ant-design/icons";

@@ -77,7 +77,7 @@ const AdminDishesList = () => {
     );
   };
 
-  useMemo(() => {
+  const tagsOptions = useMemo(() => {
     setTagOptions(
       tagsProps
         ? Object.keys(tagsProps).map((tag) => ({
@@ -99,7 +99,7 @@ const AdminDishesList = () => {
   }, []);
 
   const [searchText, setSearchText] = useState("");
-  let SearchedPosts = [];
+
   const DeleteDish = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     itemId: string
@@ -114,6 +114,7 @@ const AdminDishesList = () => {
         console.log(error);
       });
   };
+
   const ChangeCurrentDish = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     itemId: string
@@ -130,12 +131,14 @@ const AdminDishesList = () => {
       });
   };
 
-  SearchedPosts = useMemo(() => {
-    const Newposts = Object.values(posts);
-    return Newposts.filter((Dish) =>
-      Dish.name.toLowerCase().includes(searchText.toLowerCase())
-    );
-  }, [searchText, posts]);
+  const SearchedPosts = useMemo(
+    () =>
+      Object.values(posts).filter((Dish) =>
+        Dish.name.toLowerCase().includes(searchText.toLowerCase())
+      ),
+    [searchText, posts]
+  );
+
   return (
     <div
       style={{
@@ -235,13 +238,21 @@ const AdminDishesList = () => {
                   }}
                   dropdownStyle={{ width: "auto" }}
                   onChange={(values, options) => {
-                    const selectedTags = options.map((option: {label: string, value: string}) => {
-                      return {
-                        [option.label]: option.value
-                      };
-                    }).reduce((acc: Record<string, string>, curr: Record<string, string>) => {
-                      return {...acc, ...curr};
-                    }, {});
+                    const selectedTags = options
+                      .map((option: { label: string; value: string }) => {
+                        return {
+                          [option.label]: option.value,
+                        };
+                      })
+                      .reduce(
+                        (
+                          acc: Record<string, string>,
+                          curr: Record<string, string>
+                        ) => {
+                          return { ...acc, ...curr };
+                        },
+                        {}
+                      );
                     dispatch(
                       SetFieldForChangedDish({
                         id: post.id,
@@ -261,7 +272,7 @@ const AdminDishesList = () => {
                   options={tagOptions}
                 />
               </div>
-              {/* <Space>
+              <Space>
                 <Input
                   key={post.id}
                   style={{ width: "100px" }}
@@ -341,7 +352,7 @@ const AdminDishesList = () => {
                 >
                   add
                 </Button>
-              </Space> */}
+              </Space>
             </div>
             <div style={{ marginTop: "10px" }}>
               <Button

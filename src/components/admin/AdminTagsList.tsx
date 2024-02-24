@@ -16,15 +16,18 @@ const AdminTagsList: FC = () => {
   const [ChangeTagsTrigger] = adminDishesService.useChangeTagsMutation();
   const [DeleteTagTrigger] = adminDishesService.useDeleteTagMutation();
   const [AddTagTrigger] = adminDishesService.useAddTagMutation();
-  const [tagsList, setTagsList] = useState<Record<string, string>>({});
+  // const [tagsList, setTagsList] = useState<Record<string, string>>({});
   const [customTag, setCustomTag] = useState<TagOptions>({
     name: "",
     color: "#2B84DB",
   });
-  useMemo(() => {
-    setTagsList(data ? data : {});
-  }, [data]);
-  const ChangeHandler = (e: React.MouseEvent<HTMLElement, MouseEvent>, label: string) => {
+
+  const tagsList = useMemo(() => data ? data : {}, [data]);
+
+  const ChangeHandler = (
+    e: React.MouseEvent<HTMLElement, MouseEvent>,
+    label: string
+  ) => {
     e.preventDefault();
     ChangeTagsTrigger({ [label]: tagsList[label] })
       .then(() => {
@@ -34,17 +37,21 @@ const AdminTagsList: FC = () => {
         toast.error(data.error);
       });
   };
-  const DeleteTagHandler = (e: React.MouseEvent<HTMLElement, MouseEvent>, label: string) => {
+
+  const DeleteTagHandler = (
+    e: React.MouseEvent<HTMLElement, MouseEvent>,
+    label: string
+  ) => {
     e.preventDefault();
     DeleteTagTrigger(label)
       .unwrap()
       .then(() => {
-        console.log(tagsList);
-        setTagsList((prevProps) => {
-          const updatedTagsList = { ...prevProps };
-          delete updatedTagsList[label];
-          return updatedTagsList;
-        });
+        // console.log(tagsList);
+        // setTagsList((prevProps) => {
+        //   const updatedTagsList = { ...prevProps };
+        //   delete updatedTagsList[label];
+        //   return updatedTagsList;
+        // });
 
         toast.success("Success");
       })
@@ -57,12 +64,12 @@ const AdminTagsList: FC = () => {
     AddTagTrigger(customTag)
       .then(() => {
         toast.success("Success");
-        setTagsList((prevProps) => {
-          return {
-            ...prevProps,
-            [customTag.name]: customTag.color,
-          };
-        });
+        // setTagsList((prevProps) => {
+        //   return {
+        //     ...prevProps,
+        //     [customTag.name]: customTag.color,
+        //   };
+        // });
         setCustomTag({ name: "", color: "#2B84DB" });
       })
       .catch(({ data }) => {

@@ -30,16 +30,12 @@ const CreateUserModal = () => {
   const hasEmptyField = () => {
     return Object.values(newUser).some((value) => !value);
   };
-  const [AddUserTriger, {}] = adminUsersService.useCreateUserMutation();
+  const [AddUserTrigger] = adminUsersService.useCreateUserMutation();
 
   const AddNewUser = (e: React.MouseEvent<HTMLElement>) => {
     if (!hasEmptyField()) {
       e.preventDefault();
-      AddUserTriger({ body: newUser })
-        .unwrap()
-        .then((data) => {
-          console.log(data);
-        });
+      AddUserTrigger({ body: newUser })
     } else {
       alert("Some fields are empty");
     }
@@ -51,14 +47,13 @@ const CreateUserModal = () => {
   };
 
   const setFieldNewUserHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //...
-      dispatch(
-        SetFieldNewUser({
-          value: e.target.value,
-          fieldname: "firstName",
-        })
-      );
-  }
+    dispatch(
+      SetFieldNewUser({
+        value: e.target.value,
+        fieldname: "firstName",
+      })
+    );
+  };
 
   return (
     <Modal

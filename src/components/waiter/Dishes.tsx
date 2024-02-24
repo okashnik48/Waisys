@@ -20,7 +20,7 @@ import {
   Tag,
 } from "antd";
 
-import Counter from "../../modules/Counter";
+import DishCounter from "./DishCounter";
 
 interface ReplyDish {
   name: string;
@@ -334,7 +334,7 @@ const Dishes: FC = () => {
                     }}
                   >
                     <Typography.Title level={3}>Count:</Typography.Title>
-                    <Counter post={post} />
+                    <DishCounter post={post} />
                   </div>
                   <Button
                     size="large"

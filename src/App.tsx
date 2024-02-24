@@ -17,6 +17,7 @@ import { SetTokens, SetUserProperties } from "./store/slices/user";
 function App() {
   const userRole = useAppSelector((state) => state.user.user).role;
   const dispatch = useAppDispatch()
+
   useEffect(() => {
     type Tokens = {
       accessToken: string;
@@ -43,6 +44,7 @@ function App() {
       console.error("No tokens found in localStorage");
     }
   }, []);
+  
   if (!userRole) {
     return (
       <BrowserRouter>
