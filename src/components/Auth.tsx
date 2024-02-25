@@ -9,34 +9,79 @@ import { SetTokens, SetUserProperties } from "../store/slices/user";
 
 import userService from "../services/user.service";
 
-import { useAppDispatch, useAppSelector } from "../store/store-hooks";
+import { useAppDispatch } from "../store/store-hooks";
 
 import { toast } from "react-toastify";
 
-import {useForm} from "react-hook-form"
+import { useForm, Controller } from "react-hook-form";
 
 const { Title } = Typography;
 
-interface ModalProps {}
+type DefaultValues = {
+  name: string;
+  password: string;
+};
 
-const Auth: FC<ModalProps> = () => {
-  const [loginInput, setLoginInput] = useState<string>("");
-  const [passwordInput, setPasswordInput] = useState<string>("");
+// TextInput => ui-kit
+export interface CustomInputProps {
+  label: string;
+  control: any;
+  name: string;
+  rules: Record<string, any>;
+  placeholder: string;
+  type: string;
+}
 
-  const {register, handlerSubmit} = useForm()
+const CustomInput = ({
+  label,
+  type = "text",
+  placeholder = "Enter Response",
+  ...rest
+}: CustomInputProps) => {
+  return (
+    <div className="input-container">
+      <label>{label}</label>
+      <Controller
+        name={rest.name}
+        control={rest.control}
+        rules={rest.rules}
+        render={({ field, fieldState }) => (
+          <Input
+            bordered={false}
+            {...field}
+            type={type}
+            placeholder={placeholder}
+            className={
+              fieldState.invalid ? "custom-input error" : "custom-input"
+            }
+          />
+        )}
+      />
+    </div>
+  );
+};
 
-  let user = useAppSelector((state: any) => state.user.user);
+const Auth: FC = () => {
+  // const [loginInput, setLoginInput] = useState<string>("");
+  // const [passwordInput, setPasswordInput] = useState<string>("");
+
+  const { handleSubmit, control } = useForm<DefaultValues>({
+    defaultValues: {
+      name: "",
+      password: "",
+    },
+  });
+
+  // let user = useAppSelector((state: any) => state.user.user);
   const dispatch = useAppDispatch();
 
-  const [loginTrigger] =
-    authService.useLoginMutation();
+  const [loginTrigger] = authService.useLoginMutation();
 
-  const loginHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-
+  const onSubmit = (data: DefaultValues) => {
+    console.log(data);
     loginTrigger({
-      password: passwordInput,
-      username: loginInput,
+      password: data.password,
+      username: data.name,
     })
       .unwrap()
       .then(({ accessToken, refreshToken }) => {
@@ -50,9 +95,6 @@ const Auth: FC<ModalProps> = () => {
           .then((data) => {
             dispatch(SetUserProperties(data));
           });
-      })
-      .catch(({ data }) => {
-        toast.error(data.message);
       });
   };
 
@@ -71,30 +113,40 @@ const Auth: FC<ModalProps> = () => {
         <Form
           name="normal_login"
           initialValues={{ remember: true }}
-          onFinish={loginHandler}
+          onFinish={handleSubmit(onSubmit, (error) => {
+            console.log("error", error);
+          })}
         >
           <Form.Item
             name="username"
-            rules={[{ required: true, message: "Please input your login!" }]}
+            // rules={[{ required: true, message: "Please input your login!" }]}
           >
-            <Input {...register("name")} 
-              prefix={<UserOutlined className="site-form-item-icon" />}
-              size="large"
+            <CustomInput
+              control={control}
+              label="Login"
+              name="name"
+              type="text"
+              // prefix={<UserOutlined className="site-form-item-icon" />}
+              // size="large"
               placeholder="Your login"
+              // {...register("name")}
               // value={loginInput}
               // onChange={(e) => setLoginInput(e.target.value)}
             />
           </Form.Item>
           <Form.Item
             name="password"
-            rules={[{ required: true, message: "Please input your password!" }]}
+            // rules={[{ required: true, message: "Please input your password!" }]}
           >
-            <Input
-            {...register("password")} 
-              prefix={<LockOutlined className="site-form-item-icon" />}
+            <CustomInput
+              // prefix={<LockOutlined className="site-form-item-icon" />}
               type="password"
               placeholder="Your password"
-              size="large"
+              label="Password"
+              control={control}
+              name="password"
+              // size="large"
+              // {...register("password")}
               // value={passwordInput}
               // onChange={(e) => setPasswordInput(e.target.value)}
             />
@@ -104,9 +156,10 @@ const Auth: FC<ModalProps> = () => {
               type="primary"
               htmlType="submit"
               className="login-form-button"
-              onClick={() => {
-                handlerSubmit((data) => console.log(data))
-                loginHandler}}
+              // onClick={() => {
+              //   handlerSubmit((data) => console.log(data));
+              //   loginHandler;
+              // }}
             >
               Log in to your account
             </Button>

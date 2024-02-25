@@ -93,8 +93,10 @@ const AdminDishesList = () => {
     console.log(index, value);
     //чого так по тупому?
     dispatch(
-      postService.util.updateQueryData("dishes", "", (draftPost) => {
-        draftPost[index][label] = value;
+      postService.util.updateQueryData("dishes", null, (state) => {
+        // draftPost[index][label] = value;
+        const d= state[index][label]
+        
       })
     );
   };
@@ -105,7 +107,6 @@ const AdminDishesList = () => {
     e: React.MouseEvent<HTMLElement, MouseEvent>,
     itemId: string
   ) => {
-    e.preventDefault();
     deleteDishTriger({ id: itemId });
   };
 
@@ -114,39 +115,32 @@ const AdminDishesList = () => {
     itemId: string,
     index: number
   ) => {
-    e.preventDefault();
     console.log(dishesList);
     changeDishTriger({ id: itemId, body: dishesList[index] });
   };
 
   const AddTagHandler = (
     e: React.MouseEvent<HTMLElement, MouseEvent>,
-    newTag: TagType, 
+    newTag: TagType,
     index: number,
     id: string
   ) => {
-    e.preventDefault();
-    console.log(newTag.value)
-    const color = newTag?.value || "#2B84DB"
+    console.log(newTag.value);
+    const color = newTag?.value || "#2B84DB";
 
-    AddTagTrigger({ color: color, name: newTag.label }).then(() =>{
-                          if (!customTag[id].value) {
-                      customTag[id].value = "#2B84DB";
-                    }
-                         dispatch(
-                      postService.util.updateQueryData(
-                        "dishes",
-                        "",
-                        (draftPost) => {
-                          draftPost[index]["tags"] = {
-                            ...draftPost[index]["tags"],
-                            [customTag[id].label]:
-                              customTag[id].value,
-                          };
-                        }
-                      )
-                    );
-    })
+    AddTagTrigger({ color: color, name: newTag.label }).then(() => {
+      if (!customTag[id].value) {
+        customTag[id].value = "#2B84DB";
+      }
+      dispatch(
+        postService.util.updateQueryData("dishes", "", (draftPost) => {
+          draftPost[index]["tags"] = {
+            ...draftPost[index]["tags"],
+            [customTag[id].label]: customTag[id].value,
+          };
+        })
+      );
+    });
   };
 
   const SearchedPosts = useMemo(
@@ -234,7 +228,6 @@ const AdminDishesList = () => {
                   }}
                   dropdownStyle={{ width: "auto" }}
                   onChange={(values, options) => {
-                    console.log(values);
                     const selectedTags = options
                       .map((option: { label: string; value: string }) => {
                         return {
@@ -264,6 +257,7 @@ const AdminDishesList = () => {
                 />
               </div>
               <Space>
+                {/* take out to component */}
                 <Input
                   key={post.id}
                   style={{ width: "100px" }}
@@ -309,28 +303,13 @@ const AdminDishesList = () => {
                   onClick={(e) => {
                     e.preventDefault();
                     AddTagHandler(e, customTag[post.id], index, post.id);
-                    // if (!customTag[post.id].value) {
-                    //   customTag[post.id].value = "#2B84DB";
-                    // }
-                    // dispatch(
-                    //   postService.util.updateQueryData(
-                    //     "dishes",
-                    //     "",
-                    //     (draftPost) => {
-                    //       draftPost[index]["tags"] = {
-                    //         ...draftPost[index]["tags"],
-                    //         [customTag[post.id].label]:
-                    //           customTag[post.id].value,
-                    //       };
-                    //     }
-                    //   )
-                    // );
-                    setCustomTag({ ...customTag, [post.id]: {} });
+                    // setCustomTag({ ...customTag, [post.id]: {} });
                   }}
                 >
                   add
                 </Button>
               </Space>
+              {/* end take out */}
             </div>
             <div style={{ marginTop: "10px" }}>
               <Button

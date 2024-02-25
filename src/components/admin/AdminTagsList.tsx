@@ -15,6 +15,7 @@ const AdminTagsList: FC = () => {
   const [ChangeTagsTrigger] = adminDishesService.useChangeTagsMutation();
   const [DeleteTagTrigger] = adminDishesService.useDeleteTagMutation();
   const [AddTagTrigger] = adminDishesService.useAddTagMutation();
+  
   const [customTag, setCustomTag] = useState<TagOptions>({
     name: "",
     color: "#2B84DB",
@@ -27,23 +28,18 @@ const AdminTagsList: FC = () => {
     label: string,
     color: string
   ) => {
-    e.preventDefault();
     ChangeTagsTrigger({ [label]: color });
   };
 
-  const DeleteTagHandler = (
-    e: React.MouseEvent<HTMLElement, MouseEvent>,
-    label: string
-  ) => {
-    e.preventDefault();
+  const DeleteTagHandler = (label: string) => {
     DeleteTagTrigger(label);
   };
 
   const AddTagHandler = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    e.preventDefault();
     setCustomTag({ name: "", color: "#2B84DB" });
     AddTagTrigger(customTag);
   };
+
   return (
     <div
       style={{
@@ -85,9 +81,7 @@ const AdminTagsList: FC = () => {
                 <Button
                   type="primary"
                   danger
-                  onClick={(e) => {
-                    DeleteTagHandler(e, label);
-                  }}
+                  onClick={(e) => DeleteTagHandler(label)}
                 >
                   Delete
                 </Button>
