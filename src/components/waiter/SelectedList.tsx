@@ -60,12 +60,13 @@ const SelectedList: FC = () => {
       const NewOrder = {
         body: { dishes: updatedListDish, tableNumber: parseInt(Table) },
       };
-      postOrderTrigger(NewOrder).then(() => {
-        toast.success("success");
-        dispatch(clearSelectedPosts());
-      }).catch((error) => {
-        toast.error(error.message);
-      });
+      postOrderTrigger(NewOrder)
+      // .then(() => {
+      //   toast.success("success");
+      //   dispatch(clearSelectedPosts());
+      // }).catch((error) => {
+      //   toast.error(error.message);
+      // });
     }
   };
 

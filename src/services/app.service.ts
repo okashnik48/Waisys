@@ -31,7 +31,7 @@ const baseQuery = fetchBaseQuery({
 
 export const serviceApi = createApi({
   baseQuery: baseQuery,
-  tagTypes: ["orders", "tags"],
+  tagTypes: ["orders", "tags", "users", "declined", "completed", "admin-dish"],
   reducerPath: "api",
   refetchOnFocus: false, // true, TRUE only for production
   refetchOnReconnect: true,

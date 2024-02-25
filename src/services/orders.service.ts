@@ -95,18 +95,39 @@ const ordersService = serviceApi.injectEndpoints({
         url: "orders/dishes/completed",
         method: "GET",
       }),
+      providesTags: ["completed"],
+      onQueryStarted(arg, api) {
+        api.queryFulfilled
+          .then(() => {
+            toast.success("Success");
+          })
+          .catch(({data}) => {
+            toast.error(data.error);
+          });
+      },
     }),
     DeleteDeliveredDish: builder.mutation<any, string>({
       query: (id) => ({
         url: `orders/dishes/${id}`,
         method: "Delete",
       }),
+      invalidatesTags: ["completed", "declined"]
     }),
     GetDeclinedDishes: builder.query<CompletedDishesReply, any>({
       query: () => ({
         url: "orders/dishes/declined",
         method: "GET",
       }),
+      providesTags: ["declined"],
+      onQueryStarted(arg, api) {
+        api.queryFulfilled
+          .then(() => {
+            toast.success("Success");
+          })
+          .catch(({data}) => {
+            toast.error(data.error);
+          });
+      },
     }),
   }),
 });

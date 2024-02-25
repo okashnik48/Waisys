@@ -75,7 +75,6 @@ const DoneDishesList = () => {
   }, []);
   const DeleteDeclinedDishTriger = (e: React.MouseEvent<HTMLButtonElement>, id: string) => {
     e.preventDefault();
-    console.log(DeclinedList)
     DeletedeclinedDishTriger(id).unwrap()
     .then(() => {
       dispatch(DeleteDeclinedDish(id))

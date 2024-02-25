@@ -27,6 +27,7 @@ import {
   Tag,
 } from "antd";
 import { time } from "console";
+import TagInput from "../../ui-kit/TagInput";
 
 type DishTag = {
   value: string;
@@ -42,18 +43,13 @@ interface Post {
   image: string;
   tags: Record<string, string>;
 }
-type TagType = { label: string; value: string };
 type TagRender = SelectProps["tagRender"];
 
 const AdminDishesList = () => {
-  let posts: Record<string, Post> = useAppSelector((state) => {
-    return state.admin.posts;
-  });
   const dispatch = useAppDispatch();
   const { data: dishesListReply } = postService.useDishesQuery("");
   const [deleteDishTriger] = adminDishesService.useDeleteDishMutation();
   const [changeDishTriger] = adminDishesService.useChangeDishMutation();
-  const [AddTagTrigger] = adminDishesService.useAddTagMutation();
   const { tagsProps } = adminDishesService.useGetTagsQuery("", {
     selectFromResult: ({ data }) => ({
       tagsProps: data
@@ -67,8 +63,6 @@ const AdminDishesList = () => {
   const dishesList: Record<string, Post> = dishesListReply
     ? dishesListReply
     : {};
-
-  const [customTag, setCustomTag] = useState<Record<string, TagType>>({});
 
   const tagRender: TagRender = (props) => {
     const { label, value, closable, onClose } = props;
@@ -90,12 +84,10 @@ const AdminDishesList = () => {
   };
 
   const ChangeFieldDish = (index: number, label: string, value: string) => {
-    console.log(index, value);
-    //чого так по тупому?
     dispatch(
-      postService.util.updateQueryData("dishes", null, (state) => {
-        // draftPost[index][label] = value;
-        const d= state[index][label]
+      postService.util.updateQueryData("dishes", "", (draftPost) => {
+        draftPost[index][label] = value;
+        // const d= state[index][label]
         
       })
     );
@@ -119,29 +111,6 @@ const AdminDishesList = () => {
     changeDishTriger({ id: itemId, body: dishesList[index] });
   };
 
-  const AddTagHandler = (
-    e: React.MouseEvent<HTMLElement, MouseEvent>,
-    newTag: TagType,
-    index: number,
-    id: string
-  ) => {
-    console.log(newTag.value);
-    const color = newTag?.value || "#2B84DB";
-
-    AddTagTrigger({ color: color, name: newTag.label }).then(() => {
-      if (!customTag[id].value) {
-        customTag[id].value = "#2B84DB";
-      }
-      dispatch(
-        postService.util.updateQueryData("dishes", "", (draftPost) => {
-          draftPost[index]["tags"] = {
-            ...draftPost[index]["tags"],
-            [customTag[id].label]: customTag[id].value,
-          };
-        })
-      );
-    });
-  };
 
   const SearchedPosts = useMemo(
     () =>
@@ -228,21 +197,10 @@ const AdminDishesList = () => {
                   }}
                   dropdownStyle={{ width: "auto" }}
                   onChange={(values, options) => {
-                    const selectedTags = options
-                      .map((option: { label: string; value: string }) => {
-                        return {
-                          [option.label]: option.value,
-                        };
-                      })
-                      .reduce(
-                        (
-                          acc: Record<string, string>,
-                          curr: Record<string, string>
-                        ) => {
-                          return { ...acc, ...curr };
-                        },
-                        {}
-                      );
+                    const selectedTags = options.reduce((acc, option) => {
+                      acc[option.label] = option.value;
+                      return acc;
+                    }, {});
                     ChangeFieldDish(index, "tags", selectedTags);
                   }}
                   value={
@@ -256,60 +214,7 @@ const AdminDishesList = () => {
                   options={tagsProps}
                 />
               </div>
-              <Space>
-                {/* take out to component */}
-                <Input
-                  key={post.id}
-                  style={{ width: "100px" }}
-                  placeholder="Custom tag"
-                  value={customTag[post.id]?.label || ""}
-                  onChange={(e) => {
-                    e.preventDefault();
-                    setCustomTag({
-                      ...customTag,
-                      [post.id]: {
-                        ...customTag[post.id],
-                        label: e.target.value,
-                      },
-                    });
-                  }}
-                />
-                <ColorPicker
-                  style={{
-                    display: "inline-block",
-                    marginLeft: "10px",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                  value={customTag[post.id]?.value || "#2B84DB"}
-                  onChangeComplete={(currentColor) => {
-                    setCustomTag({
-                      ...customTag,
-                      [post.id]: {
-                        ...customTag[post.id],
-                        value: `#${currentColor.toHex()}`,
-                      },
-                    });
-                    console.log(customTag);
-                  }}
-                />
-                <Button
-                  type="primary"
-                  disabled={
-                    customTag[post.id]?.label === "" ||
-                    !customTag[post.id]?.label
-                  }
-                  style={{ marginLeft: "5px" }}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    AddTagHandler(e, customTag[post.id], index, post.id);
-                    // setCustomTag({ ...customTag, [post.id]: {} });
-                  }}
-                >
-                  add
-                </Button>
-              </Space>
-              {/* end take out */}
+              <TagInput index={index}/>
             </div>
             <div style={{ marginTop: "10px" }}>
               <Button

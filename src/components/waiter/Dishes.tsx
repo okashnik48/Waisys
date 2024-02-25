@@ -58,11 +58,25 @@ interface SelectedPost {
   selectedPostId: string;
 }
 
-type TagsOptions = {
-  label: string;
-  value: string;
-};
-
+const SortOptionProps = [
+  {
+    value: "priceDesc",
+    label: "price desc",
+  },
+  
+  {
+    value: "priceAsc",
+    label: "price asc",
+  },
+  {
+    value: "name",
+    label: "name",
+  },
+  {
+    value: "",
+    label: "none",
+  },
+]
 const Dishes: FC = () => {
   const posts: Record<string, Dish> = useAppSelector((state) => {
     return state.posts.posts;
@@ -72,26 +86,35 @@ const Dishes: FC = () => {
   const { refetch: updateDishesList } = dispatch(
     postService.endpoints.dishes.initiate("")
   );
-  const { data: tagList } = adminDishesService.useGetTagsQuery("");
-  const [selectTagsOptions, SetSelectTagsOptions] = useState<TagsOptions[]>([]);
+  //const { data: tagList } = adminDishesService.useGetTagsQuery("");
+  const { tagsProps } = adminDishesService.useGetTagsQuery("", {
+    selectFromResult: ({ data }) => ({
+      tagsProps: data
+        ? Object.keys(data).map((tag) => ({
+            value: tag,
+            label: tag,
+          }))
+        : [],
+    }),
+  });
+  //const [selectTagsOptions, SetSelectTagsOptions] = useState<TagsOptions[]>([]);
   const [sortOption, setSortOption] = useState<"name" | "priceDesc" | "priceAsc" | "">("");
-  useMemo(() => {
-    if (tagList) {
-      console.log(tagList);
-      SetSelectTagsOptions([]);
-      Object.keys(tagList).map((label) => {
-        SetSelectTagsOptions((prevProps) => {
-          return [
-            ...prevProps,
-            {
-              label: label,
-              value: label,
-            },
-          ];
-        });
-      });
-    }
-  }, [tagList]);
+  // useMemo(() => {
+  //   if (tagList) {;
+  //     SetSelectTagsOptions([]);
+  //     Object.keys(tagList).map((label) => {
+  //       SetSelectTagsOptions((prevProps) => {
+  //         return [
+  //           ...prevProps,
+  //           {
+  //             label: label,
+  //             value: label,
+  //           },
+  //         ];
+  //       });
+  //     });
+  //   }
+  // }, [tagList]);
   useEffect(() => {
     setIsLoading(true);
     updateDishesList()
@@ -209,7 +232,7 @@ const Dishes: FC = () => {
                       display: "inline-block",
                       marginLeft: "10px",
                     }}
-                    options={selectTagsOptions}
+                    options={tagsProps}
                   />
                 </div>
               </div>
@@ -230,25 +253,7 @@ const Dishes: FC = () => {
                   onChange={(value) => {
                     setSortOption(value);
                   }}
-                  options={[
-                    {
-                      value: "priceDesc",
-                      label: "price desc",
-                    },
-                    
-                    {
-                      value: "priceAsc",
-                      label: "price asc",
-                    },
-                    {
-                      value: "name",
-                      label: "name",
-                    },
-                    {
-                      value: "",
-                      label: "none",
-                    },
-                  ]}
+                  options={SortOptionProps}
                 />
               </div>
             </div>

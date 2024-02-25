@@ -37,7 +37,7 @@ const adminDishesService = serviceApi.injectEndpoints({
         method: "POST",
         body: Request.body,
       }),
-      // invalidatesTags: ["tags"],
+      invalidatesTags: ["admin-dish"],
     }),
     changeDish: builder.mutation<any, ChangeDishRequest>({
       query: (Request) => ({
@@ -45,25 +45,23 @@ const adminDishesService = serviceApi.injectEndpoints({
         method: "PATCH",
         body: Request.body,
       }),
-      // invalidatesTags: ["tags"],
+      invalidatesTags: ["admin-dish"],
     }),
     deleteDish: builder.mutation<any, DeleteDishRequest>({
       query: (Request) => ({
         url: `admin/dishes/${Request.id}`,
         method: "DELETE",
       }),
-      // invalidatesTags: ["tags"],
+      invalidatesTags: ["admin-dish"],
     }),
     getTags: builder.query<TagsReply, any>({
       query: () => ({
         url: "tags",
         method: "GET",
       }),
-      providesTags: ["tags"],
+      providesTags: ["tags", "admin-dish"],
       
       onQueryStarted(arg, api) {
-        // set up a function for query fulfilled for all mutations in this services
-        // this func will be in the src level as util
         api.queryFulfilled
           .then((data) => {
             console.log(data);

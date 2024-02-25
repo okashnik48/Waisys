@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, ReactNode, useEffect, useState } from "react";
 
 import authService from "../services/auth.service";
 
@@ -15,6 +15,8 @@ import { toast } from "react-toastify";
 
 import { useForm, Controller } from "react-hook-form";
 
+import { CustomInput } from "../ui-kit/CustomInput";
+
 const { Title } = Typography;
 
 type DefaultValues = {
@@ -23,43 +25,34 @@ type DefaultValues = {
 };
 
 // TextInput => ui-kit
-export interface CustomInputProps {
-  label: string;
-  control: any;
-  name: string;
-  rules: Record<string, any>;
-  placeholder: string;
-  type: string;
-}
-
-const CustomInput = ({
-  label,
-  type = "text",
-  placeholder = "Enter Response",
-  ...rest
-}: CustomInputProps) => {
-  return (
-    <div className="input-container">
-      <label>{label}</label>
-      <Controller
-        name={rest.name}
-        control={rest.control}
-        rules={rest.rules}
-        render={({ field, fieldState }) => (
-          <Input
-            bordered={false}
-            {...field}
-            type={type}
-            placeholder={placeholder}
-            className={
-              fieldState.invalid ? "custom-input error" : "custom-input"
-            }
-          />
-        )}
-      />
-    </div>
-  );
-};
+// const CustomInput = ({
+//   label,
+//   type = "text",
+//   placeholder = "Enter Response",
+//   ...rest
+// }: CustomInputProps) => {
+//   return (
+//     <div className="input-container">
+//       <label>{label}</label>
+//       <Controller
+//         name={rest.name}
+//         control={rest.control}
+//         rules={rest.rules}
+//         render={({ field, fieldState }) => (
+//           <Input
+//             bordered={false}
+//             {...field}
+//             type={type}
+//             placeholder={placeholder}
+//             className={
+//               fieldState.invalid ? "custom-input error" : "custom-input"
+//             }
+//           />
+//         )}
+//       />
+//     </div>
+//   );
+// };
 
 const Auth: FC = () => {
   // const [loginInput, setLoginInput] = useState<string>("");
@@ -119,16 +112,17 @@ const Auth: FC = () => {
         >
           <Form.Item
             name="username"
-            // rules={[{ required: true, message: "Please input your login!" }]}
+            //rules={[{ required: true, message: "Please input your login!" }]}
           >
             <CustomInput
               control={control}
               label="Login"
               name="name"
               type="text"
-              // prefix={<UserOutlined className="site-form-item-icon" />}
-              // size="large"
+              prefix={<UserOutlined className="site-form-item-icon" />}
+              size="large"
               placeholder="Your login"
+              rules={[{ required: true, message: "Please input your login!" }]}
               // {...register("name")}
               // value={loginInput}
               // onChange={(e) => setLoginInput(e.target.value)}
@@ -136,7 +130,7 @@ const Auth: FC = () => {
           </Form.Item>
           <Form.Item
             name="password"
-            // rules={[{ required: true, message: "Please input your password!" }]}
+            //rules={[{ required: true, message: "Please input your password!" }]}
           >
             <CustomInput
               // prefix={<LockOutlined className="site-form-item-icon" />}
@@ -145,7 +139,9 @@ const Auth: FC = () => {
               label="Password"
               control={control}
               name="password"
-              // size="large"
+              prefix={<LockOutlined className="site-form-item-icon" />}
+              size="large"
+              rules={[{ required: true, message: "Please input your password!" }]}
               // {...register("password")}
               // value={passwordInput}
               // onChange={(e) => setPasswordInput(e.target.value)}
