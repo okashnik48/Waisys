@@ -13,6 +13,8 @@ import { useAppDispatch, useAppSelector } from "../store/store-hooks";
 
 import { toast } from "react-toastify";
 
+import {useForm} from "react-hook-form"
+
 const { Title } = Typography;
 
 interface ModalProps {}
@@ -20,6 +22,8 @@ interface ModalProps {}
 const Auth: FC<ModalProps> = () => {
   const [loginInput, setLoginInput] = useState<string>("");
   const [passwordInput, setPasswordInput] = useState<string>("");
+
+  const {register, handlerSubmit} = useForm()
 
   let user = useAppSelector((state: any) => state.user.user);
   const dispatch = useAppDispatch();
@@ -41,7 +45,6 @@ const Auth: FC<ModalProps> = () => {
           "tokens",
           JSON.stringify({ accessToken, refreshToken })
         );
-        console.log(user);
         dispatch(userService.endpoints.userInfo.initiate(""))
           .unwrap()
           .then((data) => {
@@ -74,12 +77,12 @@ const Auth: FC<ModalProps> = () => {
             name="username"
             rules={[{ required: true, message: "Please input your login!" }]}
           >
-            <Input
+            <Input {...register("name")} 
               prefix={<UserOutlined className="site-form-item-icon" />}
               size="large"
               placeholder="Your login"
-              value={loginInput}
-              onChange={(e) => setLoginInput(e.target.value)}
+              // value={loginInput}
+              // onChange={(e) => setLoginInput(e.target.value)}
             />
           </Form.Item>
           <Form.Item
@@ -87,12 +90,13 @@ const Auth: FC<ModalProps> = () => {
             rules={[{ required: true, message: "Please input your password!" }]}
           >
             <Input
+            {...register("password")} 
               prefix={<LockOutlined className="site-form-item-icon" />}
               type="password"
               placeholder="Your password"
-              value={passwordInput}
               size="large"
-              onChange={(e) => setPasswordInput(e.target.value)}
+              // value={passwordInput}
+              // onChange={(e) => setPasswordInput(e.target.value)}
             />
           </Form.Item>
           <Form.Item>
@@ -100,7 +104,9 @@ const Auth: FC<ModalProps> = () => {
               type="primary"
               htmlType="submit"
               className="login-form-button"
-              onClick={loginHandler}
+              onClick={() => {
+                handlerSubmit((data) => console.log(data))
+                loginHandler}}
             >
               Log in to your account
             </Button>
