@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import { serviceApi } from "../app.service";
 
 type Dish = {
@@ -24,9 +25,9 @@ type DeleteDishRequest = {
 type TagsReply = Record<string, string>;
 
 type AddTagRequest = {
-  name: string,
-  color: string
-}
+  name: string;
+  color: string;
+};
 
 const adminDishesService = serviceApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -59,12 +60,25 @@ const adminDishesService = serviceApi.injectEndpoints({
         method: "GET",
       }),
       providesTags: ["tags"],
+      
+      onQueryStarted(arg, api) {
+        // set up a function for query fulfilled for all mutations in this services
+        // this func will be in the src level as util
+        api.queryFulfilled
+          .then((data) => {
+            console.log(data);
+            toast.success("Success");
+          })
+          .catch(({ data }) => {
+            toast.error(data.error);
+          });
+      },
     }),
     addTag: builder.mutation<AddTagRequest, any>({
       query: (body) => ({
         url: "tags",
         method: "POST",
-        body
+        body,
       }),
       invalidatesTags: ["tags"],
     }),
@@ -72,7 +86,7 @@ const adminDishesService = serviceApi.injectEndpoints({
       query: (body) => ({
         url: "tags",
         method: "PATCH",
-        body
+        body,
       }),
       invalidatesTags: ["tags"],
     }),

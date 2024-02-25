@@ -42,7 +42,7 @@ interface Post {
   image: string;
   tags: Record<string, string>;
 }
-type CustomTag = Record<string, { label: string; value: string }>;
+type TagType =  { label: string; value: string }
 type TagRender = SelectProps["tagRender"];
 
 const AdminDishesList = () => {
@@ -50,13 +50,25 @@ const AdminDishesList = () => {
     return state.admin.posts;
   });
   const dispatch = useAppDispatch();
-  const { refetch: updateDishesList } = postService.useDishesQuery("");
+  const { data: dishesListReply } = postService.useDishesQuery("");
   const [deleteDishTriger] = adminDishesService.useDeleteDishMutation();
   const [changeDishTriger] = adminDishesService.useChangeDishMutation();
-  const { data: tagsProps } = adminDishesService.useGetTagsQuery("");
+  const [AddTagTrigger] = adminDishesService.useAddTagMutation();
+  const { tagsProps } = adminDishesService.useGetTagsQuery("", {
+    selectFromResult: ({ data }) => ({
+      tagsProps: data
+        ? Object.keys(data).map((tag) => ({
+            value: data[tag],
+            label: tag,
+          }))
+        : [],
+    }),
+  });
+  const dishesList: Record<string, Post> = dishesListReply
+    ? dishesListReply
+    : {};
 
-  const [customTag, setCustomTag] = useState<CustomTag>({});
-  const [tagOptions, setTagOptions] = useState<SelectProps["options"]>();
+  const [customTag, setCustomTag] = useState<Record<string, TagType>>({});
 
   const tagRender: TagRender = (props) => {
     const { label, value, closable, onClose } = props;
@@ -77,66 +89,47 @@ const AdminDishesList = () => {
     );
   };
 
-  const tagsOptions = useMemo(() => {
-    setTagOptions(
-      tagsProps
-        ? Object.keys(tagsProps).map((tag) => ({
-            value: tagsProps[tag],
-            label: tag,
-          }))
-        : []
+  const ChangeFieldDish = (index: number, label: string, value: string) => {
+    console.log(index, value);
+    //чого так по тупому?
+    dispatch(
+      postService.util.updateQueryData("dishes", "", (draftPost) => {
+        draftPost[index][label] = value;
+      })
     );
-  }, [tagsProps]);
-
-  useEffect(() => {
-    updateDishesList()
-      .unwrap()
-      .then((DishList) => {
-        DishList.map((Dish) => {
-          dispatch(AddNewPost(Dish));
-        });
-      });
-  }, []);
+  };
 
   const [searchText, setSearchText] = useState("");
 
   const DeleteDish = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    e: React.MouseEvent<HTMLElement, MouseEvent>,
     itemId: string
   ) => {
     e.preventDefault();
-    deleteDishTriger({ id: itemId })
-      .unwrap()
-      .then(() => {
-        dispatch(RemovePost(itemId));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    deleteDishTriger({ id: itemId });
   };
 
   const ChangeCurrentDish = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    itemId: string
+    e: React.MouseEvent<HTMLElement, MouseEvent>,
+    itemId: string,
+    index: number
   ) => {
     e.preventDefault();
-    console.log(posts[itemId]);
-    changeDishTriger({ id: itemId, body: posts[itemId] })
-      .unwrap()
-      .then(() => {
-        dispatch(ChangeDish({ id: itemId, post: posts[itemId] }));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    console.log(dishesList);
+    changeDishTriger({ id: itemId, body: dishesList[index] });
+  };
+
+  const AddTagHandler = (e: React.MouseEvent<HTMLElement, MouseEvent>, newTag: TagType) => {
+    e.preventDefault();
+    AddTagTrigger({color: newTag.value, name: newTag.label});
   };
 
   const SearchedPosts = useMemo(
     () =>
-      Object.values(posts).filter((Dish) =>
+      Object.values(dishesList).filter((Dish) =>
         Dish.name.toLowerCase().includes(searchText.toLowerCase())
       ),
-    [searchText, posts]
+    [searchText, dishesList]
   );
 
   return (
@@ -155,7 +148,7 @@ const AdminDishesList = () => {
           setSearchText(e.target.value);
         }}
       />
-      {SearchedPosts.map((post) => (
+      {SearchedPosts.map((post, index) => (
         <div
           style={{
             display: "flex",
@@ -178,30 +171,14 @@ const AdminDishesList = () => {
             <Input
               id="Name"
               size="large"
-              onChange={(e) =>
-                dispatch(
-                  SetFieldForChangedDish({
-                    id: post.id,
-                    fieldname: "name",
-                    value: e.target.value,
-                  })
-                )
-              }
+              onChange={(e) => ChangeFieldDish(index, "name", e.target.value)}
               value={post.name}
             />
             <Typography.Title level={5}>Price</Typography.Title>
             <Input
               id="Price"
               size="large"
-              onChange={(e) =>
-                dispatch(
-                  SetFieldForChangedDish({
-                    id: post.id,
-                    fieldname: "price",
-                    value: parseInt(e.target.value),
-                  })
-                )
-              }
+              onChange={(e) => ChangeFieldDish(index, "price", e.target.value)}
               value={String(post.price)}
             />
             <Typography.Title level={5}>Description</Typography.Title>
@@ -209,13 +186,7 @@ const AdminDishesList = () => {
               id="Description"
               size="large"
               onChange={(e) =>
-                dispatch(
-                  SetFieldForChangedDish({
-                    id: post.id,
-                    fieldname: "description",
-                    value: e.target.value,
-                  })
-                )
+                ChangeFieldDish(index, "description", e.target.value)
               }
               value={post.description}
               autoSize
@@ -238,6 +209,7 @@ const AdminDishesList = () => {
                   }}
                   dropdownStyle={{ width: "auto" }}
                   onChange={(values, options) => {
+                    console.log(values);
                     const selectedTags = options
                       .map((option: { label: string; value: string }) => {
                         return {
@@ -253,13 +225,7 @@ const AdminDishesList = () => {
                         },
                         {}
                       );
-                    dispatch(
-                      SetFieldForChangedDish({
-                        id: post.id,
-                        value: selectedTags,
-                        fieldname: "tags",
-                      })
-                    );
+                    ChangeFieldDish(index, "tags", selectedTags);
                   }}
                   value={
                     post.tags
@@ -269,7 +235,7 @@ const AdminDishesList = () => {
                         }))
                       : []
                   }
-                  options={tagOptions}
+                  options={tagsProps}
                 />
               </div>
               <Space>
@@ -277,21 +243,15 @@ const AdminDishesList = () => {
                   key={post.id}
                   style={{ width: "100px" }}
                   placeholder="Custom tag"
-                  value={
-                    customTag[post.id] === undefined
-                      ? ""
-                      : customTag[post.id].label
-                  }
+                  value={customTag[post.id]?.label || ""}
                   onChange={(e) => {
                     e.preventDefault();
-                    setCustomTag((prevProps) => {
-                      return {
-                        ...prevProps,
-                        [post.id]: {
-                          ...prevProps[post.id],
-                          label: e.target.value,
-                        },
-                      };
+                    setCustomTag({
+                      ...customTag,
+                      [post.id]: {
+                        ...customTag[post.id],
+                        label: e.target.value,
+                      },
                     });
                   }}
                 />
@@ -302,52 +262,34 @@ const AdminDishesList = () => {
                     justifyContent: "center",
                     alignItems: "center",
                   }}
-                  defaultValue="#FFFFFF"
+                  value={customTag[post.id]?.value || "#2B84DB"}
                   onChangeComplete={(currentColor) => {
-                    setCustomTag((prevProps) => {
-                      return {
-                        ...prevProps,
-                        [post.id]: {
-                          ...prevProps[post.id],
-                          value: `#${currentColor.toHex()}`,
-                        },
-                      };
+                    setCustomTag({
+                      ...customTag,
+                      [post.id]: {
+                        ...customTag[post.id],
+                        value: `#${currentColor.toHex()}`,
+                      },
                     });
+                    console.log(customTag);
                   }}
                 />
                 <Button
                   type="primary"
-                  disabled={customTag[post.id].label === "" ? true : false}
+                  disabled={customTag[post.id]?.label === "" || !customTag[post.id]?.label}
                   style={{ marginLeft: "5px" }}
                   onClick={(e) => {
                     e.preventDefault();
+                    AddTagHandler(e, customTag[post.id])
+                    if (!customTag[post.id].value){
+                      customTag[post.id].value = "#2B84DB"
+                    }
                     dispatch(
-                      SetFieldForChangedDish({
-                        id: post.id,
-                        value: {
-                          ...post.tags,
-                          [customTag[post.id].label]: customTag[post.id].value,
-                        },
-                        fieldname: "tags",
+                      postService.util.updateQueryData("dishes", "", (draftPost) => {
+                        draftPost[index]['tags'] = {...draftPost[index]['tags'], [customTag[post.id].label]: customTag[post.id].value};
                       })
                     );
-                    setCustomTag((prevProps) => {
-                      return {
-                        ...prevProps,
-                        [post.id]: { ...prevProps[post.id], label: "" },
-                      };
-                    });
-
-                    setTagOptions((prevProps) => {
-                      console.log(Date.now());
-                      return [
-                        ...prevProps,
-                        {
-                          label: customTag[post.id].label,
-                          value: customTag[post.id].value,
-                        },
-                      ];
-                    });
+                    setCustomTag({...customTag, [post.id]: {}})
                   }}
                 >
                   add
@@ -362,8 +304,9 @@ const AdminDishesList = () => {
                 }}
                 onClick={(e) =>
                   ChangeCurrentDish(
-                    e as React.MouseEvent<HTMLButtonElement, MouseEvent>,
-                    post.id
+                    e,
+                    post.id,
+                    index
                   )
                 }
               >
@@ -374,7 +317,7 @@ const AdminDishesList = () => {
                 danger
                 onClick={(e) =>
                   DeleteDish(
-                    e as React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                    e,
                     post.id
                   )
                 }

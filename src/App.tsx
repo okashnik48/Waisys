@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useAppSelector } from "./store/store-hooks";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -13,9 +13,11 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import userService from "./services/user.service";
 import { SetTokens, SetUserProperties } from "./store/slices/user";
+import { Spin } from "antd";
 
 function App() {
   const userRole = useAppSelector((state) => state.user.user).role;
+  const [isTokensLoading, setIsTokensLoading] = useState<boolean>(true)
   const dispatch = useAppDispatch()
 
   useEffect(() => {
@@ -39,12 +41,22 @@ function App() {
         .unwrap()
         .then((data) => {
           dispatch(SetUserProperties(data));
+          setIsTokensLoading(false)
         });
     } else {
       console.error("No tokens found in localStorage");
+      setIsTokensLoading(false)
     }
   }, []);
-  
+  if (isTokensLoading){
+    return (
+      <>
+                <Spin tip="Loading" size="large">
+            <div className="content" />
+          </Spin>
+      </>
+    )
+  }
   if (!userRole) {
     return (
       <BrowserRouter>

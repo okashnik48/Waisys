@@ -4,7 +4,6 @@ import { useState } from "react";
 
 import adminDishesService from "../../services/admin/admin-dishes.service";
 import { Empty, ColorPicker, Button, Space, Input } from "antd";
-import { toast } from "react-toastify";
 
 type TagOptions = {
   name: string;
@@ -16,26 +15,20 @@ const AdminTagsList: FC = () => {
   const [ChangeTagsTrigger] = adminDishesService.useChangeTagsMutation();
   const [DeleteTagTrigger] = adminDishesService.useDeleteTagMutation();
   const [AddTagTrigger] = adminDishesService.useAddTagMutation();
-  // const [tagsList, setTagsList] = useState<Record<string, string>>({});
   const [customTag, setCustomTag] = useState<TagOptions>({
     name: "",
     color: "#2B84DB",
   });
 
-  const tagsList = useMemo(() => data ? data : {}, [data]);
+  const tagsList = useMemo(() => (data ? data : {}), [data]);
 
   const ChangeHandler = (
     e: React.MouseEvent<HTMLElement, MouseEvent>,
-    label: string
+    label: string,
+    color: string
   ) => {
     e.preventDefault();
-    ChangeTagsTrigger({ [label]: tagsList[label] })
-      .then(() => {
-        toast.success("Success");
-      })
-      .catch(({ data }) => {
-        toast.error(data.error);
-      });
+    ChangeTagsTrigger({ [label]: color });
   };
 
   const DeleteTagHandler = (
@@ -43,38 +36,13 @@ const AdminTagsList: FC = () => {
     label: string
   ) => {
     e.preventDefault();
-    DeleteTagTrigger(label)
-      .unwrap()
-      .then(() => {
-        // console.log(tagsList);
-        // setTagsList((prevProps) => {
-        //   const updatedTagsList = { ...prevProps };
-        //   delete updatedTagsList[label];
-        //   return updatedTagsList;
-        // });
-
-        toast.success("Success");
-      })
-      .catch(({ data }) => {
-        toast.error(data.error);
-      });
+    DeleteTagTrigger(label);
   };
+
   const AddTagHandler = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     e.preventDefault();
-    AddTagTrigger(customTag)
-      .then(() => {
-        toast.success("Success");
-        // setTagsList((prevProps) => {
-        //   return {
-        //     ...prevProps,
-        //     [customTag.name]: customTag.color,
-        //   };
-        // });
-        setCustomTag({ name: "", color: "#2B84DB" });
-      })
-      .catch(({ data }) => {
-        toast.error(data.error);
-      });
+    setCustomTag({ name: "", color: "#2B84DB" });
+    AddTagTrigger(customTag);
   };
   return (
     <div
@@ -89,6 +57,7 @@ const AdminTagsList: FC = () => {
         <Empty />
       ) : (
         Object.keys(tagsList).map((label) => {
+          let color = tagsList[label];
           return (
             <div>
               <Space>
@@ -102,18 +71,13 @@ const AdminTagsList: FC = () => {
                   }}
                   defaultValue={tagsList[label]}
                   onChangeComplete={(currentColor) => {
-                    setTagsList((prevProps) => {
-                      return {
-                        ...prevProps,
-                        [label]: `#${currentColor.toHex()}`,
-                      };
-                    });
+                    color = `#${currentColor.toHex()}`;
                   }}
                 />
                 <Button
                   type="primary"
                   onClick={(e) => {
-                    ChangeHandler(e, label);
+                    ChangeHandler(e, label, color);
                   }}
                 >
                   Confirm
