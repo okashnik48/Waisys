@@ -42,7 +42,7 @@ interface Post {
   image: string;
   tags: Record<string, string>;
 }
-type TagType =  { label: string; value: string }
+type TagType = { label: string; value: string };
 type TagRender = SelectProps["tagRender"];
 
 const AdminDishesList = () => {
@@ -119,9 +119,34 @@ const AdminDishesList = () => {
     changeDishTriger({ id: itemId, body: dishesList[index] });
   };
 
-  const AddTagHandler = (e: React.MouseEvent<HTMLElement, MouseEvent>, newTag: TagType) => {
+  const AddTagHandler = (
+    e: React.MouseEvent<HTMLElement, MouseEvent>,
+    newTag: TagType, 
+    index: number,
+    id: string
+  ) => {
     e.preventDefault();
-    AddTagTrigger({color: newTag.value, name: newTag.label});
+    console.log(newTag.value)
+    const color = newTag?.value || "#2B84DB"
+
+    AddTagTrigger({ color: color, name: newTag.label }).then(() =>{
+                          if (!customTag[id].value) {
+                      customTag[id].value = "#2B84DB";
+                    }
+                         dispatch(
+                      postService.util.updateQueryData(
+                        "dishes",
+                        "",
+                        (draftPost) => {
+                          draftPost[index]["tags"] = {
+                            ...draftPost[index]["tags"],
+                            [customTag[id].label]:
+                              customTag[id].value,
+                          };
+                        }
+                      )
+                    );
+    })
   };
 
   const SearchedPosts = useMemo(
@@ -276,20 +301,31 @@ const AdminDishesList = () => {
                 />
                 <Button
                   type="primary"
-                  disabled={customTag[post.id]?.label === "" || !customTag[post.id]?.label}
+                  disabled={
+                    customTag[post.id]?.label === "" ||
+                    !customTag[post.id]?.label
+                  }
                   style={{ marginLeft: "5px" }}
                   onClick={(e) => {
                     e.preventDefault();
-                    AddTagHandler(e, customTag[post.id])
-                    if (!customTag[post.id].value){
-                      customTag[post.id].value = "#2B84DB"
-                    }
-                    dispatch(
-                      postService.util.updateQueryData("dishes", "", (draftPost) => {
-                        draftPost[index]['tags'] = {...draftPost[index]['tags'], [customTag[post.id].label]: customTag[post.id].value};
-                      })
-                    );
-                    setCustomTag({...customTag, [post.id]: {}})
+                    AddTagHandler(e, customTag[post.id], index, post.id);
+                    // if (!customTag[post.id].value) {
+                    //   customTag[post.id].value = "#2B84DB";
+                    // }
+                    // dispatch(
+                    //   postService.util.updateQueryData(
+                    //     "dishes",
+                    //     "",
+                    //     (draftPost) => {
+                    //       draftPost[index]["tags"] = {
+                    //         ...draftPost[index]["tags"],
+                    //         [customTag[post.id].label]:
+                    //           customTag[post.id].value,
+                    //       };
+                    //     }
+                    //   )
+                    // );
+                    setCustomTag({ ...customTag, [post.id]: {} });
                   }}
                 >
                   add
@@ -302,25 +338,14 @@ const AdminDishesList = () => {
                   backgroundColor: "rgba(0, 200, 0, 0.7)",
                   marginRight: "10px",
                 }}
-                onClick={(e) =>
-                  ChangeCurrentDish(
-                    e,
-                    post.id,
-                    index
-                  )
-                }
+                onClick={(e) => ChangeCurrentDish(e, post.id, index)}
               >
                 Confirm
               </Button>
               <Button
                 type="primary"
                 danger
-                onClick={(e) =>
-                  DeleteDish(
-                    e,
-                    post.id
-                  )
-                }
+                onClick={(e) => DeleteDish(e, post.id)}
               >
                 Delete
               </Button>
