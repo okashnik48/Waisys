@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 import { useEffect, useState } from "react";
 
@@ -8,7 +8,6 @@ import ordersService from "../../services/orders.service";
 
 import {
   SetDeclinedDishesList,
-  DeleteDeclinedDish,
 } from "../../store/slices/declined-dishes";
 
 import { io } from "socket.io-client";
@@ -26,11 +25,6 @@ type DeclinedDish = {
 type DeclinedDishReply = Record<string, DeclinedDish>;
 
 const DoneDishesList = () => {
-  let DeclinedList = 
-    useAppSelector((state) => {
-      return state.declinedList.declinedlist;
-    }
-  );
   const dispatch = useAppDispatch();
 
   const socket = io({ transports: ["websocket"] });
@@ -48,8 +42,14 @@ const DoneDishesList = () => {
     }
 
     function ProcessDeclineDish(value: DeclinedDishReply) {
-      console.log(value.data);
-      dispatch(SetDeclinedDishesList(value.data));
+      dispatch(
+        ordersService.util.updateQueryData("GetDeclinedDishes", "", (existingData) => {
+          return {
+            ...existingData, 
+            newData: value.data 
+          };
+        })
+      );
     }
 
     socket.on("connect", onConnect);
@@ -63,25 +63,15 @@ const DoneDishesList = () => {
     };
   }, []);
 
-  const { refetch: GetDeclinedList } = ordersService.useGetDeclinedDishesQuery('')
-  const [DeletedeclinedDishTriger, {}] = ordersService.useDeleteDeliveredDishMutation()
+  const { data } = ordersService.useGetDeclinedDishesQuery('')
+  const [DeleteDeclinedDishTrigger, {}] = ordersService.useDeleteDeliveredDishMutation()
 
-  useEffect(() => {
-    GetDeclinedList()
-      .unwrap()
-      .then((data) => {
-        dispatch(SetDeclinedDishesList(data));
-      });
-  }, []);
-  const DeleteDeclinedDishTriger = (e: React.MouseEvent<HTMLButtonElement>, id: string) => {
-    e.preventDefault();
-    DeletedeclinedDishTriger(id).unwrap()
-    .then(() => {
-      dispatch(DeleteDeclinedDish(id))
-    })
-    .catch((error) =>{
-      console.log(error)
-    })
+const DeclinedList = useMemo(() =>{
+  return data ? data : {};
+}, [data])
+
+  const DeleteHandler = ( id: string) => {
+    DeleteDeclinedDishTrigger(id)
   };
   return (
     <div>
@@ -106,7 +96,7 @@ const DoneDishesList = () => {
                   padding: "1rem",
                   marginBottom: "1rem",
                 }}
-                key={post.id}
+                key={id}
               >
                 <div
                   style={{
@@ -174,8 +164,8 @@ const DoneDishesList = () => {
                   <Button
                     type="primary"
                     size="large"
-                    onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-                      DeleteDeclinedDishTriger(e, id)
+                    onClick={() =>
+                      DeleteHandler(id)
                     }
                   >
                     Confirm

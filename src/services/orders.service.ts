@@ -62,6 +62,18 @@ const ordersService = serviceApi.injectEndpoints({
         body: Request.body,
       }),
       invalidatesTags: ["orders"],
+      async onQueryStarted(arg, api) {
+        // set up a function for query fulfilled for all mutations in this services
+        // this func will be in the src level as util
+        api.queryFulfilled
+          .then(() => {
+            toast.success("Success");
+          })
+          .catch((data ) => {
+            console.log(data)
+            toast.error("data");
+          });
+      },
     }),
     PatchOrder: builder.mutation<null, DishChangeRequest>({
       query: (Request) => ({
@@ -71,14 +83,13 @@ const ordersService = serviceApi.injectEndpoints({
       }),
       invalidatesTags: ["orders"],
       onQueryStarted(arg, api) {
-
         // set up a function for query fulfilled for all mutations in this services
         // this func will be in the src level as util
         api.queryFulfilled
           .then(() => {
             toast.success("Success");
           })
-          .catch(({data}) => {
+          .catch(({ data }) => {
             toast.error(data.error);
           });
       },
@@ -101,7 +112,7 @@ const ordersService = serviceApi.injectEndpoints({
           .then(() => {
             toast.success("Success");
           })
-          .catch(({data}) => {
+          .catch(({ data }) => {
             toast.error(data.error);
           });
       },
@@ -111,7 +122,7 @@ const ordersService = serviceApi.injectEndpoints({
         url: `orders/dishes/${id}`,
         method: "Delete",
       }),
-      invalidatesTags: ["completed", "declined"]
+      invalidatesTags: ["completed", "declined"],
     }),
     GetDeclinedDishes: builder.query<CompletedDishesReply, any>({
       query: () => ({
@@ -124,7 +135,7 @@ const ordersService = serviceApi.injectEndpoints({
           .then(() => {
             toast.success("Success");
           })
-          .catch(({data}) => {
+          .catch(({ data }) => {
             toast.error(data.error);
           });
       },

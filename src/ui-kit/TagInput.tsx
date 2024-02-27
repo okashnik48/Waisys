@@ -20,9 +20,10 @@ import { CustomInput } from "./CustomInput";
 type DefaultValues = {
   color: string;
   name: string;
+  type: string;
 };
 
-const TagInput: FC<{ index?: number }> = ({ index }) => {
+const TagInput: FC<{ index?: number}> = ({ index}) => {
   console.log(index);
   const { register, handleSubmit, setValue, control } = useForm<DefaultValues>({
     defaultValues: {
@@ -55,8 +56,8 @@ const TagInput: FC<{ index?: number }> = ({ index }) => {
       })}
     >
       <Space>
+        <div style={{width: "150px"}}>
         <CustomInput
-          style={{ width: "100px" }}
           control={control}
           label=""
           name="name"
@@ -65,6 +66,7 @@ const TagInput: FC<{ index?: number }> = ({ index }) => {
           size="large"
           placeholder="New tag"
         />
+        </div>
         <ColorPicker
           style={{
             display: "inline-block",

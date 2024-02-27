@@ -86,9 +86,7 @@ const AdminDishesList = () => {
   const ChangeFieldDish = (index: number, label: string, value: string) => {
     dispatch(
       postService.util.updateQueryData("dishes", "", (draftPost) => {
-        draftPost[index][label] = value;
-        // const d= state[index][label]
-        
+        draftPost[index][label] = value;  
       })
     );
   };

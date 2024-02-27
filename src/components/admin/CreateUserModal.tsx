@@ -60,10 +60,10 @@ const CreateUserModal = () => {
       visible={modalStatus.modalAddUSerStatus}
       onCancel={handleClose}
       footer={null}
-      width="md"
+      width={600}
     >
       <h2>Create new User</h2>
-      <div className="space-y-6">
+      <div style={{ minWidth: "400px", maxWidth: "600px" }}>
         <div>
           <label htmlFor="firstName">First Name</label>
           <Input

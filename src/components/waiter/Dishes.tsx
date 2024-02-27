@@ -77,16 +77,14 @@ const SortOptionProps = [
     label: "none",
   },
 ]
+
 const Dishes: FC = () => {
-  const posts: Record<string, Dish> = useAppSelector((state) => {
-    return state.posts.posts;
-  });
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  // const posts: Record<string, Dish> = useAppSelector((state) => {
+  //   return state.posts.posts;
+  // });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const dispatch = useAppDispatch();
-  const { refetch: updateDishesList } = dispatch(
-    postService.endpoints.dishes.initiate("")
-  );
-  //const { data: tagList } = adminDishesService.useGetTagsQuery("");
+  const [sortOption, setSortOption] = useState<"name" | "priceDesc" | "priceAsc" | "">("");
   const { tagsProps } = adminDishesService.useGetTagsQuery("", {
     selectFromResult: ({ data }) => ({
       tagsProps: data
@@ -97,67 +95,51 @@ const Dishes: FC = () => {
         : [],
     }),
   });
-  //const [selectTagsOptions, SetSelectTagsOptions] = useState<TagsOptions[]>([]);
-  const [sortOption, setSortOption] = useState<"name" | "priceDesc" | "priceAsc" | "">("");
-  // useMemo(() => {
-  //   if (tagList) {;
-  //     SetSelectTagsOptions([]);
-  //     Object.keys(tagList).map((label) => {
-  //       SetSelectTagsOptions((prevProps) => {
-  //         return [
-  //           ...prevProps,
-  //           {
-  //             label: label,
-  //             value: label,
-  //           },
-  //         ];
-  //       });
-  //     });
-  //   }
-  // }, [tagList]);
-  useEffect(() => {
-    setIsLoading(true);
-    updateDishesList()
-      .unwrap()
-      .then((dishesData) => {
-        const DishesPosts: ReplyDish[] = Object.values(dishesData);
-        DishesPosts.map((post: ReplyDish) => {
-          dispatch(
-            addPost({ id: post.id, post: { ...post, comment: "", count: 1 } })
-          );
-        });
-        setIsLoading(false);
+ // чому isFetching undefined
+  const { posts } = postService.useDishesQuery("", {
+    selectFromResult: ({ data }) => ({
+      posts: data
+        ? data.map((post) => (
+          { 
+          comment : "", 
+          count: 1, 
+          ...post,
+          }))
+        : [],
+    }),
+  });
+  const ChangeFieldDish = (index: number, label: string, value: string | number) => {
+    dispatch(
+      postService.util.updateQueryData("dishes", "", (draftPost) => {
+        draftPost[index][label] = value;  
       })
-      .catch((error) => {
-        setIsLoading(false);
-        console.error("Loading dishes error", error);
-      });
-  }, []);
+    );
+  };
+
 
   const [searchText, setSearchText] = useState("");
   const [searchTags, setSearchTags] = useState<string[]>([]);
   let SearchedPosts: Dish[] = [];
 
   const AddDish = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    itemId: string
+    index: number
   ) => {
-    e.preventDefault();
     const selectedPostId = crypto.randomUUID();
+    console.log(index)
+    console.log (posts)
     const NewSelectedPost: SelectedPost = {
-      ...posts[itemId],
+      ...posts[index],
       selectedPostId: selectedPostId,
     };
     dispatch(
       addSelectedPost({ post: NewSelectedPost, listId: selectedPostId })
     );
-    dispatch(setComment({ id: itemId, comment: "" }));
-    dispatch(setCountDefault({ id: itemId }));
+    ChangeFieldDish(index, "comment", "")
+    ChangeFieldDish(index, "count", 1)
   };
 
   SearchedPosts = useMemo(() => {
-    let Newposts = Object.values(posts) as Dish[];
-    Newposts = Newposts.filter((Dish: Dish) =>
+    let Newposts = posts.filter((Dish: Dish) =>
       Dish.name.toLowerCase().includes(searchText.toLowerCase())
     );
     if (searchTags.length !== 0) {
@@ -260,7 +242,7 @@ const Dishes: FC = () => {
             {SearchedPosts.length === 0? (<Empty />)
             : (   
               <>
-            {SearchedPosts.map((post: Dish) => (
+            {SearchedPosts.map((post: Dish, index: number) => (
               <Card key={post.id}>
                 <div
                   style={{
@@ -323,9 +305,10 @@ const Dishes: FC = () => {
                     id="Coment"
                     value={post.comment}
                     onChange={(e) =>
-                      dispatch(
-                        setComment({ id: post.id, comment: e.target.value })
-                      )
+                      ChangeFieldDish(index, "comment", e.target.value)
+                      // dispatch(
+                      //   setComment({ id: post.id, comment: e.target.value })
+                      // )
                     }
                     placeholder="Comment"
                     required
@@ -339,7 +322,7 @@ const Dishes: FC = () => {
                     }}
                   >
                     <Typography.Title level={3}>Count:</Typography.Title>
-                    <DishCounter post={post} />
+                    <DishCounter post={post} index = {index} />
                   </div>
                   <Button
                     size="large"
@@ -350,7 +333,7 @@ const Dishes: FC = () => {
                     }}
                     onClick={(
                       e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-                    ) => AddDish(e, post.id)}
+                    ) => AddDish(index)}
                   >
                     Add
                   </Button>
@@ -368,3 +351,39 @@ const Dishes: FC = () => {
 };
 
 export default Dishes;
+  //const { data: tagList } = adminDishesService.useGetTagsQuery("");
+    //const [selectTagsOptions, SetSelectTagsOptions] = useState<TagsOptions[]>([]);
+      // useMemo(() => {
+  //   if (tagList) {;
+  //     SetSelectTagsOptions([]);
+  //     Object.keys(tagList).map((label) => {
+  //       SetSelectTagsOptions((prevProps) => {
+  //         return [
+  //           ...prevProps,
+  //           {
+  //             label: label,
+  //             value: label,
+  //           },
+  //         ];
+  //       });
+  //     });
+  //   }
+  // }, [tagList]);
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   updateDishesList()
+  //     .unwrap()
+  //     .then((dishesData) => {
+  //       const DishesPosts: ReplyDish[] = Object.values(dishesData);
+  //       DishesPosts.map((post: ReplyDish) => {
+  //         dispatch(
+  //           addPost({ id: post.id, post: { ...post, comment: "", count: 1 } })
+  //         );
+  //       });
+  //       setIsLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       setIsLoading(false);
+  //       console.error("Loading dishes error", error);
+  //     });
+  // }, []);

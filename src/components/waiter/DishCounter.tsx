@@ -1,28 +1,36 @@
 import React from "react";
 import { Button } from "antd";
 import { useAppDispatch } from "../../store/store-hooks";
-import { counterDecrement, counterIncrement } from "../../store/slices/posts";
 import { MinusOutlined, PlusOutlined} from '@ant-design/icons';
+import postService from "../../services/posts.service";
 interface Dish {
   post: {
     name: string;
     id: string;
     count: number;
   };
+  index: number
 }
 
-const DishCounter: React.FC<Dish> = ({ post }) => {
+const DishCounter: React.FC<Dish> = ({ post, index }) => {
   const dispatch = useAppDispatch();
   
+  const ChangeCountDish = (value: number) => {
+    dispatch(
+      postService.util.updateQueryData("dishes", "", (draftPost) => {
+        draftPost[index].count = value;  
+      })
+    );
+  };
+
   const handleDecrement = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (post.count !== 1) {
-      dispatch(counterDecrement({ id: post.id }));
+      ChangeCountDish(post.count - 1)
     }
   };
   const handleIncrement = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    dispatch(counterIncrement({ id: post.id }));
+    ChangeCountDish(post.count + 1)
   };
 
   return (

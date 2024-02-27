@@ -208,53 +208,7 @@ const AdminCreateDish = () => {
             }
             options={tagOptions}
           />
-          {/* <div>
-              <Space>
-                <h3>Custom tag</h3>
-                <Input
-                value={customTag.label}
-                onChange={(e) =>{
-                  setCustomTagValue((prevProps) =>{
-                    return {
-                      ...prevProps, 
-                      label: e.target.value
-                    }
-                  })
-                }} 
-                />
-                <ColorPicker
-                  style={{
-                    display: "inline-block",
-                    marginLeft: "10px",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                  value = {customTag.value}
-                  onChange={(currentColor) => {
-                      setCustomTagValue((prevProps) => {
-                        return {
-                          ...prevProps, 
-                          value: `#${currentColor.toHex()}`
-                        }
-                      })
-                    }
-                  }
-                />
-                <Button
-                  type="primary"
-                  onClick={(e) => {
-                    console.log(NewDish.tags)
-                    dispatch(SetFieldNewDish({
-                      value: {...NewDish.tags, [customTag.label]: customTag.value},
-                      fieldname: "tags",
-                    }))
-                  }}
-                >
-                  Confirm
-                </Button>
-              </Space>
-            </div>
- */}
+          
            <div className="w-full">
             <Button
               onClick={(e) => {

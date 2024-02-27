@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 import { useEffect, useState } from "react";
 
@@ -14,28 +14,23 @@ import { useAppSelector, useAppDispatch } from "../../store/store-hooks";
 import ordersService from "../../services/orders.service";
 
 import { Button, Col, Empty, Image, Row, Typography } from "antd";
-type CompletedDish = {
-  tableNumber: number;
-  name: string;
-  description: string;
-  image: string;
-  comment: string;
-  quantity: number;
-};
-type CompletedDishesReply = Record<string, CompletedDish>;
 
 const DoneDishesList = () => {
-  let DoneList = useAppSelector((state) => {
-    return state.donelist.donelist;
-  });
+  // let DoneList = useAppSelector((state) => {
+  //   return state.donelist.donelist;
+  // });
   const dispatch = useAppDispatch();
 
   const socket = io({ transports: ["websocket"] });
 
   const [isConnected, setIsConnected] = useState(socket.connected);
 
-  const { refetch: GetDoneList } = ordersService.useGetCompletedDishesQuery("");
+  const { data } = ordersService.useGetCompletedDishesQuery("");
   const [setComplitedDishDoneTriger, {}] = ordersService.useDeleteDeliveredDishMutation()
+
+const DoneList = useMemo(() =>{
+  return data? data : {}
+}, [data])
 
   useEffect(() => {
     function onConnect() {
@@ -76,13 +71,7 @@ const DoneDishesList = () => {
       console.log(error)
     })
   };
-  useEffect(() => {
-    GetDoneList()
-      .unwrap()
-      .then((data) => {
-        dispatch(SetDoneDishesList(data));
-      });
-  }, []);
+  
   return (
     <div>
       <Row>
@@ -106,7 +95,7 @@ const DoneDishesList = () => {
                   padding: "1rem",
                   marginBottom: "1rem",
                 }}
-                key={post.id}
+                key={id}
               >
                 <div
                   style={{
