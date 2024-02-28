@@ -132,7 +132,7 @@ export default function NavigationLayout({
       },
       {
         label: (
-          <Link to="declin-list" rel="noopener noreferrer">
+          <Link to="declined-list" rel="noopener noreferrer">
             Decline Dishes
           </Link>
         ),

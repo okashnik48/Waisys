@@ -1,6 +1,5 @@
 /* eslint-disable array-callback-return */
 import React, { FC, useEffect, useMemo, useState } from "react";
-import { addPost, setComment, setCountDefault } from "../../store/slices/posts";
 import { addSelectedPost } from "../../store/slices/selected-posts";
 
 import postService from "../../services/posts.service";
@@ -63,7 +62,7 @@ const SortOptionProps = [
     value: "priceDesc",
     label: "price desc",
   },
-  
+
   {
     value: "priceAsc",
     label: "price asc",
@@ -76,15 +75,13 @@ const SortOptionProps = [
     value: "",
     label: "none",
   },
-]
+];
 
 const Dishes: FC = () => {
-  // const posts: Record<string, Dish> = useAppSelector((state) => {
-  //   return state.posts.posts;
-  // });
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const dispatch = useAppDispatch();
-  const [sortOption, setSortOption] = useState<"name" | "priceDesc" | "priceAsc" | "">("");
+  const [sortOption, setSortOption] = useState<
+    "name" | "priceDesc" | "priceAsc" | ""
+  >("");
   const { tagsProps } = adminDishesService.useGetTagsQuery("", {
     selectFromResult: ({ data }) => ({
       tagsProps: data
@@ -95,38 +92,39 @@ const Dishes: FC = () => {
         : [],
     }),
   });
- // чому isFetching undefined
-  const { posts } = postService.useDishesQuery("", {
-    selectFromResult: ({ data }) => ({
-      posts: data
-        ? data.map((post) => (
-          { 
-          comment : "", 
-          count: 1, 
-          ...post,
+  const { data: posts, isLoading } = postService.useDishesQuery("", {
+    selectFromResult: ({ data, isLoading }) => ({
+      data: data
+        ? data.map((post) => ({
+            comment: "",
+            count: 1,
+            ...post,
           }))
         : [],
+        isLoading
     }),
   });
-  const ChangeFieldDish = (index: number, label: string, value: string | number) => {
+
+  const ChangeFieldDish = (
+    index: number,
+    label: string,
+    value: string | number
+  ) => {
     dispatch(
       postService.util.updateQueryData("dishes", "", (draftPost) => {
-        draftPost[index][label] = value;  
+        draftPost[index][label] = value;
       })
     );
   };
-
 
   const [searchText, setSearchText] = useState("");
   const [searchTags, setSearchTags] = useState<string[]>([]);
   let SearchedPosts: Dish[] = [];
 
-  const AddDish = (
-    index: number
-  ) => {
+  const AddDish = (index: number) => {
     const selectedPostId = crypto.randomUUID();
-    console.log(index)
-    console.log (posts)
+    console.log(index);
+    console.log(posts);
     const NewSelectedPost: SelectedPost = {
       ...posts[index],
       selectedPostId: selectedPostId,
@@ -134,16 +132,16 @@ const Dishes: FC = () => {
     dispatch(
       addSelectedPost({ post: NewSelectedPost, listId: selectedPostId })
     );
-    ChangeFieldDish(index, "comment", "")
-    ChangeFieldDish(index, "count", 1)
+    ChangeFieldDish(index, "comment", "");
+    ChangeFieldDish(index, "count", 1);
   };
 
   SearchedPosts = useMemo(() => {
-    let Newposts = posts.filter((Dish: Dish) =>
+    let NewPosts = posts.filter((Dish: Dish) =>
       Dish.name.toLowerCase().includes(searchText.toLowerCase())
     );
     if (searchTags.length !== 0) {
-      Newposts = Newposts.filter((dish: Dish) => {
+      NewPosts = NewPosts.filter((dish: Dish) => {
         return searchTags.every((element) =>
           Object.keys(dish.tags).includes(element)
         );
@@ -152,22 +150,20 @@ const Dishes: FC = () => {
 
     if (sortOption) {
       if (sortOption === "name") {
-        Newposts.sort((a, b) =>{
-        return a[sortOption].localeCompare(b[sortOption]);
-        })
-      } 
-      else if (sortOption === "priceAsc") {
-        Newposts.sort((a, b) =>{
+        NewPosts.sort((a, b) => {
+          return a[sortOption].localeCompare(b[sortOption]);
+        });
+      } else if (sortOption === "priceAsc") {
+        NewPosts.sort((a, b) => {
           return a.price - b.price;
-        })
-        }
-      else if (sortOption === "priceDesc"){
-        Newposts.sort((a, b) =>{
-          return  b.price - a.price;
-        })
+        });
+      } else if (sortOption === "priceDesc") {
+        NewPosts.sort((a, b) => {
+          return b.price - a.price;
+        });
       }
     }
-    return Newposts;
+    return NewPosts;
   }, [searchTags, searchText, posts, sortOption]);
   return (
     <div>
@@ -193,7 +189,13 @@ const Dishes: FC = () => {
               placeholder="Search"
               size="large"
             />
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginBottom: "10px",
+              }}
+            >
               <div style={{ marginRight: "10px" }}>
                 <div>
                   <Typography.Title
@@ -239,110 +241,114 @@ const Dishes: FC = () => {
                 />
               </div>
             </div>
-            {SearchedPosts.length === 0? (<Empty />)
-            : (   
+            {SearchedPosts.length === 0 ? (
+              <Empty />
+            ) : (
               <>
-            {SearchedPosts.map((post: Dish, index: number) => (
-              <Card key={post.id}>
-                <div
-                  style={{
-                    alignItems: "center",
-                    display: "flex",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Typography.Title level={2}>{post.name}</Typography.Title>
-                </div>
-                <div
-                  style={{
-                    alignItems: "center",
-                    display: "flex",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Image alt={post.name} src={post.image} />
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <div style={{ display: "block" }}>
-                    {Object.keys(post.tags).map((label) => (
-                      <Tag
-                        color={post.tags[label]}
+                {SearchedPosts.map((post: Dish, index: number) => (
+                  <Card key={post.id}>
+                    <div
+                      style={{
+                        alignItems: "center",
+                        display: "flex",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Typography.Title level={2}>{post.name}</Typography.Title>
+                    </div>
+                    <div
+                      style={{
+                        alignItems: "center",
+                        display: "flex",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Image alt={post.name} src={post.image} />
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <div style={{ display: "block" }}>
+                        {Object.keys(post.tags).map((label) => (
+                          <Tag
+                            color={post.tags[label]}
+                            style={{
+                              fontSize: "16px",
+                              padding: "8px 12px",
+                              display: "inline-block",
+                            }}
+                          >
+                            {label}
+                          </Tag>
+                        ))}
+                      </div>
+                      <Typography.Title
+                        level={3}
+                        style={{ marginLeft: "10px" }}
+                      >
+                        {" "}
+                        {`Price: ${post.price}`}{" "}
+                      </Typography.Title>
+                    </div>
+                    <Typography.Title
+                      level={4}
+                      style={{ marginLeft: "10px", textAlign: "center" }}
+                    >
+                      {post.description}
+                    </Typography.Title>
+                    <div
+                      style={{
+                        margin: "0 auto",
+                        width: "200px",
+                        marginTop: "40px",
+                      }}
+                    >
+                      <Input
+                        id="Coment"
+                        value={post.comment}
+                        onChange={
+                          (e) =>
+                            ChangeFieldDish(index, "comment", e.target.value)
+                          // dispatch(
+                          //   setComment({ id: post.id, comment: e.target.value })
+                          // )
+                        }
+                        placeholder="Comment"
+                        required
+                        size="large"
+                      />
+                      <div
                         style={{
-                          fontSize: "16px",
-                          padding: "8px 12px",
-                          display: "inline-block",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
                         }}
                       >
-                        {label}
-                      </Tag>
-                    ))}
-                  </div>
-                  <Typography.Title level={3} style={{ marginLeft: "10px" }}>
-                    {" "}
-                    {`Price: ${post.price}`}{" "}
-                  </Typography.Title>
-                </div>
-                <Typography.Title
-                  level={4}
-                  style={{ marginLeft: "10px", textAlign: "center" }}
-                >
-                  {post.description}
-                </Typography.Title>
-                <div
-                  style={{
-                    margin: "0 auto",
-                    width: "200px",
-                    marginTop: "40px",
-                  }}
-                >
-                  <Input
-                    id="Coment"
-                    value={post.comment}
-                    onChange={(e) =>
-                      ChangeFieldDish(index, "comment", e.target.value)
-                      // dispatch(
-                      //   setComment({ id: post.id, comment: e.target.value })
-                      // )
-                    }
-                    placeholder="Comment"
-                    required
-                    size="large"
-                  />
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Typography.Title level={3}>Count:</Typography.Title>
-                    <DishCounter post={post} index = {index} />
-                  </div>
-                  <Button
-                    size="large"
-                    style={{
-                      backgroundColor: "rgba(0, 200, 0, 0.7)",
-                      marginTop: "10px",
-                      width: "100%",
-                    }}
-                    onClick={(
-                      e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-                    ) => AddDish(index)}
-                  >
-                    Add
-                  </Button>
-                </div>
-              </Card>
-            ))}
-            </>
-            )
-            }
+                        <Typography.Title level={3}>Count:</Typography.Title>
+                        <DishCounter post={post} index={index} />
+                      </div>
+                      <Button
+                        size="large"
+                        style={{
+                          backgroundColor: "rgba(0, 200, 0, 0.7)",
+                          marginTop: "10px",
+                          width: "100%",
+                        }}
+                        onClick={(
+                          e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+                        ) => AddDish(index)}
+                      >
+                        Add
+                      </Button>
+                    </div>
+                  </Card>
+                ))}
+              </>
+            )}
           </>
         )}
       </div>
@@ -351,39 +357,39 @@ const Dishes: FC = () => {
 };
 
 export default Dishes;
-  //const { data: tagList } = adminDishesService.useGetTagsQuery("");
-    //const [selectTagsOptions, SetSelectTagsOptions] = useState<TagsOptions[]>([]);
-      // useMemo(() => {
-  //   if (tagList) {;
-  //     SetSelectTagsOptions([]);
-  //     Object.keys(tagList).map((label) => {
-  //       SetSelectTagsOptions((prevProps) => {
-  //         return [
-  //           ...prevProps,
-  //           {
-  //             label: label,
-  //             value: label,
-  //           },
-  //         ];
-  //       });
-  //     });
-  //   }
-  // }, [tagList]);
-  // useEffect(() => {
-  //   setIsLoading(true);
-  //   updateDishesList()
-  //     .unwrap()
-  //     .then((dishesData) => {
-  //       const DishesPosts: ReplyDish[] = Object.values(dishesData);
-  //       DishesPosts.map((post: ReplyDish) => {
-  //         dispatch(
-  //           addPost({ id: post.id, post: { ...post, comment: "", count: 1 } })
-  //         );
-  //       });
-  //       setIsLoading(false);
-  //     })
-  //     .catch((error) => {
-  //       setIsLoading(false);
-  //       console.error("Loading dishes error", error);
-  //     });
-  // }, []);
+//const { data: tagList } = adminDishesService.useGetTagsQuery("");
+//const [selectTagsOptions, SetSelectTagsOptions] = useState<TagsOptions[]>([]);
+// useMemo(() => {
+//   if (tagList) {;
+//     SetSelectTagsOptions([]);
+//     Object.keys(tagList).map((label) => {
+//       SetSelectTagsOptions((prevProps) => {
+//         return [
+//           ...prevProps,
+//           {
+//             label: label,
+//             value: label,
+//           },
+//         ];
+//       });
+//     });
+//   }
+// }, [tagList]);
+// useEffect(() => {
+//   setIsLoading(true);
+//   updateDishesList()
+//     .unwrap()
+//     .then((dishesData) => {
+//       const DishesPosts: ReplyDish[] = Object.values(dishesData);
+//       DishesPosts.map((post: ReplyDish) => {
+//         dispatch(
+//           addPost({ id: post.id, post: { ...post, comment: "", count: 1 } })
+//         );
+//       });
+//       setIsLoading(false);
+//     })
+//     .catch((error) => {
+//       setIsLoading(false);
+//       console.error("Loading dishes error", error);
+//     });
+// }, []);

@@ -183,14 +183,20 @@ const AdminCreateDish = () => {
             dropdownStyle={{ width: "auto" }}
             onChange={(values, options) => {
               const selectedTags = options
-                .map((option: {label: string, value: string}) => {
+                .map((option: { label: string; value: string }) => {
                   return {
                     [option.label]: option.value,
                   };
                 })
-                .reduce((acc: Record<string, string>, curr: Record<string, string>) => {
-                  return { ...acc, ...curr };
-                }, {});
+                .reduce(
+                  (
+                    acc: Record<string, string>,
+                    curr: Record<string, string>
+                  ) => {
+                    return { ...acc, ...curr };
+                  },
+                  {}
+                );
               dispatch(
                 SetFieldNewDish({
                   value: selectedTags,
@@ -208,8 +214,8 @@ const AdminCreateDish = () => {
             }
             options={tagOptions}
           />
-          
-           <div className="w-full">
+
+          <div className="w-full">
             <Button
               onClick={(e) => {
                 e.preventDefault();

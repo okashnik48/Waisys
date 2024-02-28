@@ -23,10 +23,10 @@ const AdminUsersList = () => {
   const [searchText, setSearchText] = useState("");
   let SearchedUsers = [];
 
-  const { data, refetch: updateUsersList } =
+  const { data } =
     adminUsersService.useUsersQuery("");
-  const [deleteUserTriger, {}] = adminUsersService.useDeleteUserMutation();
-  const [changeUserTriger, {}] = adminUsersService.useChangeUserMutation();
+  const [deleteUserTrigger, {}] = adminUsersService.useDeleteUserMutation();
+  const [changeUserTrigger, {}] = adminUsersService.useChangeUserMutation();
 
   const users = useMemo(() => {
     return data === undefined ? [] : Object.values(data);
@@ -37,7 +37,7 @@ const AdminUsersList = () => {
     userBody: User
   ) => {
     e.preventDefault();
-    changeUserTriger({
+    changeUserTrigger({
       id: userBody.id,
       body: userBody,
     });
@@ -55,7 +55,7 @@ const AdminUsersList = () => {
     userId: string
   ) => {
     e.preventDefault();
-    deleteUserTriger({ id: userId });
+    deleteUserTrigger({ id: userId });
   };
   SearchedUsers = useMemo(() => {
     return users.filter(

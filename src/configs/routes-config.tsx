@@ -49,7 +49,7 @@ export const ROUTES_CONFIG = {
         element: <DoneDishesList />,
       },
       {
-        path: "declin-list",
+        path: "declined-list",
         element: <DeclinedDishesList />,
       },
       {

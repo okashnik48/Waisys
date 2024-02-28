@@ -48,7 +48,7 @@ const SelectedList: FC = () => {
     e.preventDefault();
 
     if (Table === "") {
-      toast.info("Set table number")
+      toast.info("Set table number");
     } else {
       const updatedListDish = ListDish.map((dish: Dish) => {
         return {
@@ -60,129 +60,130 @@ const SelectedList: FC = () => {
       const NewOrder = {
         body: { dishes: updatedListDish, tableNumber: parseInt(Table) },
       };
-      postOrderTrigger(NewOrder)
-      .then(() => {
+      postOrderTrigger(NewOrder).then(() => {
         dispatch(clearSelectedPosts());
-      })
+      });
     }
   };
 
   return (
     <div>
-      <Row>
-        <Col md={{ span: 12, offset: 6 }}>
-        <h1 style={{ textAlign: "center" }} >List of selected Dishes</h1>
+      <div
+        style={{
+          maxWidth: "800px",
+          margin: "0 auto",
+        }}
+      >
+        <h1 style={{ textAlign: "center" }}>List of selected Dishes</h1>
         {Object.keys(ListDish).length === 0 ? (
           <Empty />
-        )
-        :
-        (<>
-          {ListDish.map((post: Dish) => (
-            <div
-              style={{
-                background: "white",
-                borderRadius: "0.5rem",
-                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                padding: "1rem",
-                marginBottom: "1rem",
-              }}
-              key={post.id}
-            >
+        ) : (
+          <>
+            {ListDish.map((post: Dish) => (
               <div
                 style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  background: "white",
+                  borderRadius: "0.5rem",
+                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                  padding: "1rem",
+                  marginBottom: "1rem",
                 }}
+                key={post.id}
               >
-                <Typography.Title level={2}>{post.name}</Typography.Title>
-                
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                              {post.comment != "" && (
-                <Typography.Title
-                  level={3}
-                  style={{ marginBottom: "0.5rem" }}
-                >{`comment: ${post.comment}`}</Typography.Title>
-              )}
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography.Title level={2}>{post.name}</Typography.Title>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  {post.comment != "" && (
+                    <Typography.Title
+                      level={3}
+                      style={{ marginBottom: "0.5rem" }}
+                    >{`comment: ${post.comment}`}</Typography.Title>
+                  )}
                 </div>
 
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Image
-                  width={600}
-                  src={post.image}
+                <div
                   style={{
-                    width: "100%",
-                    marginBottom: "0.5rem",
-                    borderRadius: "0.5rem",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
-                  alt="Dish Image"
+                >
+                  <Image
+                    width={600}
+                    src={post.image}
+                    style={{
+                      width: "100%",
+                      marginBottom: "0.5rem",
+                      borderRadius: "0.5rem",
+                    }}
+                    alt="Dish Image"
+                  />
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "0.5rem",
+                  }}
+                >
+                  <Button
+                    type="primary"
+                    danger
+                    size="large"
+                    onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+                      DeleteDish(e, post.selectedPostId)
+                    }
+                  >
+                    Delete
+                  </Button>
+                  <Typography.Title level={2}>{post.count}</Typography.Title>
+                </div>
+              </div>
+            ))}
+            <Typography.Title
+              level={2}
+              style={{ textAlign: "center" }}
+            >{`Total price: ${totalPrice}`}</Typography.Title>
+            <div style={{ marginTop: "1rem", textAlign: "center" }}>
+              <div style={{ marginBottom: "1rem" }}>
+                <Input
+                  value={Table}
+                  onChange={(e) => dispatch(addTableNumber(e.target.value))}
+                  placeholder="Table Number"
+                  size="large"
+                  style={{ width: 100 }}
                 />
               </div>
-
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginBottom: "0.5rem",
-                }}
-              >
+              <div>
                 <Button
-                  type="primary"
-                  danger
-                  size = "large"
-                  onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-                    DeleteDish(e, post.selectedPostId)
-                  }
+                  onClick={ConfirmOrder}
+                  size="large"
+                  style={{
+                    backgroundColor: "rgba(0, 200, 0, 0.7)",
+                  }}
                 >
-                  Delete
+                  Confirm Order
                 </Button>
-                <Typography.Title level={2}>{post.count}</Typography.Title >
               </div>
             </div>
-          ))}
-          <Typography.Title
-            level={2}
-            style={{ textAlign: "center" }}
-          >{`Total price: ${totalPrice}`}</Typography.Title>
-          <div style={{ marginTop: "1rem", textAlign: "center" }}>
-            <div style={{ marginBottom: "1rem" }}>
-              <Input
-                value={Table}
-                onChange={(e) => dispatch(addTableNumber(e.target.value))}
-                placeholder="Table Number"
-                size="large"
-                style={{ width: 100 }}
-              />
-            </div>
-            <div>
-              <Button
-                onClick={ConfirmOrder}
-                size="large"
-                style={{
-                  backgroundColor: "rgba(0, 200, 0, 0.7)",
-                }}
-              >
-                Confirm Order
-              </Button>
-            </div>
-          </div>
-          </>)}
-        </Col>
-      </Row>
+          </>
+        )}
+      </div>
     </div>
   );
 };

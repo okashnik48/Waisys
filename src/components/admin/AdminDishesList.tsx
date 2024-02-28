@@ -60,9 +60,10 @@ const AdminDishesList = () => {
         : [],
     }),
   });
-  const dishesList: Record<string, Post> = dishesListReply
+  const dishesList = useMemo(() =>{
+    return dishesListReply
     ? dishesListReply
-    : {};
+    : []}, [dishesListReply])
 
   const tagRender: TagRender = (props) => {
     const { label, value, closable, onClose } = props;

@@ -2,13 +2,11 @@ import React, { useMemo } from "react";
 
 import { useEffect, useState } from "react";
 
-import { Image, Button, Row, Col, Typography, Empty } from "antd";
+import { Image, Button, Row, Col, Typography, Empty, Spin } from "antd";
 
 import ordersService from "../../services/orders.service";
 
-import {
-  SetDeclinedDishesList,
-} from "../../store/slices/declined-dishes";
+import { SetDeclinedDishesList } from "../../store/slices/declined-dishes";
 
 import { io } from "socket.io-client";
 
@@ -43,12 +41,16 @@ const DoneDishesList = () => {
 
     function ProcessDeclineDish(value: DeclinedDishReply) {
       dispatch(
-        ordersService.util.updateQueryData("GetDeclinedDishes", "", (existingData) => {
-          return {
-            ...existingData, 
-            newData: value.data 
-          };
-        })
+        ordersService.util.updateQueryData(
+          "GetDeclinedDishes",
+          "",
+          (existingData) => {
+            return {
+              ...existingData,
+              newData: value.data,
+            };
+          }
+        )
       );
     }
 
@@ -63,120 +65,128 @@ const DoneDishesList = () => {
     };
   }, []);
 
-  const { data } = ordersService.useGetDeclinedDishesQuery('')
-  const [DeleteDeclinedDishTrigger, {}] = ordersService.useDeleteDeliveredDishMutation()
+  const { data, isLoading } = ordersService.useGetDeclinedDishesQuery("");
+  const [DeleteDeclinedDishTrigger, {}] =
+    ordersService.useDeleteDeliveredDishMutation();
 
-const DeclinedList = useMemo(() =>{
-  return data ? data : {};
-}, [data])
+  const DeclinedList = useMemo(() => {
+    return data ? data : {};
+  }, [data]);
 
-  const DeleteHandler = ( id: string) => {
-    DeleteDeclinedDishTrigger(id)
+  const DeleteHandler = (id: string) => {
+    DeleteDeclinedDishTrigger(id);
   };
   return (
     <div>
-      <Row>
-        <Col md={{ span: 12, offset: 6 }}>
-          <Typography.Title level={1} style={{ textAlign: "center" }}>
-            Declined Dishes
-          </Typography.Title>
-          {Object.keys(DeclinedList).length === 0 ? (
+      <div
+        style={{
+          maxWidth: "800px",
+          margin: "0 auto",
+        }}
+      >
+        <Typography.Title level={1} style={{ textAlign: "center" }}>
+          Declined Dishes
+        </Typography.Title>
+        {isLoading ? (
+          <Spin tip="Loading" size="large">
+            <div className="content" />
+          </Spin>
+        ) : Object.keys(DeclinedList).length === 0 ? (
           <Empty />
-        )
-        :(
+        ) : (
           <>
-          {Object.keys(DeclinedList).map((id) => {
-            const post = DeclinedList[id];
-            return (
-              <div
-                style={{
-                  background: "white",
-                  borderRadius: "0.5rem",
-                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                  padding: "1rem",
-                  marginBottom: "1rem",
-                }}
-                key={id}
-              >
+            {Object.keys(DeclinedList).map((id) => {
+              const post = DeclinedList[id];
+              return (
                 <div
                   style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
+                    background: "white",
+                    borderRadius: "0.5rem",
+                    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                    padding: "1rem",
+                    marginBottom: "1rem",
                   }}
+                  key={id}
                 >
-                  <Typography.Title level={2}>{post.name}</Typography.Title>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Typography.Title
-                    level={3}
-                  >{`Table number: ${post.tableNumber}`}</Typography.Title>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  {post.comment !== "" && (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography.Title level={2}>{post.name}</Typography.Title>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
                     <Typography.Title
                       level={3}
-                      style={{ marginBottom: "0.5rem" }}
-                    >{`comment: ${post.comment}`}</Typography.Title>
-                  )}
-                </div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Image
-                    width={600}
-                    src={post.image}
+                    >{`Table number: ${post.tableNumber}`}</Typography.Title>
+                  </div>
+                  <div
                     style={{
-                      width: "100%",
-                      marginBottom: "0.5rem",
-                      borderRadius: "0.5rem",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
-                    alt="Dish Image"
-                  />
-                </div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: "0.5rem",
-                  }}
-                >
-                  <Typography.Title level={2}>{post.quantity}</Typography.Title>
-                  <Button
-                    type="primary"
-                    size="large"
-                    onClick={() =>
-                      DeleteHandler(id)
-                    }
                   >
-                    Confirm
-                  </Button>
+                    {post.comment !== "" && (
+                      <Typography.Title
+                        level={3}
+                        style={{ marginBottom: "0.5rem" }}
+                      >{`comment: ${post.comment}`}</Typography.Title>
+                    )}
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Image
+                      width={600}
+                      src={post.image}
+                      style={{
+                        width: "100%",
+                        marginBottom: "0.5rem",
+                        borderRadius: "0.5rem",
+                      }}
+                      alt="Dish Image"
+                    />
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: "0.5rem",
+                    }}
+                  >
+                    <Typography.Title level={2}>
+                      {post.quantity}
+                    </Typography.Title>
+                    <Button
+                      type="primary"
+                      size="large"
+                      onClick={() => DeleteHandler(id)}
+                    >
+                      Confirm
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-          </>)}
-        </Col>
-      </Row>
+              );
+            })}
+          </>
+        )}
+      </div>
     </div>
   );
 };

@@ -13,24 +13,22 @@ import { useAppSelector, useAppDispatch } from "../../store/store-hooks";
 
 import ordersService from "../../services/orders.service";
 
-import { Button, Col, Empty, Image, Row, Typography } from "antd";
+import { Button, Col, Empty, Image, Row, Spin, Typography } from "antd";
 
 const DoneDishesList = () => {
-  // let DoneList = useAppSelector((state) => {
-  //   return state.donelist.donelist;
-  // });
   const dispatch = useAppDispatch();
 
   const socket = io({ transports: ["websocket"] });
 
   const [isConnected, setIsConnected] = useState(socket.connected);
 
-  const { data } = ordersService.useGetCompletedDishesQuery("");
-  const [setComplitedDishDoneTriger, {}] = ordersService.useDeleteDeliveredDishMutation()
+  const { data, isLoading } = ordersService.useGetCompletedDishesQuery("");
+  const [setComplitedDishDoneTriger, {}] =
+    ordersService.useDeleteDeliveredDishMutation();
 
-const DoneList = useMemo(() =>{
-  return data? data : {}
-}, [data])
+  const DoneList = useMemo(() => {
+    return data ? data : {};
+  }, [data]);
 
   useEffect(() => {
     function onConnect() {
@@ -61,121 +59,134 @@ const DoneList = useMemo(() =>{
     };
   }, []);
 
-  const SetComplitedDishDone = (e: React.MouseEvent<HTMLButtonElement>, id: string) => {
+  const SetComplitedDishDone = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    id: string
+  ) => {
     e.preventDefault();
-    setComplitedDishDoneTriger(id).unwrap()
-    .then(() => {
-      dispatch(DeleteDoneList(id))
-    })
-    .catch((error) =>{
-      console.log(error)
-    })
+    setComplitedDishDoneTriger(id)
+      .unwrap()
+      .then(() => {
+        dispatch(DeleteDoneList(id));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
-  
+
   return (
     <div>
-      <Row>
-        <Col md={{ span: 12, offset: 6 }}>
-          <Typography.Title level={1} style={{ textAlign: "center" }}>
-            Completed Dishes
-          </Typography.Title>
-          {Object.keys(DoneList).length === 0 ? (
+      <div
+        style={{
+          maxWidth: "800px",
+          margin: "0 auto",
+        }}
+      >
+        <Typography.Title level={1} style={{ textAlign: "center" }}>
+          Completed Dishes
+        </Typography.Title>
+        {isLoading ? (
+          <Spin tip="Loading" size="large">
+            <div className="content" />
+          </Spin>
+        ) : Object.keys(DoneList).length === 0 ? (
           <Empty />
-        )
-        :(
+        ) : (
           <>
-          {Object.keys(DoneList).map((id) => {
-            const post = DoneList[id];
-            return (
-              <div
-                style={{
-                  background: "white",
-                  borderRadius: "0.5rem",
-                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                  padding: "1rem",
-                  marginBottom: "1rem",
-                }}
-                key={id}
-              >
+            {Object.keys(DoneList).map((id) => {
+              const post = DoneList[id];
+              return (
                 <div
                   style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
+                    background: "white",
+                    borderRadius: "0.5rem",
+                    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                    padding: "1rem",
+                    marginBottom: "1rem",
                   }}
+                  key={id}
                 >
-                  <Typography.Title level={2}>{post.name}</Typography.Title>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Typography.Title
-                    level={3}
-                  >{`Table number: ${post.tableNumber}`}</Typography.Title>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  {post.comment !== "" && (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography.Title level={2}>{post.name}</Typography.Title>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
                     <Typography.Title
                       level={3}
-                      style={{ marginBottom: "0.5rem" }}
-                    >{`comment: ${post.comment}`}</Typography.Title>
-                  )}
-                </div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Image
-                    width={600}
-                    src={post.image}
+                    >{`Table number: ${post.tableNumber}`}</Typography.Title>
+                  </div>
+                  <div
                     style={{
-                      width: "100%",
-                      marginBottom: "0.5rem",
-                      borderRadius: "0.5rem",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
-                    alt="Dish Image"
-                  />
-                </div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: "0.5rem",
-                  }}
-                >
-                  <Typography.Title level={2}>{post.quantity}</Typography.Title>
-                  <Button
-                    type="primary"
-                    size="large"
-                    onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-                      SetComplitedDishDone(e, id)
-                    }
                   >
-                    Delivered
-                  </Button>
+                    {post.comment !== "" && (
+                      <Typography.Title
+                        level={3}
+                        style={{ marginBottom: "0.5rem" }}
+                      >{`comment: ${post.comment}`}</Typography.Title>
+                    )}
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Image
+                      width={600}
+                      src={post.image}
+                      style={{
+                        width: "100%",
+                        marginBottom: "0.5rem",
+                        borderRadius: "0.5rem",
+                      }}
+                      alt="Dish Image"
+                    />
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: "0.5rem",
+                    }}
+                  >
+                    <Typography.Title level={2}>
+                      {post.quantity}
+                    </Typography.Title>
+                    <Button
+                      type="primary"
+                      size="large"
+                      onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+                        SetComplitedDishDone(e, id)
+                      }
+                    >
+                      Delivered
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-          </>)}
-        </Col>
-      </Row>
+              );
+            })}
+          </>
+        )}
+      </div>
     </div>
   );
 };
