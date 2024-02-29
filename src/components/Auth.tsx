@@ -15,7 +15,7 @@ import { toast } from "react-toastify";
 
 import { useForm, Controller } from "react-hook-form";
 
-import { CustomInput } from "../ui-kit/CustomInput";
+import { CoreInput } from "../ui-kit/CoreInput";
 
 const { Title } = Typography;
 
@@ -114,7 +114,7 @@ const Auth: FC = () => {
             name="username"
             //rules={[{ required: true, message: "Please input your login!" }]}
           >
-            <CustomInput
+            <CoreInput
               control={control}
               label="Login"
               name="name"
@@ -132,7 +132,7 @@ const Auth: FC = () => {
             name="password"
             //rules={[{ required: true, message: "Please input your password!" }]}
           >
-            <CustomInput
+            <CoreInput
               // prefix={<LockOutlined className="site-form-item-icon" />}
               type="password"
               placeholder="Your password"

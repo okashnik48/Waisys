@@ -3,7 +3,7 @@ import { Controller } from "react-hook-form";
 import { Input } from "antd";
 import { SizeType } from "antd/es/config-provider/SizeContext";
 
-export interface CustomInputProps {
+type Props = {
   label: string;
   control: any;
   name: string;
@@ -14,14 +14,14 @@ export interface CustomInputProps {
   type: string;
 }
 
-export const CustomInput = ({
+export const CoreInput = ({
   label,
   type = "text",
   size,
   prefix,
   placeholder = "Enter Response",
   ...rest
-}: CustomInputProps) => {
+}: Props) => {
   return (
     <div className="input-container">
       <label>{label}</label>

@@ -1,21 +1,17 @@
-import React, { FC, useMemo, useState } from "react";
+import React, { FC } from "react";
 
+import { Button, Space, ColorPicker, Form } from "antd";
 import {
-  Modal,
-  Input,
-  Select,
-  Button,
-  SelectProps,
-  Space,
-  ColorPicker,
-  Tag,
-  Form,
-} from "antd";
-import { useForm } from "react-hook-form";
+  Control,
+  FieldValues,
+  Path,
+  useController,
+  useForm,
+} from "react-hook-form";
 import adminDishesService from "../services/admin/admin-dishes.service";
 import { useAppDispatch } from "../store/store-hooks";
 import postService from "../services/posts.service";
-import { CustomInput } from "./CustomInput";
+import { CoreInput } from "./CoreInput";
 
 type DefaultValues = {
   color: string;
@@ -23,9 +19,37 @@ type DefaultValues = {
   type: string;
 };
 
-const TagInput: FC<{ index?: number}> = ({ index}) => {
-  console.log(index);
-  const { register, handleSubmit, setValue, control } = useForm<DefaultValues>({
+type Props<T extends FieldValues = FieldValues> = {
+  name: Path<T>;
+  control: Control<T, any>;
+};
+
+function ControlledColorPicker<T extends FieldValues>({
+  control,
+  name,
+}: Props<T>) {
+  
+  const { field } = useController({
+    name,
+    control,
+  });
+
+  return (
+    <ColorPicker
+      style={{
+        display: "inline-block",
+        marginLeft: "10px",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+      {...field}
+      onChange={(color) => field.onChange(`#${color.toHex()}`)}
+    />
+  );
+}
+
+const TagInput: FC<{ index?: number }> = ({ index }) => {
+  const { handleSubmit, setValue, control } = useForm<DefaultValues>({
     defaultValues: {
       name: "",
       color: "#2B84DB",
@@ -56,34 +80,25 @@ const TagInput: FC<{ index?: number}> = ({ index}) => {
       })}
     >
       <Space>
-        <div style={{width: "150px"}}>
-        <CustomInput
-          control={control}
-          label=""
-          name="name"
-          type="text"
-          rules={{ required: "Tag name is required" }}
-          size="large"
-          placeholder="New tag"
-        />
+        <div style={{ width: "150px" }}>
+          <CoreInput
+            control={control}
+            label=""
+            name="name"
+            type="text"
+            rules={{ required: "Tag name is required" }}
+            size="large"
+            placeholder="New tag"
+          />
         </div>
-        <ColorPicker
-          style={{
-            display: "inline-block",
-            marginLeft: "10px",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-          {...register("color")}
-          onChange={(color) => setValue("color", `#${color.toHex()}`)}
-        />
+        <ControlledColorPicker control={control} name="color" />
         <Button
           type="primary"
           htmlType="submit"
           disabled={false}
           style={{ marginLeft: "5px" }}
         >
-          add
+          Add
         </Button>
       </Space>
     </Form>
