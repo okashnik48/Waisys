@@ -8,17 +8,17 @@ import {
   Select,
   Button,
   SelectProps,
-  Space,
-  ColorPicker,
   Tag,
 } from "antd";
 
-import { SetFieldNewDish, SetAddDishModal } from "../../store/slices/admin";
+import { SetFieldNewDish, SetAddDishModal, ClearNewDish } from "../../store/slices/admin";
 
 import FileUploader from "./DownLoadImage";
 
 import adminDishesService from "../../services/admin/admin-dishes.service";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
+import { toast } from "react-toastify";
+import TagInput from "../../ui-kit/TagInput";
 
 type TagRender = SelectProps["tagRender"];
 
@@ -34,10 +34,6 @@ interface ModalType {
   modalAddDishStatus: boolean;
   modalAddUSerStatus: boolean;
 }
-type TagsOptions = {
-  value: string;
-  label: string;
-};
 
 const AdminCreateDish = () => {
   const dispatch = useAppDispatch();
@@ -52,39 +48,24 @@ const AdminCreateDish = () => {
   };
 
   const [AddDishTrigger] = adminDishesService.useCreateDishMutation();
-  const [tagOptions, setTagOptions] = useState<SelectProps["options"]>();
-  const { data: tagList } = adminDishesService.useGetTagsQuery("");
-  const { data: tagsProps } = adminDishesService.useGetTagsQuery("");
-  useMemo(() => {
-    setTagOptions(
-      tagList
-        ? Object.keys(tagList).map((tag) => ({
-            value: tagList[tag],
+  const { tagsProps } = adminDishesService.useGetTagsQuery("", {
+    selectFromResult: ({ data }) => ({
+      tagsProps: data
+        ? Object.keys(data).map((tag) => ({
+            value: data[tag],
             label: tag,
           }))
-        : []
-    );
-  }, [tagList]);
-  useMemo(() => {
-    setTagOptions(
-      tagsProps
-        ? Object.keys(tagsProps).map((tag) => ({
-            value: tagsProps[tag],
-            label: tag,
-          }))
-        : []
-    );
-  }, [tagsProps]);
+        : [],
+    }),
+  });
   const AddNewDish = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     if (!hasEmptyField()) {
-      AddDishTrigger({ body: NewDish })
-        .unwrap()
-        .then((data) => {
-          console.log(data);
-        });
+      AddDishTrigger({ body: NewDish }).then(() =>{
+        dispatch(ClearNewDish(null));
+      })
     } else {
-      alert("Some fields are empty");
+      toast.info("Some fields are empty")
     }
   };
   const tagRender: TagRender = (props) => {
@@ -182,21 +163,10 @@ const AdminCreateDish = () => {
             }}
             dropdownStyle={{ width: "auto" }}
             onChange={(values, options) => {
-              const selectedTags = options
-                .map((option: { label: string; value: string }) => {
-                  return {
-                    [option.label]: option.value,
-                  };
-                })
-                .reduce(
-                  (
-                    acc: Record<string, string>,
-                    curr: Record<string, string>
-                  ) => {
-                    return { ...acc, ...curr };
-                  },
-                  {}
-                );
+              const selectedTags = options.reduce((acc, option) => {
+                acc[option.label] = option.value;
+                return acc;
+              }, {});
               dispatch(
                 SetFieldNewDish({
                   value: selectedTags,
@@ -212,9 +182,9 @@ const AdminCreateDish = () => {
                   }))
                 : []
             }
-            options={tagOptions}
+            options={tagsProps}
           />
-
+  <TagInput type = "New-Dish-Tag" />
           <div className="w-full">
             <Button
               onClick={(e) => {

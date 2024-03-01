@@ -46,8 +46,6 @@ const adminUsersService = serviceApi.injectEndpoints({
             }),
             providesTags: ["users"],
             onQueryStarted(arg, api) {
-                // set up a function for query fulfilled for all mutations in this services
-                // this func will be in the src level as util
                 api.queryFulfilled
                   .then((data) => {
                     console.log(data);

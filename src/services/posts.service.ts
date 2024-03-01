@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import { serviceApi } from "./app.service";
 
 type dishesReply = {
@@ -9,7 +10,8 @@ type dishesReply = {
     tags: Record<string, string>;
     id: string;
     post: string;
-
+    count? : number;
+    comment? : string;
   }[]
 
 const postService = serviceApi.injectEndpoints({
@@ -19,7 +21,18 @@ const postService = serviceApi.injectEndpoints({
                 url: 'dishes',
                 method: 'GET',
             }),
+            onQueryStarted(arg, api) {
+                api.queryFulfilled
+                  .then((data) => {
+                    toast.success("Success");
+                  })
+                  .catch(({ data }) => {
+                    toast.error(data.error);
+                  });
+              },
+            providesTags: ["tags", "admin-dish"],
         }),
+        
     })
 })
 

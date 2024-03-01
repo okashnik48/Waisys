@@ -17,8 +17,8 @@ import { Spin } from "antd";
 
 function App() {
   const userRole = useAppSelector((state) => state.user.user).role;
-  const [isTokensLoading, setIsTokensLoading] = useState<boolean>(true)
-  const dispatch = useAppDispatch()
+  const [isTokensLoading, setIsTokensLoading] = useState<boolean>(true);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     type Tokens = {
@@ -41,28 +41,28 @@ function App() {
         .unwrap()
         .then((data) => {
           dispatch(SetUserProperties(data));
-          setIsTokensLoading(false)
+          setIsTokensLoading(false);
         });
     } else {
       console.error("No tokens found in localStorage");
-      setIsTokensLoading(false)
+      setIsTokensLoading(false);
     }
   }, []);
-  if (isTokensLoading){
+  if (isTokensLoading) {
     return (
-      <>
-                <Spin tip="Loading" size="large">
-            <div className="content" />
-          </Spin>
-      </>
-    )
+      <div style={{ marginBottom: "50px" }}>
+        <Spin style={{ marginBottom: "50px" }} tip="Loading" size="large">
+          <div className="content" />
+        </Spin>
+      </div>
+    );
   }
   if (!userRole) {
     return (
       <BrowserRouter>
         <Routes>
           {ROUTES_CONFIG.public.map(({ element, path }, index) => (
-            <Route path={path} element={element} />
+            <Route key={path} path={path} element={element} />
           ))}
         </Routes>
         <ToastContainer />
@@ -75,7 +75,7 @@ function App() {
       <NavigationLayout role={userRole}>
         <Routes>
           {ROUTES_CONFIG.private[userRole].map(({ element, path }, index) => (
-            <Route path={path} element={element} />
+            <Route key={path} path={path} element={element} />
           ))}
         </Routes>
         {userRole === "ADMIN" && (

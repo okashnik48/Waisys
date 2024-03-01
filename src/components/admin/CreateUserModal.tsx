@@ -2,13 +2,14 @@
 
 import React from "react";
 
-import { SetFieldNewUser } from "../../store/slices/admin-user-list";
+import { SetFieldNewUser, ClearNewUser } from "../../store/slices/admin-user-list";
 
 import { SetAddUserModal } from "../../store/slices/admin";
 
 import { Modal, Input, Select, Button } from "antd";
 import adminUsersService from "../../services/admin/admin-users.service";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
+import { toast } from "react-toastify";
 
 interface NewUser {
   firstName: string;
@@ -34,10 +35,11 @@ const CreateUserModal = () => {
 
   const AddNewUser = (e: React.MouseEvent<HTMLElement>) => {
     if (!hasEmptyField()) {
-      e.preventDefault();
-      AddUserTrigger({ body: newUser })
+      AddUserTrigger({ body: newUser }).then(() =>{
+        dispatch(ClearNewUser(null))
+      })
     } else {
-      alert("Some fields are empty");
+      toast.info("Some fields are empty")
     }
   };
 

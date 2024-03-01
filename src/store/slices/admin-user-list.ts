@@ -56,6 +56,15 @@ export const AdminUsersListSlice = createSlice({
     SetFieldNewUser: (state, action: PayloadAction<{ fieldname: string; value: string }>) => {
       state.newuser[action.payload.fieldname] = action.payload.value;
     },
+    ClearNewUser: (state, action) =>{
+      state.newuser = {
+        firstName: "",
+        lastName: "",
+        role: "",
+        username: "",
+        password: "",
+      }
+    }
   },
 });
 
@@ -67,6 +76,7 @@ export const {
   ChangeUser,
   ChangeCurrentField,
   SetFieldNewUser,
+  ClearNewUser,
 } = AdminUsersListSlice.actions;
 
 export const adminUsersListReducer = AdminUsersListSlice.reducer;

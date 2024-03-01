@@ -10,14 +10,14 @@ import { io } from "socket.io-client";
 import { Button, Image, Typography, Empty, Spin } from "antd";
 
 const CookPanel = () => {
-  const socket = io({ transports: ["websocket"] });
+  const socket = io("https://waisys.dev.m0e.space/", { transports: ["websocket"] });
 
   const [isConnected, setIsConnected] = useState(socket.connected);
 
   const { data, refetch, isLoading } = orderService.useGetOrdersQuery(null);
 
   const cooksList = useMemo(() => {
-    return data ? Object.values(data) : [];
+    return data ? Object.values(data).sort((a, b) => new Date(a.createdAt).getDate() - new Date(b.createdAt).getDate()) : [];
   }, [data]);
 
   const [changeOrderStatusTrigger] = orderService.usePatchOrderMutation();

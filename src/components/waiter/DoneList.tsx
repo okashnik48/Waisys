@@ -2,10 +2,6 @@ import React, { useMemo } from "react";
 
 import { useEffect, useState } from "react";
 
-import {
-  SetDoneDishesList,
-  DeleteDoneList,
-} from "../../store/slices/done-list";
 
 import { io } from "socket.io-client";
 
@@ -18,11 +14,11 @@ import { Button, Col, Empty, Image, Row, Spin, Typography } from "antd";
 const DoneDishesList = () => {
   const dispatch = useAppDispatch();
 
-  const socket = io({ transports: ["websocket"] });
+  const socket = io("https://waisys.dev.m0e.space/", { transports: ["websocket"] });
 
   const [isConnected, setIsConnected] = useState(socket.connected);
 
-  const { data, isLoading } = ordersService.useGetCompletedDishesQuery("");
+  const { data, isLoading, refetch } = ordersService.useGetCompletedDishesQuery("");
   const [setComplitedDishDoneTriger, {}] =
     ordersService.useDeleteDeliveredDishMutation();
 
@@ -40,22 +36,14 @@ const DoneDishesList = () => {
       setIsConnected(false);
     }
 
-    function onFooEvent(value: any) {
-      console.log(value.data);
-      let NewDoneDish = {
-        [value.data.id]: value.data,
-      };
-      dispatch(SetDoneDishesList(NewDoneDish));
-    }
-
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
-    socket.on("waiter.dishes.complete", onFooEvent);
+    socket.on("waiter.dishes.complete", refetch);
 
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
-      socket.off("waiter.dishes.complete", onFooEvent);
+      socket.off("waiter.dishes.complete", refetch);
     };
   }, []);
 
@@ -65,13 +53,6 @@ const DoneDishesList = () => {
   ) => {
     e.preventDefault();
     setComplitedDishDoneTriger(id)
-      .unwrap()
-      .then(() => {
-        dispatch(DeleteDoneList(id));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   };
 
   return (

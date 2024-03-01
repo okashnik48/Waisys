@@ -64,6 +64,7 @@ const FileUploader: React.FC = () => {
           beforeUpload={handleBeforeUpload}
           className="hidden"
           onChange={handleOnChange}
+          onRemove = {() => setImage(undefined)}
         >
           <Button icon={<UploadOutlined />}>Upload File</Button>
         </Upload>

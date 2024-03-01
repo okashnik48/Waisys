@@ -64,7 +64,6 @@ const adminDishesService = serviceApi.injectEndpoints({
       onQueryStarted(arg, api) {
         api.queryFulfilled
           .then((data) => {
-            console.log(data);
             toast.success("Success");
           })
           .catch(({ data }) => {

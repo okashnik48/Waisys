@@ -1,19 +1,10 @@
 "use client";
 
-import React from "react";
-
-import { useEffect, useMemo, useState } from "react";
-
-import {
-  AddNewPost,
-  RemovePost,
-  SetFieldForChangedDish,
-  ChangeDish,
-} from "../../store/slices/admin";
+import React, { useMemo, useState } from "react";
 
 import postService from "../../services/posts.service";
 import adminDishesService from "../../services/admin/admin-dishes.service";
-import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
+import { useAppDispatch } from "../../store/store-hooks";
 
 import {
   Input,
@@ -22,34 +13,31 @@ import {
   Image,
   Typography,
   SelectProps,
-  ColorPicker,
-  Space,
   Tag,
 } from "antd";
-import { time } from "console";
+
 import TagInput from "../../ui-kit/TagInput";
 
-type DishTag = {
-  value: string;
-  color: string;
-};
-
-type DishTags = Record<string, DishTag>;
-interface Post {
-  id: string;
+type Post = {
   name: string;
   description: string;
   price: number;
   image: string;
+  createdAt: string;
   tags: Record<string, string>;
-}
+  id: string;
+  post: string;
+  count?: number;
+  comment?: string;
+};
+
 type TagRender = SelectProps["tagRender"];
 
 const AdminDishesList = () => {
   const dispatch = useAppDispatch();
   const { data: dishesListReply } = postService.useDishesQuery("");
-  const [deleteDishTriger] = adminDishesService.useDeleteDishMutation();
-  const [changeDishTriger] = adminDishesService.useChangeDishMutation();
+  const [deleteDishTrigger] = adminDishesService.useDeleteDishMutation();
+  const [changeDishTrigger] = adminDishesService.useChangeDishMutation();
   const { tagsProps } = adminDishesService.useGetTagsQuery("", {
     selectFromResult: ({ data }) => ({
       tagsProps: data
@@ -60,10 +48,10 @@ const AdminDishesList = () => {
         : [],
     }),
   });
-  const dishesList = useMemo(() =>{
-    return dishesListReply
-    ? dishesListReply
-    : []}, [dishesListReply])
+
+  const dishesList = useMemo(() => {
+    return dishesListReply ? dishesListReply : [];
+  }, [dishesListReply]);
 
   const tagRender: TagRender = (props) => {
     const { label, value, closable, onClose } = props;
@@ -84,10 +72,11 @@ const AdminDishesList = () => {
     );
   };
 
-  const ChangeFieldDish = (index: number, label: string, value: string) => {
+  const ChangeFieldDish = (index: number, label: keyof Post, value: string) => {
     dispatch(
       postService.util.updateQueryData("dishes", "", (draftPost) => {
-        draftPost[index][label] = value;  
+
+        draftPost[index][label] = value;
       })
     );
   };
@@ -98,7 +87,7 @@ const AdminDishesList = () => {
     e: React.MouseEvent<HTMLElement, MouseEvent>,
     itemId: string
   ) => {
-    deleteDishTriger({ id: itemId });
+    deleteDishTrigger({ id: itemId });
   };
 
   const ChangeCurrentDish = (
@@ -106,10 +95,8 @@ const AdminDishesList = () => {
     itemId: string,
     index: number
   ) => {
-    console.log(dishesList);
-    changeDishTriger({ id: itemId, body: dishesList[index] });
+    changeDishTrigger({ id: itemId, body: dishesList[index] });
   };
-
 
   const SearchedPosts = useMemo(
     () =>
@@ -137,6 +124,7 @@ const AdminDishesList = () => {
       />
       {SearchedPosts.map((post, index) => (
         <div
+        key = {post.id}
           style={{
             display: "flex",
             flexDirection: "row",
@@ -213,7 +201,7 @@ const AdminDishesList = () => {
                   options={tagsProps}
                 />
               </div>
-              <TagInput index={index}/>
+              <TagInput index={index} />
             </div>
             <div style={{ marginTop: "10px" }}>
               <Button

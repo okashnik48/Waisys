@@ -24,48 +24,13 @@ type DefaultValues = {
   password: string;
 };
 
-// TextInput => ui-kit
-// const CustomInput = ({
-//   label,
-//   type = "text",
-//   placeholder = "Enter Response",
-//   ...rest
-// }: CustomInputProps) => {
-//   return (
-//     <div className="input-container">
-//       <label>{label}</label>
-//       <Controller
-//         name={rest.name}
-//         control={rest.control}
-//         rules={rest.rules}
-//         render={({ field, fieldState }) => (
-//           <Input
-//             bordered={false}
-//             {...field}
-//             type={type}
-//             placeholder={placeholder}
-//             className={
-//               fieldState.invalid ? "custom-input error" : "custom-input"
-//             }
-//           />
-//         )}
-//       />
-//     </div>
-//   );
-// };
-
 const Auth: FC = () => {
-  // const [loginInput, setLoginInput] = useState<string>("");
-  // const [passwordInput, setPasswordInput] = useState<string>("");
-
   const { handleSubmit, control } = useForm<DefaultValues>({
     defaultValues: {
       name: "",
       password: "",
     },
   });
-
-  // let user = useAppSelector((state: any) => state.user.user);
   const dispatch = useAppDispatch();
 
   const [loginTrigger] = authService.useLoginMutation();
@@ -78,6 +43,7 @@ const Auth: FC = () => {
     })
       .unwrap()
       .then(({ accessToken, refreshToken }) => {
+        console.log("@3423")
         dispatch(SetTokens({ accessToken, refreshToken }));
         localStorage.setItem(
           "tokens",
@@ -88,7 +54,10 @@ const Auth: FC = () => {
           .then((data) => {
             dispatch(SetUserProperties(data));
           });
-      });
+      })
+      .catch(() =>{
+        console.log("324234")
+      })
   };
 
   return (
@@ -112,7 +81,6 @@ const Auth: FC = () => {
         >
           <Form.Item
             name="username"
-            //rules={[{ required: true, message: "Please input your login!" }]}
           >
             <CoreInput
               control={control}
@@ -123,17 +91,12 @@ const Auth: FC = () => {
               size="large"
               placeholder="Your login"
               rules={[{ required: true, message: "Please input your login!" }]}
-              // {...register("name")}
-              // value={loginInput}
-              // onChange={(e) => setLoginInput(e.target.value)}
             />
           </Form.Item>
           <Form.Item
             name="password"
-            //rules={[{ required: true, message: "Please input your password!" }]}
           >
             <CoreInput
-              // prefix={<LockOutlined className="site-form-item-icon" />}
               type="password"
               placeholder="Your password"
               label="Password"
@@ -142,9 +105,6 @@ const Auth: FC = () => {
               prefix={<LockOutlined className="site-form-item-icon" />}
               size="large"
               rules={[{ required: true, message: "Please input your password!" }]}
-              // {...register("password")}
-              // value={passwordInput}
-              // onChange={(e) => setPasswordInput(e.target.value)}
             />
           </Form.Item>
           <Form.Item>
@@ -152,10 +112,6 @@ const Auth: FC = () => {
               type="primary"
               htmlType="submit"
               className="login-form-button"
-              // onClick={() => {
-              //   handlerSubmit((data) => console.log(data));
-              //   loginHandler;
-              // }}
             >
               Log in to your account
             </Button>

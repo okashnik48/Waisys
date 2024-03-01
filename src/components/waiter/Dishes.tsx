@@ -119,7 +119,7 @@ const Dishes: FC = () => {
 
   const [searchText, setSearchText] = useState("");
   const [searchTags, setSearchTags] = useState<string[]>([]);
-  let SearchedPosts: Dish[] = [];
+  // let SearchedPosts: Dish[] = [];
 
   const AddDish = (index: number) => {
     const selectedPostId = crypto.randomUUID();
@@ -136,7 +136,7 @@ const Dishes: FC = () => {
     ChangeFieldDish(index, "count", 1);
   };
 
-  SearchedPosts = useMemo(() => {
+  const SearchedPosts = useMemo(() => {
     let NewPosts = posts.filter((Dish: Dish) =>
       Dish.name.toLowerCase().includes(searchText.toLowerCase())
     );
@@ -245,8 +245,9 @@ const Dishes: FC = () => {
               <Empty />
             ) : (
               <>
-                {SearchedPosts.map((post: Dish, index: number) => (
-                  <Card key={post.id}>
+                {SearchedPosts.map((post: Dish) => {
+                 const index = posts.findIndex(searchedPost => searchedPost.id === post.id);
+                  return <Card key={post.id}>
                     <div
                       style={{
                         alignItems: "center",
@@ -275,6 +276,7 @@ const Dishes: FC = () => {
                       <div style={{ display: "block" }}>
                         {Object.keys(post.tags).map((label) => (
                           <Tag
+                            key = {label}
                             color={post.tags[label]}
                             style={{
                               fontSize: "16px",
@@ -346,7 +348,7 @@ const Dishes: FC = () => {
                       </Button>
                     </div>
                   </Card>
-                ))}
+})}
               </>
             )}
           </>

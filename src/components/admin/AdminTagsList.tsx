@@ -11,7 +11,15 @@ const AdminTagsList: FC = () => {
   const [ChangeTagsTrigger] = adminDishesService.useChangeTagsMutation();
   const [DeleteTagTrigger] = adminDishesService.useDeleteTagMutation();
   
-  const tagsList = useMemo(() => (data ? data : {}), [data]);
+  const tagsList = useMemo(() => {
+    console.log(data)
+    if (data){
+      return data;
+    }
+    else {
+      return {}
+    }
+    }, [data]);
 
   const ChangeHandler = (
     e: React.MouseEvent<HTMLElement, MouseEvent>,
@@ -39,7 +47,7 @@ const AdminTagsList: FC = () => {
         Object.keys(tagsList).map((label) => {
           let color = tagsList[label];
           return (
-            <div>
+            <div key = {label}>
               <Space>
                 <h3>{label}</h3>
                 <ColorPicker

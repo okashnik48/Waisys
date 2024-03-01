@@ -8,6 +8,7 @@ type OrderDish = {
   id: string;
   comment: string;
   quantity: number;
+  createdAt: string;
   isAccepted?: boolean;
   isCompleted?: boolean;
   isDeclined?: boolean;

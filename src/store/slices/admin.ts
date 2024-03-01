@@ -74,6 +74,9 @@ const AdminSlice = createSlice({
     ) => {
       (state.newDish as any)[action.payload.fieldname] = action.payload.value;
     },
+    AddTagNewDish: (state, action: PayloadAction<Record<string, string>>) => {
+      state.newDish.tags = {...state.newDish.tags, ...action.payload}
+    },
     SetAddUserModal: (state, action: PayloadAction<{ status: boolean }>) => {
       state.modalStatus.modalAddUSerStatus = action.payload.status;
     },
@@ -83,6 +86,15 @@ const AdminSlice = createSlice({
     ChangeDish: (state, action: PayloadAction<{ id: string; post: Post }>) => {
       state.posts[action.payload.id] = action.payload.post;
     },
+    ClearNewDish: (state, action) =>{
+      state.newDish = {
+        name: "",
+        description: "",
+        price: null,
+        image: "",
+        tags: {},
+      }
+    }
   },
 });
 
@@ -91,9 +103,11 @@ export const {
   RemovePost,
   SetFieldForChangedDish,
   SetFieldNewDish,
+  AddTagNewDish,
   SetAddUserModal,
   SetAddDishModal,
   ChangeDish,
+  ClearNewDish,
 } = AdminSlice.actions;
 
 export const adminReducer = AdminSlice.reducer;

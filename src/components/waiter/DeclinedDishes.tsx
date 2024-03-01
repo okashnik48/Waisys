@@ -2,15 +2,12 @@ import React, { useMemo } from "react";
 
 import { useEffect, useState } from "react";
 
-import { Image, Button, Row, Col, Typography, Empty, Spin } from "antd";
+import { Image, Button, Typography, Empty, Spin } from "antd";
 
 import ordersService from "../../services/orders.service";
 
-import { SetDeclinedDishesList } from "../../store/slices/declined-dishes";
 
 import { io } from "socket.io-client";
-
-import { useAppSelector, useAppDispatch } from "../../store/store-hooks";
 
 type DeclinedDish = {
   tableNumber: number;
@@ -23,11 +20,12 @@ type DeclinedDish = {
 type DeclinedDishReply = Record<string, DeclinedDish>;
 
 const DoneDishesList = () => {
-  const dispatch = useAppDispatch();
 
-  const socket = io({ transports: ["websocket"] });
+  const socket = io("https://waisys.dev.m0e.space/", { transports: ["websocket"] });
 
   const [isConnected, setIsConnected] = useState(socket.connected);
+
+  const { data, isLoading, refetch } = ordersService.useGetDeclinedDishesQuery("");
 
   useEffect(() => {
     function onConnect() {
@@ -39,33 +37,32 @@ const DoneDishesList = () => {
       setIsConnected(false);
     }
 
-    function ProcessDeclineDish(value: DeclinedDishReply) {
-      dispatch(
-        ordersService.util.updateQueryData(
-          "GetDeclinedDishes",
-          "",
-          (existingData) => {
-            return {
-              ...existingData,
-              newData: value.data,
-            };
-          }
-        )
-      );
-    }
+    // function ProcessDeclineDish(value: DeclinedDishReply) {
+    //   dispatch(
+    //     ordersService.util.updateQueryData(
+    //       "GetDeclinedDishes",
+    //       "",
+    //       (existingData) => {
+    //         return {
+    //           ...existingData,
+    //           newData: value.data,
+    //         };
+    //       }
+    //     )
+    //   );
+    // }
 
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
-    socket.on("waiter.dishes.decline", ProcessDeclineDish);
+    socket.on("waiter.dishes.decline", refetch);
 
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
-      socket.off("waiter.dishes.decline", ProcessDeclineDish);
+      socket.off("waiter.dishes.decline", refetch);
     };
   }, []);
 
-  const { data, isLoading } = ordersService.useGetDeclinedDishesQuery("");
   const [DeleteDeclinedDishTrigger, {}] =
     ordersService.useDeleteDeliveredDishMutation();
 

@@ -21,7 +21,6 @@ interface Dish {
 }
 
 const SelectedList: FC = () => {
-  const user = useAppSelector((state) => state.user.user);
   const ListDish: Dish[] = Object.values(
     useAppSelector((state) => state.selectedPosts.selectedPosts)
   );

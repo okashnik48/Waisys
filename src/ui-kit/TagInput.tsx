@@ -13,6 +13,8 @@ import { useAppDispatch } from "../store/store-hooks";
 import postService from "../services/posts.service";
 import { CoreInput } from "./CoreInput";
 
+import { AddTagNewDish } from "../store/slices/admin";
+
 type DefaultValues = {
   color: string;
   name: string;
@@ -28,7 +30,6 @@ function ControlledColorPicker<T extends FieldValues>({
   control,
   name,
 }: Props<T>) {
-  
   const { field } = useController({
     name,
     control,
@@ -48,7 +49,7 @@ function ControlledColorPicker<T extends FieldValues>({
   );
 }
 
-const TagInput: FC<{ index?: number }> = ({ index }) => {
+const TagInput: FC<{ index?: number; type?: string }> = ({ index, type }) => {
   const { handleSubmit, setValue, control } = useForm<DefaultValues>({
     defaultValues: {
       name: "",
@@ -58,8 +59,8 @@ const TagInput: FC<{ index?: number }> = ({ index }) => {
   const dispatch = useAppDispatch();
   const [AddTagTrigger] = adminDishesService.useAddTagMutation();
   const onSubmit = (data: DefaultValues) => {
-    AddTagTrigger(data).then(() => {
       if (index !== undefined) {
+        console.log(index);
         dispatch(
           postService.util.updateQueryData("dishes", "", (draftPost) => {
             draftPost[index]["tags"] = {
@@ -69,9 +70,14 @@ const TagInput: FC<{ index?: number }> = ({ index }) => {
           })
         );
       }
+      else if (type === "New-Dish-Tag") {
+        dispatch(AddTagNewDish({ [data.name]: data.color }));
+      }
+      else {
+        AddTagTrigger(data)
+      }
       setValue("name", "");
       setValue("color", "#2B84DB");
-    });
   };
   return (
     <Form
