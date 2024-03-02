@@ -18,45 +18,13 @@ import TagInput from "../../ui-kit/TagInput";
 import DishItem from "./ui-elements/DishItem";
 
 const AdminDishesList = () => {
-  const dispatch = useAppDispatch();
-  const { data: dishesListReply } = postService.useDishesQuery("");
-  const [deleteDishTrigger] = adminDishesService.useDeleteDishMutation();
-  const [changeDishTrigger] = adminDishesService.useChangeDishMutation();
+  const { data: dishesListReply } = postService.useDishesQuery(null);
 
   const dishesList = useMemo(() => {
     return dishesListReply ? dishesListReply : [];
   }, [dishesListReply]);
 
-  const ChangeFieldDish = useCallback(
-    (index: number, label: keyof Post, value: string) => {
-      dispatch(
-        postService.util.updateQueryData("dishes", "", (draftPost) => {
-          draftPost[index][label] = value;
-        })
-      );
-    },
-    []
-  );
-
   const [searchText, setSearchText] = useState("");
-
-  const DeleteDish = useCallback(
-    (e: React.MouseEvent<HTMLElement, MouseEvent>, itemId: string) => {
-      deleteDishTrigger({ id: itemId });
-    },
-    []
-  );
-
-  // const ChangeCurrentDish = useCallback(
-  //   (
-  //     e: React.MouseEvent<HTMLElement, MouseEvent>,
-  //     itemId: string,
-  //     index: number
-  //   ) => {
-
-  //   },
-  //   []
-  // );
 
   const SearchedPosts = useMemo(
     () =>

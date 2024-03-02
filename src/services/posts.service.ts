@@ -16,7 +16,7 @@ export type dishesReply = {
 
 const postService = serviceApi.injectEndpoints({
     endpoints: (builder) => ({
-        dishes: builder.query<dishesReply, any>({
+        dishes: builder.query<dishesReply, null>({
             query: () => ({
                 url: 'dishes',
                 method: 'GET',

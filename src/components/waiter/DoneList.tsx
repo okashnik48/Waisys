@@ -2,10 +2,9 @@ import React, { useMemo } from "react";
 
 import { useEffect, useState } from "react";
 
-
 import { io } from "socket.io-client";
 
-import { useAppSelector, useAppDispatch } from "../../store/store-hooks";
+import {  useAppDispatch } from "../../store/store-hooks";
 
 import ordersService from "../../services/orders.service";
 
@@ -14,13 +13,17 @@ import { Button, Col, Empty, Image, Row, Spin, Typography } from "antd";
 const DoneDishesList = () => {
   const dispatch = useAppDispatch();
 
-  const socket = io("https://waisys.dev.m0e.space/", { transports: ["websocket"] });
+  const socket = io("https://waisys.dev.m0e.space/", {
+    transports: ["websocket"],
+  });
 
   const [isConnected, setIsConnected] = useState(socket.connected);
 
-  const { data, isLoading, refetch } = ordersService.useGetCompletedDishesQuery("");
-  const [setComplitedDishDoneTriger, {}] =
+  const { data, isLoading, refetch } =
+    ordersService.useGetCompletedDishesQuery("");
+  const [setCompletedDishDoneTrigger] =
     ordersService.useDeleteDeliveredDishMutation();
+
 
   const DoneList = useMemo(() => {
     return data ? data : {};
@@ -47,12 +50,8 @@ const DoneDishesList = () => {
     };
   }, []);
 
-  const SetComplitedDishDone = (
-    e: React.MouseEvent<HTMLButtonElement>,
-    id: string
-  ) => {
-    e.preventDefault();
-    setComplitedDishDoneTriger(id)
+  const SetCompletedDishDone = (id: string) => {
+    setCompletedDishDoneTrigger(id);
   };
 
   return (
@@ -155,9 +154,7 @@ const DoneDishesList = () => {
                     <Button
                       type="primary"
                       size="large"
-                      onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-                        SetComplitedDishDone(e, id)
-                      }
+                      onClick={() => SetCompletedDishDone(id)}
                     >
                       Delivered
                     </Button>

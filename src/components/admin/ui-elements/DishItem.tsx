@@ -1,6 +1,6 @@
 import React from "react";
 
-import { dishesReply } from "../../../services/posts.service";
+import postService, { dishesReply } from "../../../services/posts.service";
 import adminDishesService from "../../../services/admin/admin-dishes.service";
 
 import { Select, Button, Image, Typography, SelectProps, Tag } from "antd";
@@ -113,10 +113,9 @@ function TagSelect<T extends FieldValues>({
           : []
       }
       options={tagsList}
-	  
       optionRender={(tag, index) => {
-		console.debug(tag, index);
-		console.debug(tag, index);
+        console.debug(tag, index);
+        console.debug(tag, index);
         return <div key={`${tag.label}_${index}`}>{tag.label}</div>;
       }}
     />
@@ -126,7 +125,8 @@ function TagSelect<T extends FieldValues>({
 function DishItem({ post }: Props) {
   const [deleteDishTrigger] = adminDishesService.useDeleteDishMutation();
   const [changeDishTrigger] = adminDishesService.useChangeDishMutation();
-
+  const state = postService.endpoints.dishes.useQueryState(null);
+  console.debug('DISHES STATE', state);
   const { control, handleSubmit, formState } = useForm<DefaultValues>({
     defaultValues: {
       description: post.description,
