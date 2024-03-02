@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 import { serviceApi } from "./app.service";
 
-type dishesReply = {
+export type dishesReply = {
     name: string;
     description: string;
     price: number;

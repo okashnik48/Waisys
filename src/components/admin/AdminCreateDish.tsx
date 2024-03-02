@@ -2,16 +2,13 @@
 
 import React, { useMemo, useState } from "react";
 
-import {
-  Modal,
-  Input,
-  Select,
-  Button,
-  SelectProps,
-  Tag,
-} from "antd";
+import { Modal, Input, Select, Button, SelectProps, Tag } from "antd";
 
-import { SetFieldNewDish, SetAddDishModal, ClearNewDish } from "../../store/slices/admin";
+import {
+  SetFieldNewDish,
+  SetAddDishModal,
+  ClearNewDish,
+} from "../../store/slices/admin";
 
 import FileUploader from "./DownLoadImage";
 
@@ -58,16 +55,18 @@ const AdminCreateDish = () => {
         : [],
     }),
   });
+
   const AddNewDish = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     if (!hasEmptyField()) {
-      AddDishTrigger({ body: NewDish }).then(() =>{
+      AddDishTrigger({ body: NewDish }).then(() => {
         dispatch(ClearNewDish(null));
-      })
+      });
     } else {
-      toast.info("Some fields are empty")
+      toast.info("Some fields are empty");
     }
   };
+
   const tagRender: TagRender = (props) => {
     const { label, value, closable, onClose } = props;
     const onPreventMouseDown = (event: React.MouseEvent<HTMLSpanElement>) => {
@@ -86,6 +85,7 @@ const AdminCreateDish = () => {
       </Tag>
     );
   };
+  
   const handleClose = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     dispatch(SetAddDishModal({ status: false }));
@@ -184,7 +184,7 @@ const AdminCreateDish = () => {
             }
             options={tagsProps}
           />
-  <TagInput type = "New-Dish-Tag" />
+          <TagInput type="New-Dish-Tag" />
           <div className="w-full">
             <Button
               onClick={(e) => {

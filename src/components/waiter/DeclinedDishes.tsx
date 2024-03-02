@@ -63,7 +63,7 @@ const DoneDishesList = () => {
     };
   }, []);
 
-  const [DeleteDeclinedDishTrigger, {}] =
+  const [DeleteDeclinedDishTrigger] =
     ordersService.useDeleteDeliveredDishMutation();
 
   const DeclinedList = useMemo(() => {

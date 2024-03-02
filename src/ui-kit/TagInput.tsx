@@ -49,7 +49,7 @@ function ControlledColorPicker<T extends FieldValues>({
   );
 }
 
-const TagInput: FC<{ index?: number; type?: string }> = ({ index, type }) => {
+const TagInput: FC<{ type?: string }> = ({ type }) => {
   const { handleSubmit, setValue, control } = useForm<DefaultValues>({
     defaultValues: {
       name: "",
@@ -58,33 +58,18 @@ const TagInput: FC<{ index?: number; type?: string }> = ({ index, type }) => {
   });
   const dispatch = useAppDispatch();
   const [AddTagTrigger] = adminDishesService.useAddTagMutation();
+
   const onSubmit = (data: DefaultValues) => {
-      if (index !== undefined) {
-        console.log(index);
-        dispatch(
-          postService.util.updateQueryData("dishes", "", (draftPost) => {
-            draftPost[index]["tags"] = {
-              ...draftPost[index]["tags"],
-              [data.name]: data.color,
-            };
-          })
-        );
-      }
-      else if (type === "New-Dish-Tag") {
-        dispatch(AddTagNewDish({ [data.name]: data.color }));
-      }
-      else {
-        AddTagTrigger(data)
-      }
-      setValue("name", "");
-      setValue("color", "#2B84DB");
+    if (type === "New-Dish-Tag") {
+      dispatch(AddTagNewDish({ [data.name]: data.color }));
+    } else {
+      AddTagTrigger(data);
+    }
+    setValue("name", "");
+    setValue("color", "#2B84DB");
   };
+
   return (
-    <Form
-      onFinish={handleSubmit(onSubmit, (error) => {
-        console.log("error", error);
-      })}
-    >
       <Space>
         <div style={{ width: "150px" }}>
           <CoreInput
@@ -100,14 +85,13 @@ const TagInput: FC<{ index?: number; type?: string }> = ({ index, type }) => {
         <ControlledColorPicker control={control} name="color" />
         <Button
           type="primary"
-          htmlType="submit"
           disabled={false}
+          onClick={handleSubmit(onSubmit)}
           style={{ marginLeft: "5px" }}
         >
           Add
         </Button>
       </Space>
-    </Form>
   );
 };
 
