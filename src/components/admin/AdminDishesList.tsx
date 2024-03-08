@@ -1,20 +1,12 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, {  useMemo, useState } from "react";
 
-import postService, { dishesReply } from "../../services/posts.service";
-import adminDishesService from "../../services/admin/admin-dishes.service";
-import { useAppDispatch } from "../../store/store-hooks";
+import postService from "../../services/posts.service";
 
 import {
   Input,
-  Select,
-  Button,
-  Image,
-  Typography,
-  SelectProps,
-  Tag,
+
 } from "antd";
 
-import TagInput from "../../ui-kit/TagInput";
 import DishItem from "./ui-elements/DishItem";
 
 const AdminDishesList = () => {
@@ -27,10 +19,13 @@ const AdminDishesList = () => {
   const [searchText, setSearchText] = useState("");
 
   const SearchedPosts = useMemo(
-    () =>
-      Object.values(dishesList).filter((Dish) =>
+    () =>{
+      let SortedPosts = Object.values(dishesList).filter((Dish) =>
         Dish.name.toLowerCase().includes(searchText.toLowerCase())
-      ),
+      )
+      SortedPosts = Object.values(SortedPosts).sort((a, b) => new Date(a.createdAt).getDate() - new Date(b.createdAt).getDate())
+      return SortedPosts;
+    },
     [searchText, dishesList]
   );
 

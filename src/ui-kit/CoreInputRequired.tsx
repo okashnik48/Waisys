@@ -2,19 +2,20 @@ import React, { ReactNode } from "react";
 import { Controller } from "react-hook-form";
 import { Form, Input } from "antd";
 import { SizeType } from "antd/es/config-provider/SizeContext";
+import { Rule } from "antd/es/form";
 
-export type Props = {
+type Props = {
   label: string;
   control: any;
   name: string;
-  rules?: Record<string, any>;
+  rules: Rule[];
   placeholder: string;
   size: SizeType;
   prefix?: ReactNode;
   type: string;
 };
 
-export const CoreInput = ({
+export const CoreInputRequired = ({
   label,
   type = "text",
   size,
@@ -29,6 +30,10 @@ export const CoreInput = ({
         name={rest.name}
         control={rest.control}
         render={({ field, fieldState }) => (
+          <Form.Item
+            name={rest.name}
+            rules={rest.rules}
+          >
             <Input
               {...field}
               size={size}
@@ -39,6 +44,7 @@ export const CoreInput = ({
                 fieldState.invalid ? "custom-input error" : "custom-input"
               }
             />
+          </Form.Item>
         )}
       />
     </div>

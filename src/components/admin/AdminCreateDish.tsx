@@ -1,8 +1,16 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React from "react";
 
-import { Modal, Input, Select, Button, SelectProps, Tag } from "antd";
+import {
+  Modal,
+  Input,
+  Select,
+  Button,
+  SelectProps,
+  Tag,
+  InputNumber,
+} from "antd";
 
 import {
   SetFieldNewDish,
@@ -17,12 +25,17 @@ import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
 import { toast } from "react-toastify";
 import TagInput from "../../ui-kit/TagInput";
 
+import { CurrencyOptions } from "../../ui-kit/CorePriceInput";
+
 type TagRender = SelectProps["tagRender"];
 
 type NewDish = {
   name: string;
   description: string;
-  price: number | null;
+  price: {
+    value: number | null;
+    currency: string;
+  };
   image: string;
   tags: Record<string, string>;
 };
@@ -85,7 +98,7 @@ const AdminCreateDish = () => {
       </Tag>
     );
   };
-  
+
   const handleClose = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     dispatch(SetAddDishModal({ status: false }));
@@ -137,17 +150,42 @@ const AdminCreateDish = () => {
           </div>
           <div className="mb-2 block">
             <label htmlFor="price">Price</label>
-            <Input
-              id="price"
-              onChange={(e) => {
+            <InputNumber
+              value={NewDish.price?.value}
+              size={"large"}
+              type={"number"}
+              placeholder={"Enter Price"}
+              name={"price"}
+              prefix={CurrencyOptions[NewDish.price?.currency]}
+              style={{ width: "100%" }}
+              onChange={(value) => {
                 dispatch(
                   SetFieldNewDish({
-                    value: parseFloat(e.target.value),
+                    value: { ...NewDish.price, value: value },
                     fieldname: "price",
                   })
                 );
               }}
-              value={NewDish.price === null ? "" : NewDish.price.toString()}
+              addonAfter={
+                <Select
+                  value={NewDish.price.currency}
+                  style={{ width: 80 }}
+                  onChange={(value) => {
+                    dispatch(
+                      SetFieldNewDish({
+                        value: { ...NewDish.price, currency: value },
+                        fieldname: "price",
+                      })
+                    );
+                  }}
+                >
+                  <Select.Option value="USD">USD</Select.Option>
+                  <Select.Option value="EUR">EUR</Select.Option>
+                  <Select.Option value="GBP">GBP</Select.Option>
+                  <Select.Option value="CNY">CNY</Select.Option>
+                  <Select.Option value="UAH">UAH</Select.Option>
+                </Select>
+              }
             />
           </div>
           <label htmlFor="countries">Tag</label>
@@ -163,10 +201,12 @@ const AdminCreateDish = () => {
             }}
             dropdownStyle={{ width: "auto" }}
             onChange={(values, options) => {
-              const selectedTags = options.reduce((acc, option) => {
+              const selectedTags: Record<string, string> = (
+                options as Array<{ value: string; label: string }>
+              ).reduce((acc, option) => {
                 acc[option.label] = option.value;
                 return acc;
-              }, {});
+              }, {} as Record<string, string>);
               dispatch(
                 SetFieldNewDish({
                   value: selectedTags,

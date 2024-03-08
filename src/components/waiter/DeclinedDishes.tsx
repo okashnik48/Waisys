@@ -9,15 +9,6 @@ import ordersService from "../../services/orders.service";
 
 import { io } from "socket.io-client";
 
-type DeclinedDish = {
-  tableNumber: number;
-  name: string;
-  description: string;
-  image: string;
-  comment: string;
-  quantity: number;
-};
-type DeclinedDishReply = Record<string, DeclinedDish>;
 
 const DoneDishesList = () => {
 
@@ -36,21 +27,6 @@ const DoneDishesList = () => {
     function onDisconnect() {
       setIsConnected(false);
     }
-
-    // function ProcessDeclineDish(value: DeclinedDishReply) {
-    //   dispatch(
-    //     ordersService.util.updateQueryData(
-    //       "GetDeclinedDishes",
-    //       "",
-    //       (existingData) => {
-    //         return {
-    //           ...existingData,
-    //           newData: value.data,
-    //         };
-    //       }
-    //     )
-    //   );
-    // }
 
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);

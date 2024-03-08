@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useMemo } from "react";
 
 import ordersService from "../../services/orders.service";
 import {
@@ -7,13 +7,16 @@ import {
   clearSelectedPosts,
 } from "../../store/slices/selected-posts";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
-import { Image, Button, Input, Row, Col, Typography, Empty } from "antd";
+import { Image, Button, Input, Typography, Empty } from "antd";
 import { toast } from "react-toastify";
 interface Dish {
   id: string;
   name: string;
   comment: string;
-  price: number;
+  price: {
+    value: number,
+    currency: string
+  };
   count: number;
   image: string;
   description: string;
@@ -27,15 +30,9 @@ const SelectedList: FC = () => {
   const Table = useAppSelector((state) => state.selectedPosts.tableNumber);
   const dispatch = useAppDispatch();
 
-  const [totalPrice, SetTotalPrice] = useState<number>(0);
-  useEffect(() => {
-    let sum = 0;
-    ListDish.map((dish: Dish) => {
-      sum += dish.price * dish.count;
-    });
-    SetTotalPrice(sum);
+  const totalPrice = useMemo(() => {
+    return ListDish.reduce((sum, dish) => sum + (dish.price.value * dish.count || 0), 0);
   }, [ListDish]);
-
   const DeleteDish = (e: React.MouseEvent<HTMLButtonElement>, id: string) => {
     e.preventDefault();
     dispatch(removeSelectedPost({ listId: id }));
@@ -105,7 +102,7 @@ const SelectedList: FC = () => {
                     alignItems: "center",
                   }}
                 >
-                  {post.comment != "" && (
+                  {post.comment !== "" && (
                     <Typography.Title
                       level={3}
                       style={{ marginBottom: "0.5rem" }}

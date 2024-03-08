@@ -1,17 +1,15 @@
 /* eslint-disable array-callback-return */
-import React, { FC, useEffect, useMemo, useState } from "react";
+import React, { FC, useMemo, useState } from "react";
 import { addSelectedPost } from "../../store/slices/selected-posts";
 
 import postService from "../../services/posts.service";
 import adminDishesService from "../../services/admin/admin-dishes.service";
-import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
+import { useAppDispatch } from "../../store/store-hooks";
 import {
   Image,
   Input,
   Select,
   Button,
-  Col,
-  Row,
   Typography,
   Card,
   Spin,
@@ -21,20 +19,13 @@ import {
 
 import DishCounter from "./DishCounter";
 
-interface ReplyDish {
+export interface Dish {
   name: string;
   description: string;
-  price: number;
-  image: string;
-  createdAt: string;
-  tags: Record<string, string>;
-  id: string;
-  post: string;
-}
-interface Dish {
-  name: string;
-  description: string;
-  price: number;
+  price: {
+    value: number;
+    currency: string;
+};
   image: string;
   createdAt: string;
   tags: Record<string, string>;
@@ -46,7 +37,10 @@ interface Dish {
 interface SelectedPost {
   name: string;
   description: string;
-  price: number;
+  price: {
+    value: number;
+    currency: string;
+};
   image: string;
   createdAt: string;
   tags: Record<string, string>;
@@ -101,18 +95,22 @@ const Dishes: FC = () => {
             ...post,
           }))
         : [],
-        isLoading
+      isLoading,
     }),
   });
 
   const ChangeFieldDish = (
     index: number,
-    label: string,
+    label: "comment" | "count",
     value: string | number
   ) => {
     dispatch(
       postService.util.updateQueryData("dishes", "", (draftPost) => {
-        draftPost[index][label] = value;
+        if (label === "comment") {
+          draftPost[index].comment = value as string;
+        } else {
+          draftPost[index].count = value as number;
+        }
       })
     );
   };
@@ -123,8 +121,6 @@ const Dishes: FC = () => {
 
   const AddDish = (index: number) => {
     const selectedPostId = crypto.randomUUID();
-    console.log(index);
-    console.log(posts);
     const NewSelectedPost: SelectedPost = {
       ...posts[index],
       selectedPostId: selectedPostId,
@@ -155,11 +151,11 @@ const Dishes: FC = () => {
         });
       } else if (sortOption === "priceAsc") {
         NewPosts.sort((a, b) => {
-          return a.price - b.price;
+          return a.price.value - b.price.value;
         });
       } else if (sortOption === "priceDesc") {
         NewPosts.sort((a, b) => {
-          return b.price - a.price;
+          return b.price.value - a.price.value;
         });
       }
     }
@@ -208,7 +204,6 @@ const Dishes: FC = () => {
                     id="tags"
                     mode="multiple"
                     onChange={(value) => {
-                      console.log(value);
                       setSearchTags(value);
                     }}
                     style={{
@@ -246,109 +241,111 @@ const Dishes: FC = () => {
             ) : (
               <>
                 {SearchedPosts.map((post: Dish) => {
-                 const index = posts.findIndex(searchedPost => searchedPost.id === post.id);
-                  return <Card key={post.id}>
-                    <div
-                      style={{
-                        alignItems: "center",
-                        display: "flex",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Typography.Title level={2}>{post.name}</Typography.Title>
-                    </div>
-                    <div
-                      style={{
-                        alignItems: "center",
-                        display: "flex",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Image alt={post.name} src={post.image} />
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <div style={{ display: "block" }}>
-                        {Object.keys(post.tags).map((label) => (
-                          <Tag
-                            key = {label}
-                            color={post.tags[label]}
-                            style={{
-                              fontSize: "16px",
-                              padding: "8px 12px",
-                              display: "inline-block",
-                            }}
-                          >
-                            {label}
-                          </Tag>
-                        ))}
-                      </div>
-                      <Typography.Title
-                        level={3}
-                        style={{ marginLeft: "10px" }}
+                  const index = posts.findIndex(
+                    (searchedPost) => searchedPost.id === post.id
+                  );
+                  return (
+                    <Card key={post.id}>
+                      <div
+                        style={{
+                          alignItems: "center",
+                          display: "flex",
+                          justifyContent: "center",
+                        }}
                       >
-                        {" "}
-                        {`Price: ${post.price}`}{" "}
-                      </Typography.Title>
-                    </div>
-                    <Typography.Title
-                      level={4}
-                      style={{ marginLeft: "10px", textAlign: "center" }}
-                    >
-                      {post.description}
-                    </Typography.Title>
-                    <div
-                      style={{
-                        margin: "0 auto",
-                        width: "200px",
-                        marginTop: "40px",
-                      }}
-                    >
-                      <Input
-                        id="Coment"
-                        value={post.comment}
-                        onChange={
-                          (e) =>
-                            ChangeFieldDish(index, "comment", e.target.value)
-                          // dispatch(
-                          //   setComment({ id: post.id, comment: e.target.value })
-                          // )
-                        }
-                        placeholder="Comment"
-                        required
-                        size="large"
-                      />
+                        <Typography.Title level={2}>
+                          {post.name}
+                        </Typography.Title>
+                      </div>
+                      <div
+                        style={{
+                          alignItems: "center",
+                          display: "flex",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Image alt={post.name} src={post.image} />
+                      </div>
                       <div
                         style={{
                           display: "flex",
                           alignItems: "center",
-                          justifyContent: "center",
+                          justifyContent: "space-between",
                         }}
                       >
-                        <Typography.Title level={3}>Count:</Typography.Title>
-                        <DishCounter post={post} index={index} />
+                        <div style={{ display: "block" }}>
+                          {Object.keys(post.tags).map((label) => (
+                            <Tag
+                              key={label}
+                              color={post.tags[label]}
+                              style={{
+                                fontSize: "16px",
+                                padding: "8px 12px",
+                                display: "inline-block",
+                              }}
+                            >
+                              {label}
+                            </Tag>
+                          ))}
+                        </div>
+                        <Typography.Title
+                          level={3}
+                          style={{ marginLeft: "10px" }}
+                        >
+                          {" "}
+                          {`Price: ${post.price.value} ${post.price.currency}`}{" "}
+                        </Typography.Title>
                       </div>
-                      <Button
-                        size="large"
-                        style={{
-                          backgroundColor: "rgba(0, 200, 0, 0.7)",
-                          marginTop: "10px",
-                          width: "100%",
-                        }}
-                        onClick={(
-                          e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-                        ) => AddDish(index)}
+                      <Typography.Title
+                        level={4}
+                        style={{ marginLeft: "10px", textAlign: "center" }}
                       >
-                        Add
-                      </Button>
-                    </div>
-                  </Card>
-})}
+                        {post.description}
+                      </Typography.Title>
+                      <div
+                        style={{
+                          margin: "0 auto",
+                          width: "200px",
+                          marginTop: "40px",
+                        }}
+                      >
+                        <Input
+                          id="Coment"
+                          value={post.comment}
+                          onChange={(e) =>
+                            ChangeFieldDish(index, "comment", e.target.value)
+                          }
+                          placeholder="Comment"
+                          required
+                          size="large"
+                        />
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Typography.Title level={3}>Count:</Typography.Title>
+                          <DishCounter post={post} index={index} />
+                        </div>
+                        <Button
+                          size="large"
+                          style={{
+                            backgroundColor: "rgba(0, 200, 0, 0.7)",
+                            marginTop: "10px",
+                            width: "100%",
+                          }}
+                          onClick={(
+                            e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+                          ) => AddDish(index)}
+                        >
+                          Add
+                        </Button>
+                      </div>
+                    </Card>
+                  );
+                })}
               </>
             )}
           </>

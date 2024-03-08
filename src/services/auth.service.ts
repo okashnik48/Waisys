@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import { serviceApi } from "./app.service";
 
 type LoginRequest = {
@@ -28,6 +29,17 @@ const authService = serviceApi.injectEndpoints({
                 method: 'POST',
                 body,
             }),
+            async onQueryStarted(arg, api) {
+                // set up a function for query fulfilled for all mutations in this services
+                // this func will be in the src level as util
+                api.queryFulfilled
+                  .then(() => {
+                    toast.success("Success");
+                  })
+                  .catch((data ) => {
+                    toast.error("data");
+                  });
+              },
         }),
         changeAccessToken:builder.mutation<ChangeTokenReply, ChangeTokenRequest>({
             query: (refreshToken) => ({

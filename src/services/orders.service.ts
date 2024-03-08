@@ -1,7 +1,7 @@
 import { serviceApi } from "./app.service";
 import { toast } from "react-toastify";
 
-type OrderDish = {
+export type OrderDish = {
   name: string;
   image: string;
   description: string;
@@ -64,8 +64,6 @@ const ordersService = serviceApi.injectEndpoints({
       }),
       invalidatesTags: ["orders"],
       async onQueryStarted(arg, api) {
-        // set up a function for query fulfilled for all mutations in this services
-        // this func will be in the src level as util
         api.queryFulfilled
           .then(() => {
             toast.success("Success");
@@ -84,8 +82,6 @@ const ordersService = serviceApi.injectEndpoints({
       }),
       invalidatesTags: ["orders"],
       onQueryStarted(arg, api) {
-        // set up a function for query fulfilled for all mutations in this services
-        // this func will be in the src level as util
         api.queryFulfilled
           .then(() => {
             toast.success("Success");
@@ -108,15 +104,7 @@ const ordersService = serviceApi.injectEndpoints({
         method: "GET",
       }),
       providesTags: ["completed"],
-      onQueryStarted(arg, api) {
-        api.queryFulfilled
-          .then(() => {
-            toast.success("Success");
-          })
-          .catch(({ data }) => {
-            toast.error(data.error);
-          });
-      },
+
     }),
     DeleteDeliveredDish: builder.mutation<any, string>({
       query: (id) => ({
@@ -124,13 +112,6 @@ const ordersService = serviceApi.injectEndpoints({
         method: "Delete",
       }),
       invalidatesTags: ["completed", "declined"],
-    }),
-    GetDeclinedDishes: builder.query<CompletedDishesReply, any>({
-      query: () => ({
-        url: "orders/dishes/declined",
-        method: "GET",
-      }),
-      providesTags: ["declined"],
       onQueryStarted(arg, api) {
         api.queryFulfilled
           .then(() => {
@@ -140,6 +121,13 @@ const ordersService = serviceApi.injectEndpoints({
             toast.error(data.error);
           });
       },
+    }),
+    GetDeclinedDishes: builder.query<CompletedDishesReply, any>({
+      query: () => ({
+        url: "orders/dishes/declined",
+        method: "GET",
+      }),
+      providesTags: ["declined"],
     }),
   }),
 });

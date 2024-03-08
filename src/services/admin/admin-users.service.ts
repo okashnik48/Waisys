@@ -45,16 +45,6 @@ const adminUsersService = serviceApi.injectEndpoints({
                 method: 'GET',
             }),
             providesTags: ["users"],
-            onQueryStarted(arg, api) {
-                api.queryFulfilled
-                  .then((data) => {
-                    console.log(data);
-                    toast.success("Success");
-                  })
-                  .catch(({ data }) => {
-                    toast.error(data.error);
-                  });
-              },
         }),
         createUser: builder.mutation<any, CreateUsereRequest>({
             query: (Request) => ({
@@ -63,6 +53,16 @@ const adminUsersService = serviceApi.injectEndpoints({
                 body: Request.body
             }),
             invalidatesTags: ["users"],
+            async onQueryStarted(arg, api) {
+                api.queryFulfilled
+                  .then(() => {
+                    toast.success("Success");
+                  })
+                  .catch((data ) => {
+                    console.log(data)
+                    toast.error("data");
+                  });
+              },
         }),
         changeUser: builder.mutation<any, ChangeUsereRequest>({
             query: (Request) => ({
@@ -71,6 +71,16 @@ const adminUsersService = serviceApi.injectEndpoints({
                 body: Request.body
             }),
             invalidatesTags: ["users"],
+            async onQueryStarted(arg, api) {
+                api.queryFulfilled
+                  .then(() => {
+                    toast.success("Success");
+                  })
+                  .catch((data ) => {
+                    console.log(data)
+                    toast.error("data");
+                  });
+              },
         }),
         deleteUser: builder.mutation<any, DeleteUserRequest>({
             query: (Request) => ({
@@ -78,6 +88,16 @@ const adminUsersService = serviceApi.injectEndpoints({
                 method: 'DELETE',
             }),
             invalidatesTags: ["users"],
+            async onQueryStarted(arg, api) {
+                api.queryFulfilled
+                  .then(() => {
+                    toast.success("Success");
+                  })
+                  .catch((data ) => {
+                    console.log(data)
+                    toast.error("data");
+                  });
+              },
         }),
     })
 })

@@ -1,26 +1,24 @@
 import React from "react";
 
-import postService, { dishesReply } from "../../../services/posts.service";
+import { dishesReply } from "../../../services/posts.service";
 import adminDishesService from "../../../services/admin/admin-dishes.service";
 
-import { Select, Button, Image, Typography, SelectProps, Tag } from "antd";
+import { Button, Image, Typography } from "antd";
 
 import TagInput from "../../../ui-kit/TagInput";
-import {
-  Control,
-  FieldValues,
-  Path,
-  SubmitHandler,
-  useController,
-  useForm,
-} from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { CoreInput } from "../../../ui-kit/CoreInput";
-type TagRender = SelectProps["tagRender"];
+import { TagSelect } from "../../../ui-kit/TagSelect";
+import { CoreInputTextAria } from "../../../ui-kit/CoreInputTextAria";
+import CorePriceInput from "../../../ui-kit/CorePriceInput";
 
 type DefaultValues = {
   name: string;
   description: string;
-  price: number;
+  price: {
+    value: number,
+    currency: string;
+  };
   image: string;
   tags: Record<string, string>;
 };
@@ -29,115 +27,23 @@ type Props = {
   post: dishesReply[0];
 };
 
-type TagSelectProps<T extends FieldValues> = {
-  control: Control<T, any>;
-  name: Path<T>;
-};
-
-function TagSelect<T extends FieldValues>({
-  control,
-  name,
-}: TagSelectProps<T>) {
-  const {
-    field: { value, onChange },
-  } = useController({
-    name,
-    control,
-  });
-
-  const { tagsList } = adminDishesService.useGetTagsQuery("", {
-    selectFromResult: ({ data }) => ({
-      tagsList: data
-        ? Object.keys(data).map((tag) => ({
-            value: data[tag],
-            label: tag,
-          }))
-        : [],
-    }),
-  });
-  const onPreventMouseDown = (event: React.MouseEvent<HTMLSpanElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-  };
-  const tagRender: TagRender = (params) => {
-    return (
-      //   <Tag
-      //     onMouseDown={onPreventMouseDown}
-      //     style={{ marginRight: 3 }}
-      //     // color={params.value}
-      //     // closable={params.closable}
-      //     // onClose={params.onClose}
-      //     // key={params.value}
-      // 	{...params}
-      //   >
-      //     {params.label}
-      //   </Tag>
-      <div
-        key={params.value}
-        style={{
-          backgroundColor: params.value,
-        }}
-      >
-        {params.label}
-      </div>
-    );
-  };
-
-  return (
-    <Select
-      mode="multiple"
-      id="countries"
-      placeholder="Choose tag"
-      tagRender={tagRender}
-      style={{
-        marginLeft: "10px",
-        minWidth: "120px",
-        display: "inline-block",
-      }}
-      dropdownStyle={{ width: "auto" }}
-      onChange={(values, options) => {
-        const selectedTags = (
-          options as Array<{ value: string; label: string }>
-        ).reduce((acc, option) => {
-          acc[option.label] = option.value;
-          return acc;
-        }, {} as Record<string, string>);
-        onChange(selectedTags);
-      }}
-      value={
-        value
-          ? Object.keys(value).map((tag) => ({
-              value: value[tag],
-              label: tag,
-            }))
-          : []
-      }
-      options={tagsList}
-      optionRender={(tag, index) => {
-        console.debug(tag, index);
-        console.debug(tag, index);
-        return <div key={`${tag.label}_${index}`}>{tag.label}</div>;
-      }}
-    />
-  );
-}
-
 function DishItem({ post }: Props) {
   const [deleteDishTrigger] = adminDishesService.useDeleteDishMutation();
   const [changeDishTrigger] = adminDishesService.useChangeDishMutation();
-  const state = postService.endpoints.dishes.useQueryState(null);
-  console.debug('DISHES STATE', state);
-  const { control, handleSubmit, formState } = useForm<DefaultValues>({
-    defaultValues: {
-      description: post.description,
-      image: post.image,
-      name: post.name,
-      price: post.price,
-      tags: post.tags,
-    },
-  });
+  const { control, handleSubmit, formState, setValue, getValues } = useForm<DefaultValues>(
+    {
+      defaultValues: {
+        description: post.description,
+        image: post.image,
+        name: post.name,
+        price: post.price,
+        tags: post.tags,
+      },
+    }
+  );
 
   const onSubmit: SubmitHandler<DefaultValues> = (formData) => {
+    console.log(formData.tags)
     changeDishTrigger({ id: post.id, body: formData });
   };
 
@@ -174,7 +80,7 @@ function DishItem({ post }: Props) {
           type="text"
         />
         <Typography.Title level={5}>Price</Typography.Title>
-        <CoreInput
+        <CorePriceInput
           control={control}
           label=""
           name="price"
@@ -183,7 +89,7 @@ function DishItem({ post }: Props) {
           type="number"
         />
         <Typography.Title level={5}>Description</Typography.Title>
-        <CoreInput
+        <CoreInputTextAria
           control={control}
           label=""
           name="description"
@@ -197,9 +103,9 @@ function DishItem({ post }: Props) {
             <Typography.Title level={5} style={{ display: "inline-block" }}>
               Tag
             </Typography.Title>
-            <TagSelect control={control} name="tags" />
+            <TagSelect control={control} name={"tags"} />
           </div>
-          <TagInput />
+          <TagInput SetTagValueForDish={setValue} GetTagsValues={getValues} />
         </div>
 
         <div style={{ marginTop: "10px" }}>

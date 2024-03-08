@@ -10,7 +10,10 @@ interface SelectedPostsState {
 interface Post {
   name: string;
   description: string;
-  price: number;
+      price: {
+        value: number;
+        currency: string;
+    };
   image: string;
   createdAt: string;
   tags: Record<string, string>;
@@ -45,7 +48,6 @@ export const SelectedPostsSlice = createSlice({
       if (!isPostAdded) {
         state.selectedPosts[action.payload.listId] = action.payload.post;
       }
-      console.log(state.selectedPosts);
     },
     removeSelectedPost: (state, action: PayloadAction<{ listId: string }>) => {
       delete state.selectedPosts[action.payload.listId];

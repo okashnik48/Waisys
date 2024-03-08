@@ -1,8 +1,8 @@
-import React, { FC, ReactNode, useEffect, useState } from "react";
+import React, { FC } from "react";
 
 import authService from "../services/auth.service";
 
-import { Form, Input, Button, Typography } from "antd";
+import { Form, Button, Typography } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 
 import { SetTokens, SetUserProperties } from "../store/slices/user";
@@ -11,11 +11,9 @@ import userService from "../services/user.service";
 
 import { useAppDispatch } from "../store/store-hooks";
 
-import { toast } from "react-toastify";
+import { useForm } from "react-hook-form";
 
-import { useForm, Controller } from "react-hook-form";
-
-import { CoreInput } from "../ui-kit/CoreInput";
+import { CoreInputRequired } from "../ui-kit/CoreInputRequired";
 
 const { Title } = Typography;
 
@@ -36,14 +34,12 @@ const Auth: FC = () => {
   const [loginTrigger] = authService.useLoginMutation();
 
   const onSubmit = (data: DefaultValues) => {
-    console.log(data);
     loginTrigger({
       password: data.password,
       username: data.name,
     })
       .unwrap()
       .then(({ accessToken, refreshToken }) => {
-        console.log("@3423")
         dispatch(SetTokens({ accessToken, refreshToken }));
         localStorage.setItem(
           "tokens",
@@ -55,9 +51,9 @@ const Auth: FC = () => {
             dispatch(SetUserProperties(data));
           });
       })
-      .catch(() =>{
-        console.log("324234")
-      })
+      .catch(() => {
+        
+      });
   };
 
   return (
@@ -79,10 +75,7 @@ const Auth: FC = () => {
             console.log("error", error);
           })}
         >
-          <Form.Item
-            name="username"
-          >
-            <CoreInput
+            <CoreInputRequired
               control={control}
               label="Login"
               name="name"
@@ -92,11 +85,7 @@ const Auth: FC = () => {
               placeholder="Your login"
               rules={[{ required: true, message: "Please input your login!" }]}
             />
-          </Form.Item>
-          <Form.Item
-            name="password"
-          >
-            <CoreInput
+            <CoreInputRequired
               type="password"
               placeholder="Your password"
               label="Password"
@@ -106,7 +95,6 @@ const Auth: FC = () => {
               size="large"
               rules={[{ required: true, message: "Please input your password!" }]}
             />
-          </Form.Item>
           <Form.Item>
             <Button
               type="primary"

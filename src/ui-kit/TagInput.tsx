@@ -5,6 +5,7 @@ import {
   Control,
   FieldValues,
   Path,
+  UseFormSetValue,
   useController,
   useForm,
 } from "react-hook-form";
@@ -49,8 +50,8 @@ function ControlledColorPicker<T extends FieldValues>({
   );
 }
 
-const TagInput: FC<{ type?: string }> = ({ type }) => {
-  const { handleSubmit, setValue, control } = useForm<DefaultValues>({
+const TagInput: FC<{ type?: string, SetTagValueForDish?: any, GetTagsValues?: any  }> = ({ type, SetTagValueForDish,  GetTagsValues}) => {
+  const { handleSubmit, setValue, control, formState: {dirtyFields} } = useForm<DefaultValues>({
     defaultValues: {
       name: "",
       color: "#2B84DB",
@@ -60,7 +61,15 @@ const TagInput: FC<{ type?: string }> = ({ type }) => {
   const [AddTagTrigger] = adminDishesService.useAddTagMutation();
 
   const onSubmit = (data: DefaultValues) => {
-    if (type === "New-Dish-Tag") {
+    if (SetTagValueForDish){
+      dispatch(
+        adminDishesService.util.updateQueryData("getTags", "", (draftPost) => {
+          draftPost[data.name] = data.color;  
+        })
+      );
+      SetTagValueForDish("tags", {...GetTagsValues("tags"), [data.name]: data.color})
+    }
+    else if (type === "New-Dish-Tag") {
       dispatch(AddTagNewDish({ [data.name]: data.color }));
     } else {
       AddTagTrigger(data);
@@ -85,7 +94,7 @@ const TagInput: FC<{ type?: string }> = ({ type }) => {
         <ControlledColorPicker control={control} name="color" />
         <Button
           type="primary"
-          disabled={false}
+          disabled={!dirtyFields.name}
           onClick={handleSubmit(onSubmit)}
           style={{ marginLeft: "5px" }}
         >

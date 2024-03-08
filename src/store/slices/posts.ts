@@ -51,14 +51,12 @@ const postsSlice = createSlice({
       delete state.posts[action.payload.id];
     },
     counterIncrement: (state, action: PayloadAction<CounterPayload>) => {
-      console.log(action.payload)
       state.posts[action.payload.id].count++;
     },
     counterDecrement: (state, action: PayloadAction<CounterPayload>) => {
       state.posts[action.payload.id].count--;
     },
     setComment: (state, action: PayloadAction<CommentPayload>) => {
-      console.log(action.payload)
       state.posts[action.payload.id].comment = action.payload.comment;
     },
     setCountDefault: (state, action: PayloadAction<CounterPayload>) => {

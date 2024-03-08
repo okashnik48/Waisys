@@ -25,8 +25,8 @@ const AdminUsersList = () => {
 
   const { data } =
     adminUsersService.useUsersQuery("");
-  const [deleteUserTrigger, {}] = adminUsersService.useDeleteUserMutation();
-  const [changeUserTrigger, {}] = adminUsersService.useChangeUserMutation();
+  const [deleteUserTrigger] = adminUsersService.useDeleteUserMutation();
+  const [changeUserTrigger] = adminUsersService.useChangeUserMutation();
 
   const users = useMemo(() => {
     return data === undefined ? [] : Object.values(data);

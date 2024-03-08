@@ -4,7 +4,10 @@ import { serviceApi } from "./app.service";
 export type dishesReply = {
     name: string;
     description: string;
-    price: number;
+    price: {
+        value: number;
+        currency: string;
+    };
     image: string;
     createdAt: string;
     tags: Record<string, string>;
@@ -16,20 +19,11 @@ export type dishesReply = {
 
 const postService = serviceApi.injectEndpoints({
     endpoints: (builder) => ({
-        dishes: builder.query<dishesReply, null>({
+        dishes: builder.query<dishesReply, any>({
             query: () => ({
                 url: 'dishes',
                 method: 'GET',
             }),
-            onQueryStarted(arg, api) {
-                api.queryFulfilled
-                  .then((data) => {
-                    toast.success("Success");
-                  })
-                  .catch(({ data }) => {
-                    toast.error(data.error);
-                  });
-              },
             providesTags: ["tags", "admin-dish"],
         }),
         

@@ -12,7 +12,10 @@ interface Post {
 type NewDish = {
   name: string;
   description: string;
-  price: number | null;
+  price: {
+    value: number | null;
+    currency: string;
+};
   image: string;
   tags: Record<string, string>;
 };
@@ -33,7 +36,10 @@ const initialState: PostsState = {
   newDish: {
     name: "",
     description: "",
-    price: null,
+    price: {
+      value: null,
+      currency: "UAH"
+    },
     image: "",
     tags: {},
   },
@@ -69,7 +75,10 @@ const AdminSlice = createSlice({
       state,
       action: PayloadAction<{
         fieldname: string;
-        value: string | number | Record<string, string>;
+        value: string | number | Record<string, string> | {
+          value: number | null;
+          currency: string;
+      };
       }>
     ) => {
       (state.newDish as any)[action.payload.fieldname] = action.payload.value;
@@ -90,7 +99,10 @@ const AdminSlice = createSlice({
       state.newDish = {
         name: "",
         description: "",
-        price: null,
+        price: {
+          value: null,
+          currency: "UAH"
+        },
         image: "",
         tags: {},
       }

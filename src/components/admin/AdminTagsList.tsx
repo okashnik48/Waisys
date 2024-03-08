@@ -1,7 +1,5 @@
 import React, { FC, useMemo } from "react";
 
-import { useState } from "react";
-
 import adminDishesService from "../../services/admin/admin-dishes.service";
 import { Empty, ColorPicker, Button, Space } from "antd";
 import TagInput from "../../ui-kit/TagInput";

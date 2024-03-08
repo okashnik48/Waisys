@@ -7,7 +7,9 @@ import { useEffect, useState } from "react";
 import orderService from "../../services/orders.service";
 
 import { io } from "socket.io-client";
-import { Button, Image, Typography, Empty, Spin } from "antd";
+import {Empty, Spin } from "antd";
+
+import { CookItem } from "./ui-elements/CookItem";
 
 const CookPanel = () => {
   const socket = io("https://waisys.dev.m0e.space/", { transports: ["websocket"] });
@@ -19,8 +21,6 @@ const CookPanel = () => {
   const cooksList = useMemo(() => {
     return data ? Object.values(data).sort((a, b) => new Date(a.createdAt).getDate() - new Date(b.createdAt).getDate()) : [];
   }, [data]);
-
-  const [changeOrderStatusTrigger] = orderService.usePatchOrderMutation();
 
   useEffect(() => {
     function onConnect() {
@@ -49,16 +49,7 @@ const CookPanel = () => {
     };
   }, []);
 
-  const onChangeDishStatus = (
-    e: React.MouseEvent<HTMLElement, MouseEvent>,
-    id: string,
-    ChangedStatus: string
-  ) => {
-    changeOrderStatusTrigger({
-      id: id,
-      body: { [ChangedStatus]: true },
-    });
-  };
+
 
   return (
     <div
@@ -75,83 +66,8 @@ const CookPanel = () => {
       ) : !cooksList.length ? (
         <Empty />
       ) : (
-        cooksList.map((post) => (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              marginLeft: "15%",
-            }}
-          >
-            <div
-              style={{
-                marginLeft: "20px",
-                marginBottom: "20px",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Image
-                width={560}
-                src={post.image}
-                style={{ display: "block" }}
-              />
-            </div>
-
-            <div style={{ marginLeft: "20px", marginBottom: "20px" }}>
-              <Typography.Title level={3}>{post.name}</Typography.Title>
-              <Typography.Title level={3}>{post.comment}</Typography.Title>
-              <Typography.Title level={3}>{post.quantity}</Typography.Title>
-              <div
-                style={{
-                  marginTop: "10px",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                {!post.isAccepted ? (
-                  <Button
-                    type="primary"
-                    size="large"
-                    style={{ display: "block" }}
-                    onClick={(e) => {
-                      onChangeDishStatus(e, post.id, "isAccepted");
-                    }}
-                  >
-                    &nbsp; Accept &nbsp;
-                  </Button>
-                ) : (
-                  <Button
-                    size="large"
-                    style={{
-                      backgroundColor: "rgba(0, 200, 0, 0.7)",
-                      display: "block",
-                    }}
-                    onClick={(e) => {
-                      onChangeDishStatus(e, post.id, "isCompleted");
-                    }}
-                  >
-                    {" "}
-                    Complete{" "}
-                  </Button>
-                )}
-                <Button
-                  type="primary"
-                  danger
-                  size="large"
-                  style={{ display: "block" }}
-                  onClick={(e) => {
-                    onChangeDishStatus(e, post.id, "isDeclined");
-                  }}
-                >
-                  {" "}
-                  Decline{" "}
-                </Button>
-              </div>
-            </div>
-          </div>
+        cooksList.map((post ) => (
+<CookItem  key = {post.id} post = {post} />
         ))
       )}
     </div>

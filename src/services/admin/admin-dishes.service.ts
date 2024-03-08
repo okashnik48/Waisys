@@ -4,7 +4,10 @@ import { serviceApi } from "../app.service";
 type Dish = {
   name: string;
   description: string;
-  price: number | null;
+  price: {
+    value: number | null;
+    currency: string;
+};
   image: string;
   tags: Record<string, string>;
 };
@@ -38,6 +41,16 @@ const adminDishesService = serviceApi.injectEndpoints({
         body: Request.body,
       }),
       invalidatesTags: ["admin-dish"],
+      async onQueryStarted(arg, api) {
+        api.queryFulfilled
+          .then(() => {
+            toast.success("Success");
+          })
+          .catch((data ) => {
+            console.log(data)
+            toast.error("data");
+          });
+      },
     }),
     changeDish: builder.mutation<any, ChangeDishRequest>({
       query: (Request) => ({
@@ -46,6 +59,16 @@ const adminDishesService = serviceApi.injectEndpoints({
         body: Request.body,
       }),
       invalidatesTags: ["admin-dish"],
+      async onQueryStarted(arg, api) {
+        api.queryFulfilled
+          .then(() => {
+            toast.success("Success");
+          })
+          .catch((data ) => {
+            console.log(data)
+            toast.error("data");
+          });
+      },
     }),
     deleteDish: builder.mutation<any, DeleteDishRequest>({
       query: (Request) => ({
@@ -53,6 +76,16 @@ const adminDishesService = serviceApi.injectEndpoints({
         method: "DELETE",
       }),
       invalidatesTags: ["admin-dish"],
+      async onQueryStarted(arg, api) {
+        api.queryFulfilled
+          .then(() => {
+            toast.success("Success");
+          })
+          .catch((data ) => {
+            console.log(data)
+            toast.error("data");
+          });
+      },
     }),
     getTags: builder.query<TagsReply, any>({
       query: () => ({
@@ -60,16 +93,6 @@ const adminDishesService = serviceApi.injectEndpoints({
         method: "GET",
       }),
       providesTags: ["tags", "admin-dish"],
-      
-      onQueryStarted(arg, api) {
-        api.queryFulfilled
-          .then((data) => {
-            toast.success("Success");
-          })
-          .catch(({ data }) => {
-            toast.error(data.error);
-          });
-      },
     }),
     addTag: builder.mutation<AddTagRequest, any>({
       query: (body) => ({
@@ -78,6 +101,16 @@ const adminDishesService = serviceApi.injectEndpoints({
         body,
       }),
       invalidatesTags: ["tags"],
+      async onQueryStarted(arg, api) {
+        api.queryFulfilled
+          .then(() => {
+            toast.success("Success");
+          })
+          .catch((data ) => {
+            console.log(data)
+            toast.error("data");
+          });
+      },
     }),
     changeTags: builder.mutation<any, TagsReply>({
       query: (body) => ({
@@ -86,6 +119,16 @@ const adminDishesService = serviceApi.injectEndpoints({
         body,
       }),
       invalidatesTags: ["tags"],
+      async onQueryStarted(arg, api) {
+        api.queryFulfilled
+          .then(() => {
+            toast.success("Success");
+          })
+          .catch((data ) => {
+            console.log(data)
+            toast.error("data");
+          });
+      },
     }),
     deleteTag: builder.mutation<any, string>({
       query: (name) => ({
@@ -93,6 +136,16 @@ const adminDishesService = serviceApi.injectEndpoints({
         method: "DELETE",
       }),
       invalidatesTags: ["tags"],
+      async onQueryStarted(arg, api) {
+        api.queryFulfilled
+          .then(() => {
+            toast.success("Success");
+          })
+          .catch((data ) => {
+            console.log(data)
+            toast.error("data");
+          });
+      },
     }),
   }),
 });

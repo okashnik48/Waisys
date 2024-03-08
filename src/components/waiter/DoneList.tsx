@@ -4,20 +4,16 @@ import { useEffect, useState } from "react";
 
 import { io } from "socket.io-client";
 
-import {  useAppDispatch } from "../../store/store-hooks";
-
 import ordersService from "../../services/orders.service";
 
-import { Button, Col, Empty, Image, Row, Spin, Typography } from "antd";
+import { Button, Empty, Image, Spin, Typography } from "antd";
 
 const DoneDishesList = () => {
-  const dispatch = useAppDispatch();
-
   const socket = io("https://waisys.dev.m0e.space/", {
     transports: ["websocket"],
   });
 
-  const [isConnected, setIsConnected] = useState(socket.connected);
+  const [,setIsConnected] = useState(socket.connected);
 
   const { data, isLoading, refetch } =
     ordersService.useGetCompletedDishesQuery("");

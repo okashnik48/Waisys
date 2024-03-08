@@ -14,6 +14,7 @@ import "react-toastify/dist/ReactToastify.css";
 import userService from "./services/user.service";
 import { SetTokens, SetUserProperties } from "./store/slices/user";
 import { Spin } from "antd";
+import { UserDishesList } from "./components/user/UserDishesList";
 
 function App() {
   const userRole = useAppSelector((state) => state.user.user).role;
@@ -30,8 +31,6 @@ function App() {
     const storedTokens: Tokens | null = storedTokensString
       ? JSON.parse(storedTokensString)
       : null;
-
-    console.log(storedTokens);
 
     if (storedTokens !== null) {
       const { accessToken, refreshToken } = storedTokens;
@@ -59,14 +58,15 @@ function App() {
   }
   if (!userRole) {
     return (
-      <BrowserRouter>
-        <Routes>
-          {ROUTES_CONFIG.public.map(({ element, path }, index) => (
-            <Route key={path} path={path} element={element} />
-          ))}
-        </Routes>
-        <ToastContainer />
-      </BrowserRouter>
+      <UserDishesList />
+      // <BrowserRouter>
+      //   <Routes>
+      //     {ROUTES_CONFIG.public.map(({ element, path }, index) => (
+      //       <Route key={path} path={path} element={element} />
+      //     ))}
+      //   </Routes>
+      //   <ToastContainer />
+      // </BrowserRouter>
     );
   }
 
