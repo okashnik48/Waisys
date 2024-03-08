@@ -1,7 +1,17 @@
-import { Avatar, Button, Card, Input, Select, Typography } from "antd";
-import React, { useMemo, useState } from "react";
+import {
+  Avatar,
+  Badge,
+  Button,
+  Card,
+  FloatButton,
+  Input,
+  Select,
+  Typography,
+} from "antd";
+import React, { useEffect, useMemo, useState } from "react";
 
 import {
+  CheckOutlined,
   CommentOutlined,
   MinusOutlined,
   PlusOutlined,
@@ -11,6 +21,9 @@ import {
 import adminDishesService from "../../services/admin/admin-dishes.service";
 import postService from "../../services/posts.service";
 import { UserDishCard } from "./UserDishCard";
+import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { SetTableNumberForQuest } from "../../store/slices/guest";
 
 const { Meta } = Card;
 
@@ -35,11 +48,26 @@ const SortOptionProps = [
 ];
 
 export const UserDishesList: React.FC = () => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch()
+
+  const { tableNumber } = useParams();
+  console.log(tableNumber)
   const [searchText, setSearchText] = useState("");
   const [searchTags, setSearchTags] = useState<string[]>([]);
   const [sortOption, setSortOption] = useState<
     "name" | "priceDesc" | "priceAsc" | ""
   >("");
+  useEffect(() =>{
+    dispatch(SetTableNumberForQuest(Number(tableNumber)))
+  }, [])
+  const selectedDishes = useAppSelector((state) => state.guest.selectedPosts);
+  const countOfSelectedDishes = useMemo(() => {
+    return Object.values(selectedDishes).reduce(
+      (sum, dish) => sum + (dish.count || 0),
+      0
+    );
+  }, [selectedDishes]);
   const { tagsProps } = adminDishesService.useGetTagsQuery("", {
     selectFromResult: ({ data }) => ({
       tagsProps: data
@@ -108,55 +136,77 @@ export const UserDishesList: React.FC = () => {
           setSearchText(e.target.value);
         }}
       />
-      <div style={{ marginRight: "10px" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginBottom: "10px",
+        }}
+      >
+        <div style={{ marginRight: "10px" }}>
+          <div>
+            <Typography.Title
+              level={3}
+              style={{ marginBottom: "5px", display: "inline-block" }}
+            >
+              Tag
+            </Typography.Title>
+            <Select
+              id="tags"
+              mode="multiple"
+              onChange={(value) => {
+                setSearchTags(value);
+              }}
+              style={{
+                minWidth: "150px",
+                display: "inline-block",
+                marginLeft: "10px",
+              }}
+              options={tagsProps}
+            />
+          </div>
+        </div>
         <div>
           <Typography.Title
             level={3}
             style={{ marginBottom: "5px", display: "inline-block" }}
           >
-            Tag
+            Sort by
           </Typography.Title>
           <Select
-            id="tags"
-            mode="multiple"
-            onChange={(value) => {
-              setSearchTags(value);
-            }}
+            id="sort"
             style={{
               minWidth: "150px",
               display: "inline-block",
               marginLeft: "10px",
             }}
-            options={tagsProps}
+            onChange={(value) => {
+              setSortOption(value);
+            }}
+            options={SortOptionProps}
           />
         </div>
-      </div>
-      <div>
-        <Typography.Title
-          level={3}
-          style={{ marginBottom: "5px", display: "inline-block" }}
-        >
-          Sort by
-        </Typography.Title>
-        <Select
-          id="sort"
-          style={{
-            minWidth: "150px",
-            display: "inline-block",
-            marginLeft: "10px",
-          }}
-          onChange={(value) => {
-            setSortOption(value);
-          }}
-          options={SortOptionProps}
-        />
       </div>
       <div
         style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}
       >
-        {SearchedPosts.map((post, index) => (
-          <UserDishCard key={post.id} post={post} />
-        ))}
+        {SearchedPosts.map((post) => {
+          const index = posts.findIndex(
+            (searchedPost) => searchedPost.id === post.id
+          );
+          return <UserDishCard key={post.id} post={post} index={index} />;
+        })}
+      </div>
+      <div style={countOfSelectedDishes ? {} : { display: "none" }}>
+        <FloatButton
+          icon={<CheckOutlined />}
+          type="primary"
+          style={{ right: 24 }}
+          badge={{ count: countOfSelectedDishes, color: "blue" }}
+          onClick={() => {
+            navigate("/selected-list");
+          }}
+        />
       </div>
     </div>
   );

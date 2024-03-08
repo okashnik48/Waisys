@@ -1,7 +1,17 @@
-import { Avatar, Button, Card, Tag, Image, Typography } from "antd";
-import React from "react";
+import {
+  Avatar,
+  Button,
+  Card,
+  Tag,
+  Image,
+  Typography,
+  Badge,
+  FloatButton,
+} from "antd";
+import React, { useMemo, useState } from "react";
 
 import {
+  CheckOutlined,
   CommentOutlined,
   MinusOutlined,
   PlusOutlined,
@@ -10,121 +20,176 @@ import {
 } from "@ant-design/icons";
 
 import { Dish } from "../waiter/Dishes";
+import DishCounter from "../waiter/DishCounter";
+import CommentForm from "./CommentForm";
+import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
+import { addSelectedPostQuest } from "../../store/slices/guest";
 
 interface Props {
   post: Dish;
+  index: number;
+}
+
+interface SelectedPost {
+  name: string;
+  description: string;
+  price: {
+    value: number;
+    currency: string;
+  };
+  image: string;
+  createdAt: string;
+  tags: Record<string, string>;
+  id: string;
+  post: string;
+  count: number;
+  comment: string;
+  selectedPostId: string;
 }
 
 const { Meta } = Card;
 
-export const UserDishCard = ({ post }: Props) => {
-  console.log(post);
+export const UserDishCard = ({ post, index }: Props) => {
+  const dispatch = useAppDispatch();
+
+  const [isCommentFormVisible, setIsCommentFormVisible] =
+    useState<boolean>(false);
+  const handlerAddDish = () => {
+    const selectedPostId = crypto.randomUUID();
+    const NewSelectedPost: SelectedPost = {
+      ...post,
+      selectedPostId: selectedPostId,
+    };
+    dispatch(
+      addSelectedPostQuest({ post: NewSelectedPost, listId: selectedPostId })
+    );
+  };
   return (
-    <Card
-      style={{
-        width: "600px",
-        flexDirection: "column",
-        height: "auto",
-        margin: "5px",
-      }}
-      title={
-        <h2
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          {post.name}
-        </h2>
-      }
-      cover={
-        <div>
-          <div
+    <>
+      <Card
+        style={{
+          width: "600px",
+          flexDirection: "column",
+          height: "auto",
+          margin: "5px",
+        }}
+        title={
+          <h2
             style={{
-              alignItems: "center",
               display: "flex",
               justifyContent: "center",
-            }}
-          >
-            <Image alt={post.name} src={post.image} width={590} height={440} />
-          </div>
-          <div
-            style={{
-              display: "flex",
               alignItems: "center",
-              justifyContent: "space-between",
-              marginLeft: "10px",
             }}
           >
-            <div style={{ display: "block" }}>
-              {Object.keys(post.tags).map((label) => (
-                <Tag
-                  key={label}
-                  color={post.tags[label]}
-                  style={{
-                    fontSize: "16px",
-                    padding: "8px 12px",
-                    display: "inline-block",
-                  }}
-                >
-                  {label}
-                </Tag>
-              ))}
-            </div>
-            <Typography.Title
-              level={3}
+            {post.name}
+          </h2>
+        }
+        cover={
+          <div>
+            <div
               style={{
-                marginLeft: "10px",
-                marginBottom: "20px",
-                marginRight: "10px",
+                alignItems: "center",
+                display: "flex",
+                justifyContent: "center",
               }}
             >
-              {" "}
-              {`Price: ${post.price.value} ${post.price.currency}`}{" "}
-            </Typography.Title>
+              <Image
+                alt={post.name}
+                src={post.image}
+                width={590}
+                height={440}
+              />
+            </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginLeft: "10px",
+              }}
+            >
+              <div style={{ display: "block" }}>
+                {Object.keys(post.tags).map((label) => (
+                  <Tag
+                    key={label}
+                    color={post.tags[label]}
+                    style={{
+                      fontSize: "16px",
+                      padding: "8px 12px",
+                      display: "inline-block",
+                    }}
+                  >
+                    {label}
+                  </Tag>
+                ))}
+              </div>
+              <Typography.Title
+                level={3}
+                style={{
+                  marginLeft: "10px",
+                  marginBottom: "20px",
+                  marginRight: "10px",
+                }}
+              >
+                {" "}
+                {`Price: ${post.price.value} ${post.price.currency}`}{" "}
+              </Typography.Title>
+            </div>
           </div>
-        </div>
-      }
-      actions={[
-        <CommentOutlined
-          style={{ fontSize: "200%" }}
-          onClick={() => console.log("52")}
-          key="setting"
-        />,
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Button size="middle" icon={<MinusOutlined />} />
-          <h1>{post.count}</h1>
-          <Button size="middle" icon={<PlusOutlined />} />
-        </div>,
-        <ShoppingCartOutlined style={{ fontSize: "200%" }} key="cart" />,
-      ]}
-    >
-      <Meta
-        title={
-          <h3
+        }
+        actions={[
+          <div style={{ marginTop: "20%" }}>
+            <Badge dot={post.comment ? true : false} status="success">
+              <CommentOutlined
+                style={{ fontSize: "200%" }}
+                onClick={() => setIsCommentFormVisible(true)}
+                key="setting"
+              />
+            </Badge>
+          </div>,
+          <div
             style={{
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
             }}
           >
-            Description
-          </h3>
-        }
-        description={
-          <p style={{ fontSize: "20px", width: "100%", height: "300px" }}>
-            {post.description}
-          </p>
-        }
+            <DishCounter post={post} index={index} />
+          </div>,
+          <div style={{ marginTop: "20%" }}>
+          <ShoppingCartOutlined
+            style={{ fontSize: "200%" }}
+            onClick={handlerAddDish}
+            key="cart"
+          />
+          </div>,
+        ]}
+      >
+        <Meta
+          title={
+            <h3
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              Description
+            </h3>
+          }
+          description={
+            <p style={{ fontSize: "20px", width: "100%", height: "300px" }}>
+              {post.description}
+            </p>
+          }
+        />
+      </Card>
+      <CommentForm
+        isVisible={isCommentFormVisible}
+        setIsVisible={setIsCommentFormVisible}
+        comment={post.comment}
+        index={index}
       />
-    </Card>
+    </>
   );
 };

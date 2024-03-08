@@ -8,12 +8,22 @@ import AdminUsersList from "../components/admin/AdminUsersList";
 import AdminTagsList from "../components/admin/AdminTagsList";
 import DoneDishesList from "../components/waiter/DoneList";
 import DeclinedDishesList from "../components/waiter/DeclinedDishes";
+import { UserDishesList } from "../components/user/UserDishesList";
+import SelectedUserDishes from "../components/user/SelectedUserDishes";
 
 export const ROUTES_CONFIG = {
   public: [
     {
-      path: "*",
+      path: "/",
       element: <Auth />,
+    },
+    {
+      path: "/menu/:tableNumber",
+      element: <UserDishesList />,
+    },
+    {
+      path: "/selected-list",
+      element: <SelectedUserDishes />,
     },
   ],
   private: {
