@@ -1,6 +1,6 @@
 import React, {  useMemo, useState } from "react";
 
-import postService from "../../services/posts.service";
+import postService from "../../services/dishes.service";
 
 import {
   Input,

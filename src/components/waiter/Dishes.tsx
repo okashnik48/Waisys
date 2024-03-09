@@ -2,9 +2,9 @@
 import React, { FC, useMemo, useState } from "react";
 import { addSelectedPost } from "../../store/slices/selected-posts";
 
-import postService from "../../services/posts.service";
+import postService from "../../services/dishes.service";
 import adminDishesService from "../../services/admin/admin-dishes.service";
-import { useAppDispatch } from "../../store/store-hooks";
+import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
 import {
   Image,
   Input,
@@ -18,38 +18,10 @@ import {
 } from "antd";
 
 import DishCounter from "./DishCounter";
+import DishesTagsService from "../../services/dishes-tags.service";
+import { dishesTagsOptionsSelector } from "../../store/slices/dishes-tags-hooks";
+import DishesTypes from "../../store/types/dishes-types";
 
-export interface Dish {
-  name: string;
-  description: string;
-  price: {
-    value: number;
-    currency: string;
-};
-  image: string;
-  createdAt: string;
-  tags: Record<string, string>;
-  id: string;
-  post: string;
-  count: number;
-  comment: string;
-}
-interface SelectedPost {
-  name: string;
-  description: string;
-  price: {
-    value: number;
-    currency: string;
-};
-  image: string;
-  createdAt: string;
-  tags: Record<string, string>;
-  id: string;
-  post: string;
-  count: number;
-  comment: string;
-  selectedPostId: string;
-}
 
 const SortOptionProps = [
   {
@@ -76,17 +48,10 @@ const Dishes: FC = () => {
   const [sortOption, setSortOption] = useState<
     "name" | "priceDesc" | "priceAsc" | ""
   >("");
-  const { tagsProps } = adminDishesService.useGetTagsQuery("", {
-    selectFromResult: ({ data }) => ({
-      tagsProps: data
-        ? Object.keys(data).map((tag) => ({
-            value: tag,
-            label: tag,
-          }))
-        : [],
-    }),
-  });
-  const { data: posts, isLoading } = postService.useDishesQuery("", {
+
+  const tagsOptions = useAppSelector(dishesTagsOptionsSelector);
+
+  const { data: posts, isLoading } = postService.useDishesQuery(null, {
     selectFromResult: ({ data, isLoading }) => ({
       data: data
         ? data.map((post) => ({
@@ -105,7 +70,7 @@ const Dishes: FC = () => {
     value: string | number
   ) => {
     dispatch(
-      postService.util.updateQueryData("dishes", "", (draftPost) => {
+      postService.util.updateQueryData("dishes", null, (draftPost) => {
         if (label === "comment") {
           draftPost[index].comment = value as string;
         } else {
@@ -121,7 +86,7 @@ const Dishes: FC = () => {
 
   const AddDish = (index: number) => {
     const selectedPostId = crypto.randomUUID();
-    const NewSelectedPost: SelectedPost = {
+    const NewSelectedPost: DishesTypes.SelectedDish = {
       ...posts[index],
       selectedPostId: selectedPostId,
     };
@@ -133,11 +98,11 @@ const Dishes: FC = () => {
   };
 
   const SearchedPosts = useMemo(() => {
-    let NewPosts = posts.filter((Dish: Dish) =>
+    let NewPosts = posts.filter((Dish) =>
       Dish.name.toLowerCase().includes(searchText.toLowerCase())
     );
     if (searchTags.length !== 0) {
-      NewPosts = NewPosts.filter((dish: Dish) => {
+      NewPosts = NewPosts.filter((dish) => {
         return searchTags.every((element) =>
           Object.keys(dish.tags).includes(element)
         );
@@ -211,7 +176,7 @@ const Dishes: FC = () => {
                       display: "inline-block",
                       marginLeft: "10px",
                     }}
-                    options={tagsProps}
+                    options={tagsOptions}
                   />
                 </div>
               </div>
@@ -236,11 +201,12 @@ const Dishes: FC = () => {
                 />
               </div>
             </div>
+
             {SearchedPosts.length === 0 ? (
               <Empty />
             ) : (
               <>
-                {SearchedPosts.map((post: Dish) => {
+                {SearchedPosts.map((post) => {
                   const index = posts.findIndex(
                     (searchedPost) => searchedPost.id === post.id
                   );
@@ -356,39 +322,3 @@ const Dishes: FC = () => {
 };
 
 export default Dishes;
-//const { data: tagList } = adminDishesService.useGetTagsQuery("");
-//const [selectTagsOptions, SetSelectTagsOptions] = useState<TagsOptions[]>([]);
-// useMemo(() => {
-//   if (tagList) {;
-//     SetSelectTagsOptions([]);
-//     Object.keys(tagList).map((label) => {
-//       SetSelectTagsOptions((prevProps) => {
-//         return [
-//           ...prevProps,
-//           {
-//             label: label,
-//             value: label,
-//           },
-//         ];
-//       });
-//     });
-//   }
-// }, [tagList]);
-// useEffect(() => {
-//   setIsLoading(true);
-//   updateDishesList()
-//     .unwrap()
-//     .then((dishesData) => {
-//       const DishesPosts: ReplyDish[] = Object.values(dishesData);
-//       DishesPosts.map((post: ReplyDish) => {
-//         dispatch(
-//           addPost({ id: post.id, post: { ...post, comment: "", count: 1 } })
-//         );
-//       });
-//       setIsLoading(false);
-//     })
-//     .catch((error) => {
-//       setIsLoading(false);
-//       console.error("Loading dishes error", error);
-//     });
-// }, []);

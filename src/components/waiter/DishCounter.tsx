@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "antd";
 import { useAppDispatch } from "../../store/store-hooks";
 import { MinusOutlined, PlusOutlined} from '@ant-design/icons';
-import postService from "../../services/posts.service";
+import postService from "../../services/dishes.service";
 interface Dish {
   post: {
     name: string;

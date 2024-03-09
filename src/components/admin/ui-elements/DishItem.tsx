@@ -1,6 +1,6 @@
 import React from "react";
 
-import { dishesReply } from "../../../services/posts.service";
+import { dishesReply } from "../../../services/dishes.service";
 import adminDishesService from "../../../services/admin/admin-dishes.service";
 
 import { Button, Image, Typography } from "antd";

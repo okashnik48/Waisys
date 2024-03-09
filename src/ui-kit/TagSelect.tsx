@@ -1,7 +1,16 @@
 import React, { useMemo } from "react";
-import { Control, Controller, FieldValues, Path, useController } from "react-hook-form";
+import {
+  Control,
+  Controller,
+  FieldValues,
+  Path,
+  useController,
+} from "react-hook-form";
 import adminDishesService from "../services/admin/admin-dishes.service";
 import { Select, SelectProps, Tag } from "antd";
+import DishesTagsService from "../services/dishes-tags.service";
+import { useAppSelector } from "../store/store-hooks";
+import { dishesTagsOptionsSelector } from "../store/slices/dishes-tags-hooks";
 
 type TagRender = SelectProps["tagRender"];
 
@@ -21,32 +30,29 @@ export function TagSelect<T extends FieldValues>({
     control,
   });
 
-  const { tagsList, colorMask } = adminDishesService.useGetTagsQuery("", {
+  const tagsList = useAppSelector(dishesTagsOptionsSelector);
+
+  const { colorMask } = DishesTagsService.useGetTagsQuery("", {
     selectFromResult: ({ data }) => ({
-      tagsList: data
-        ? Object.keys(data).map((tag) => ({
-            value: tag,
-            label: tag,
-          }))
-        : [],
-        colorMask: data? data : {}
+      colorMask: data ? data : {},
     }),
   });
   const onPreventMouseDown = (event: React.MouseEvent<HTMLSpanElement>) => {
     event.preventDefault();
     event.stopPropagation();
   };
+
   const tagRender: TagRender = (params) => {
     return (
-        <Tag
-          onMouseDown={onPreventMouseDown}
-          style={{ marginRight: 3 }}
-          color={colorMask[params.label as string]}
-          closable={params.closable}
-          onClose={params.onClose}
-        >
-          {params.label}
-        </Tag>
+      <Tag
+        onMouseDown={onPreventMouseDown}
+        style={{ marginRight: 3 }}
+        color={colorMask[params.label as string]}
+        closable={params.closable}
+        onClose={params.onClose}
+      >
+        {params.label}
+      </Tag>
     );
   };
 

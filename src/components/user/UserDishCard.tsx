@@ -1,50 +1,17 @@
-import {
-  Avatar,
-  Button,
-  Card,
-  Tag,
-  Image,
-  Typography,
-  Badge,
-  FloatButton,
-} from "antd";
-import React, { useMemo, useState } from "react";
+import { Card, Tag, Image, Typography, Badge } from "antd";
+import React, { useState } from "react";
 
-import {
-  CheckOutlined,
-  CommentOutlined,
-  MinusOutlined,
-  PlusOutlined,
-  SettingOutlined,
-  ShoppingCartOutlined,
-} from "@ant-design/icons";
+import { CommentOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 
-import { Dish } from "../waiter/Dishes";
 import DishCounter from "../waiter/DishCounter";
 import CommentForm from "./CommentForm";
-import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
+import { useAppDispatch } from "../../store/store-hooks";
 import { addSelectedPostQuest } from "../../store/slices/guest";
+import DishesTypes from "../../store/types/dishes-types";
 
 interface Props {
-  post: Dish;
+  post: DishesTypes.Dish;
   index: number;
-}
-
-interface SelectedPost {
-  name: string;
-  description: string;
-  price: {
-    value: number;
-    currency: string;
-  };
-  image: string;
-  createdAt: string;
-  tags: Record<string, string>;
-  id: string;
-  post: string;
-  count: number;
-  comment: string;
-  selectedPostId: string;
 }
 
 const { Meta } = Card;
@@ -56,7 +23,7 @@ export const UserDishCard = ({ post, index }: Props) => {
     useState<boolean>(false);
   const handlerAddDish = () => {
     const selectedPostId = crypto.randomUUID();
-    const NewSelectedPost: SelectedPost = {
+    const NewSelectedPost: DishesTypes.SelectedDish = {
       ...post,
       selectedPostId: selectedPostId,
     };
@@ -157,11 +124,11 @@ export const UserDishCard = ({ post, index }: Props) => {
             <DishCounter post={post} index={index} />
           </div>,
           <div style={{ marginTop: "20%" }}>
-          <ShoppingCartOutlined
-            style={{ fontSize: "200%" }}
-            onClick={handlerAddDish}
-            key="cart"
-          />
+            <ShoppingCartOutlined
+              style={{ fontSize: "200%" }}
+              onClick={handlerAddDish}
+              key="cart"
+            />
           </div>,
         ]}
       >

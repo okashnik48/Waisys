@@ -26,6 +26,7 @@ import { toast } from "react-toastify";
 import TagInput from "../../ui-kit/TagInput";
 
 import { CurrencyOptions } from "../../ui-kit/CorePriceInput";
+import DishesTagsService from "../../services/dishes-tags.service";
 
 type TagRender = SelectProps["tagRender"];
 
@@ -58,7 +59,7 @@ const AdminCreateDish = () => {
   };
 
   const [AddDishTrigger] = adminDishesService.useCreateDishMutation();
-  const { tagsProps } = adminDishesService.useGetTagsQuery("", {
+  const { tagsProps } = DishesTagsService.useGetTagsQuery("", {
     selectFromResult: ({ data }) => ({
       tagsProps: data
         ? Object.keys(data).map((tag) => ({

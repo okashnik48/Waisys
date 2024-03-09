@@ -11,10 +11,11 @@ import {
 } from "react-hook-form";
 import adminDishesService from "../services/admin/admin-dishes.service";
 import { useAppDispatch } from "../store/store-hooks";
-import postService from "../services/posts.service";
+import postService from "../services/dishes.service";
 import { CoreInput } from "./CoreInput";
 
 import { AddTagNewDish } from "../store/slices/admin";
+import DishesTagsService from "../services/dishes-tags.service";
 
 type DefaultValues = {
   color: string;
@@ -63,7 +64,7 @@ const TagInput: FC<{ type?: string, SetTagValueForDish?: any, GetTagsValues?: an
   const onSubmit = (data: DefaultValues) => {
     if (SetTagValueForDish){
       dispatch(
-        adminDishesService.util.updateQueryData("getTags", "", (draftPost) => {
+        DishesTagsService.util.updateQueryData("getTags", "", (draftPost) => {
           draftPost[data.name] = data.color;  
         })
       );

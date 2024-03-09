@@ -8,3 +8,15 @@
 ANT DESIGN DOCUMNETATION
 
 https://ant.design/components/overview
+
+// ==== //
+
+09.03.2024
+
+- refactor in file src/components/waiter/Dishes.tsx
+- set up namespaces for all types
+- read about ui/ux
+- read about yup and react-hook-form with yup
+  1. https://www.npmjs.com/package/yup
+  2. https://dev.to/franciscomendes10866/react-form-validation-with-react-hook-form-and-yup-4a98
+- read about extra reducers in redux toolkit https://redux-toolkit.js.org/api/createslice#extrareducers

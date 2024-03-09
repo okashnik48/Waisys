@@ -25,7 +25,7 @@ type DeleteDishRequest = {
   id: string;
 };
 
-type TagsReply = Record<string, string>;
+export type TagsReply = Record<string, string>;
 
 type AddTagRequest = {
   name: string;
@@ -86,13 +86,6 @@ const adminDishesService = serviceApi.injectEndpoints({
             toast.error("data");
           });
       },
-    }),
-    getTags: builder.query<TagsReply, any>({
-      query: () => ({
-        url: "tags",
-        method: "GET",
-      }),
-      providesTags: ["tags", "admin-dish"],
     }),
     addTag: builder.mutation<AddTagRequest, any>({
       query: (body) => ({

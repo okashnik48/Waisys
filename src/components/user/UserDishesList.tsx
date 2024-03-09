@@ -1,31 +1,14 @@
-import {
-  Avatar,
-  Badge,
-  Button,
-  Card,
-  FloatButton,
-  Input,
-  Select,
-  Typography,
-} from "antd";
+import { FloatButton, Input, Select, Typography } from "antd";
 import React, { useEffect, useMemo, useState } from "react";
 
-import {
-  CheckOutlined,
-  CommentOutlined,
-  MinusOutlined,
-  PlusOutlined,
-  SettingOutlined,
-  ShoppingCartOutlined,
-} from "@ant-design/icons";
-import adminDishesService from "../../services/admin/admin-dishes.service";
-import postService from "../../services/posts.service";
+import { CheckOutlined } from "@ant-design/icons";
+import postService from "../../services/dishes.service";
 import { UserDishCard } from "./UserDishCard";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { SetTableNumberForQuest } from "../../store/slices/guest";
-
-const { Meta } = Card;
+import DishesTagsService from "../../services/dishes-tags.service";
+import { dishesTagsOptionsSelector } from "../../store/slices/dishes-tags-hooks";
 
 const SortOptionProps = [
   {
@@ -49,18 +32,20 @@ const SortOptionProps = [
 
 export const UserDishesList: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
 
   const { tableNumber } = useParams();
-  console.log(tableNumber)
+  console.log(tableNumber);
   const [searchText, setSearchText] = useState("");
   const [searchTags, setSearchTags] = useState<string[]>([]);
   const [sortOption, setSortOption] = useState<
     "name" | "priceDesc" | "priceAsc" | ""
   >("");
-  useEffect(() =>{
-    dispatch(SetTableNumberForQuest(Number(tableNumber)))
-  }, [])
+
+  useEffect(() => {
+    dispatch(SetTableNumberForQuest(Number(tableNumber)));
+  }, []);
+
   const selectedDishes = useAppSelector((state) => state.guest.selectedPosts);
   const countOfSelectedDishes = useMemo(() => {
     return Object.values(selectedDishes).reduce(
@@ -68,17 +53,10 @@ export const UserDishesList: React.FC = () => {
       0
     );
   }, [selectedDishes]);
-  const { tagsProps } = adminDishesService.useGetTagsQuery("", {
-    selectFromResult: ({ data }) => ({
-      tagsProps: data
-        ? Object.keys(data).map((tag) => ({
-            value: tag,
-            label: tag,
-          }))
-        : [],
-    }),
-  });
-  const { data: posts, isLoading } = postService.useDishesQuery("", {
+
+  const tagsProps = useAppSelector(dishesTagsOptionsSelector);
+
+  const { data: posts, isLoading } = postService.useDishesQuery(null, {
     selectFromResult: ({ data, isLoading }) => ({
       data: data
         ? data.map((post) => ({
@@ -120,6 +98,7 @@ export const UserDishesList: React.FC = () => {
     }
     return NewPosts;
   }, [searchTags, searchText, posts, sortOption]);
+
   return (
     <div
       style={{

@@ -1,44 +1,35 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { useSelector, useDispatch } from 'react-redux';
-import { initPosts, addPost, removePost, setComment } from './posts';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { useSelector, useDispatch } from "react-redux";
+import { initPosts, addPost, removePost, setComment } from "./posts";
+import DishesTypes from "../types/dishes-types";
 
 interface SelectedPostsState {
-  selectedPosts: { [key: string]: Post };
+  selectedPosts: { [key: string]: DishesTypes.SelectedDish };
   tableNumber: string;
-}
-
-interface Post {
-  name: string;
-  description: string;
-      price: {
-        value: number;
-        currency: string;
-    };
-  image: string;
-  createdAt: string;
-  tags: Record<string, string>;
-  id: string;
-  post: string;
-  count: number;
-  comment: string;
-  selectedPostId: string;
 }
 
 const initialState: SelectedPostsState = {
   selectedPosts: {},
-  tableNumber: ''
+  tableNumber: "",
 };
 
 export const SelectedPostsSlice = createSlice({
-  name: 'SelectedPosts',
+  name: "SelectedPosts",
   initialState,
   reducers: {
-    addSelectedPost: (state, action: PayloadAction<{ listId: string; post: Post }>) => {
+    addSelectedPost: (
+      state,
+      action: PayloadAction<{ listId: string; post: DishesTypes.SelectedDish }>
+    ) => {
       let isPostAdded = false;
       if (Object.keys(state.selectedPosts).length !== 0) {
         Object.values(state.selectedPosts).map((post) => {
-          if (post.id === action.payload.post.id && post.comment === action.payload.post.comment) {
-            state.selectedPosts[post.selectedPostId].count += action.payload.post.count;
+          if (
+            post.id === action.payload.post.id &&
+            post.comment === action.payload.post.comment
+          ) {
+            state.selectedPosts[post.selectedPostId].count +=
+              action.payload.post.count;
             isPostAdded = true;
           }
         });
@@ -57,11 +48,16 @@ export const SelectedPostsSlice = createSlice({
     },
     clearSelectedPosts: (state) => {
       state.selectedPosts = {};
-      state.tableNumber = '';
-    }
+      state.tableNumber = "";
+    },
   },
 });
 
-export const { addSelectedPost, removeSelectedPost, addTableNumber, clearSelectedPosts } = SelectedPostsSlice.actions;
+export const {
+  addSelectedPost,
+  removeSelectedPost,
+  addTableNumber,
+  clearSelectedPosts,
+} = SelectedPostsSlice.actions;
 
 export const selectedPostsReducer = SelectedPostsSlice.reducer;

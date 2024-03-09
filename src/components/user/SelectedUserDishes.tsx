@@ -1,11 +1,6 @@
 import React, { FC, useMemo } from "react";
 
 import ordersService from "../../services/orders.service";
-import {
-  addTableNumber,
-  removeSelectedPost,
-  clearSelectedPosts,
-} from "../../store/slices/selected-posts";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
 import { Image, Button, Typography, Empty, FloatButton } from "antd";
 import { toast } from "react-toastify";
@@ -30,13 +25,15 @@ interface Dish {
 }
 
 const SelectedUserDishes: FC = () => {
+  const navigate = useNavigate();
 
-    const navigate = useNavigate()
-
+  // TODO: its bad, need to fix
   const ListDish: Dish[] = Object.values(
     useAppSelector((state) => state.guest.selectedPosts)
   );
+
   const Table = useAppSelector((state) => state.guest.tableNumber);
+
   const dispatch = useAppDispatch();
 
   const totalPrice = useMemo(() => {
@@ -45,6 +42,7 @@ const SelectedUserDishes: FC = () => {
       0
     );
   }, [ListDish]);
+  
   const DeleteDish = (e: React.MouseEvent<HTMLButtonElement>, id: string) => {
     e.preventDefault();
     dispatch(removeSelectedPostQuest({ listId: id }));

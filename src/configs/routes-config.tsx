@@ -10,20 +10,47 @@ import DoneDishesList from "../components/waiter/DoneList";
 import DeclinedDishesList from "../components/waiter/DeclinedDishes";
 import { UserDishesList } from "../components/user/UserDishesList";
 import SelectedUserDishes from "../components/user/SelectedUserDishes";
+import { Button, Result } from "antd";
+import { useNavigate } from "react-router-dom";
+
+function NotFound() {
+  const navigate = useNavigate();
+
+  const onClick = () => {
+    navigate("/");
+  };
+
+  return (
+    <Result
+      status="404"
+      title="404"
+      subTitle="Sorry, you are not authorized to access this page."
+      extra={
+        <Button onClick={onClick} type="primary">
+          Back Home
+        </Button>
+      }
+    />
+  );
+}
 
 export const ROUTES_CONFIG = {
   public: [
     {
-      path: "/",
+      path: "/login",
       element: <Auth />,
     },
     {
-      path: "/menu/:tableNumber",
+      path: "/:tableNumber",
       element: <UserDishesList />,
     },
     {
       path: "/selected-list",
       element: <SelectedUserDishes />,
+    },
+    {
+      path: "*",
+      element: <NotFound />,
     },
   ],
   private: {
