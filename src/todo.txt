@@ -20,3 +20,4 @@ https://ant.design/components/overview
   1. https://www.npmjs.com/package/yup
   2. https://dev.to/franciscomendes10866/react-form-validation-with-react-hook-form-and-yup-4a98
 - read about extra reducers in redux toolkit https://redux-toolkit.js.org/api/createslice#extrareducers
+- read about https://www.netlify.com/
