@@ -16,7 +16,7 @@ const DoneDishesList = () => {
   const [,setIsConnected] = useState(socket.connected);
 
   const { data, isLoading, refetch } =
-    ordersService.useGetCompletedDishesQuery("");
+    ordersService.useGetCompletedDishesQuery(null);
   const [setCompletedDishDoneTrigger] =
     ordersService.useDeleteDeliveredDishMutation();
 

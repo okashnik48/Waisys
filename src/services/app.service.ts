@@ -21,9 +21,11 @@ const baseQuery = fetchBaseQuery({
         headers.set("Authorization", `Bearer ${token}`);
       }
 
-      return headers;
+      
     } catch (error) {
       console.log("fetchBaseQuery", error);
+    }
+    finally{
       return headers;
     }
   },

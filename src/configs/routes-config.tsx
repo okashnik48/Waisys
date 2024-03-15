@@ -17,7 +17,7 @@ function NotFound() {
   const navigate = useNavigate();
 
   const onClick = () => {
-    navigate("/");
+    navigate("/login");
   };
 
   return (

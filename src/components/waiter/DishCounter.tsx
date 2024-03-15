@@ -17,7 +17,7 @@ const DishCounter: React.FC<Dish> = ({ post, index }) => {
   
   const ChangeCountDish = (value: number) => {
     dispatch(
-      postService.util.updateQueryData("dishes", "", (draftPost) => {
+      postService.util.updateQueryData("dishes", null, (draftPost) => {
         draftPost[index].count = value;  
       })
     );

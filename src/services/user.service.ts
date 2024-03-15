@@ -1,22 +1,12 @@
 import { serviceApi } from "./app.service";
-
-
-type UserInfoReply = {
-    id: string,
-    firstName: string,
-    lastName: string,
-    role: string,
-    username: string
-}
-
+import UsersTypes from "../store/types/users-types";
 
 const userService = serviceApi.injectEndpoints({
     endpoints: (builder) => ({
-        userInfo: builder.query<UserInfoReply, any>({
-            query: (accessToken) => ({
+        userInfo: builder.query<UsersTypes.API.GetUserInfoReply, UsersTypes.API.GetUserInfoRequest>({
+            query: () => ({
                 url: 'users/me',
                 method: 'GET',
-                headers: { Authorization: `Bearer ${accessToken}` },
             }),
         }),
     })

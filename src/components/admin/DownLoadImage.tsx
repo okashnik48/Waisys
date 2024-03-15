@@ -1,18 +1,17 @@
-import React, { useState} from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { SetFieldNewDish } from "../../store/slices/admin";
 
 import { Image as ImageAnt, Form, Upload, Button } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 
-const FileUploader: React.FC = () => {
+const FileUploader = ({ SetValue }: any) => {
   const [image, setImage] = useState<File>();
   const [imageURL, setImageURL] = useState<string | undefined>();
 
   const dispatch = useDispatch();
 
   const handleOnChange = (event: any) => {
-    const file = event.file; 
+    const file = event.file;
     if (file) {
       const fileReader = new FileReader();
       fileReader.onloadend = () => {
@@ -41,9 +40,10 @@ const FileUploader: React.FC = () => {
           ctx?.drawImage(img, 0, 0, width, height);
           const resizedDataURL = canvas.toDataURL("image/jpeg");
           setImageURL(resizedDataURL);
-          dispatch(
-            SetFieldNewDish({ value: resizedDataURL, fieldname: "image" })
-          );
+          SetValue("image", resizedDataURL);
+          // dispatch(
+          //   SetFieldNewDish({ value: resizedDataURL, fieldname: "image" })
+          // );
         };
       };
       fileReader.readAsDataURL(file);
@@ -64,7 +64,7 @@ const FileUploader: React.FC = () => {
           beforeUpload={handleBeforeUpload}
           className="hidden"
           onChange={handleOnChange}
-          onRemove = {() => setImage(undefined)}
+          onRemove={() => setImage(undefined)}
         >
           <Button icon={<UploadOutlined />}>Upload File</Button>
         </Upload>

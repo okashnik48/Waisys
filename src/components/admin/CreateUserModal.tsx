@@ -2,59 +2,54 @@
 
 import React from "react";
 
-import { SetFieldNewUser, ClearNewUser } from "../../store/slices/admin-user-list";
-
 import { SetAddUserModal } from "../../store/slices/admin";
 
-import { Modal, Input, Select, Button } from "antd";
+import { Modal, Button, Form } from "antd";
 import adminUsersService from "../../services/admin/admin-users.service";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
-import { toast } from "react-toastify";
-
-interface NewUser {
+import { SubmitHandler, useForm } from "react-hook-form";
+import { roleOptions } from "../../configs/SelectPatern";
+import { CoreSelect } from "../../ui-kit/CoreSelect";
+import { CorePasswordInput } from "../../ui-kit/CorePasswordInput";
+import { CoreInputRequired } from "../../ui-kit/CoreInputRequired";
+type DefaultValues = {
+  id: string;
   firstName: string;
   lastName: string;
   role: string;
   username: string;
   password: string;
-}
+};
+
+const NewUserProps = {
+  firstName: "",
+  lastName: "",
+  role: "",
+  username: "",
+  password: "",
+};
 
 const CreateUserModal = () => {
   const dispatch = useAppDispatch();
-  let newUser: NewUser = useAppSelector((state) => {
-    return state.adminUserList.newuser;
+
+  const { control, handleSubmit, reset } = useForm<DefaultValues>({
+    defaultValues: NewUserProps,
   });
   const modalStatus = useAppSelector((state) => {
     return state.admin.modalStatus;
   });
 
-  const hasEmptyField = () => {
-    return Object.values(newUser).some((value) => !value);
-  };
   const [AddUserTrigger] = adminUsersService.useCreateUserMutation();
 
-  const AddNewUser = (e: React.MouseEvent<HTMLElement>) => {
-    if (!hasEmptyField()) {
-      AddUserTrigger({ body: newUser }).then(() =>{
-        dispatch(ClearNewUser(null))
-      })
-    } else {
-      toast.info("Some fields are empty")
-    }
+  const onSubmit: SubmitHandler<DefaultValues> = (formData) => {
+    AddUserTrigger({ body: formData }).then(() => {
+      reset(NewUserProps);
+      console.log(formData)
+    });
   };
-
   const handleClose = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     dispatch(SetAddUserModal({ status: false }));
-  };
-
-  const setFieldNewUserHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(
-      SetFieldNewUser({
-        value: e.target.value,
-        fieldname: "firstName",
-      })
-    );
   };
 
   return (
@@ -64,89 +59,71 @@ const CreateUserModal = () => {
       footer={null}
       width={600}
     >
-      <h2>Create new User</h2>
+      <h2 style={{ textAlign: "center" }}>Create new User</h2>
       <div style={{ minWidth: "400px", maxWidth: "600px" }}>
-        <div>
-          <label htmlFor="firstName">First Name</label>
-          <Input
-            id="firstName"
-            onChange={setFieldNewUserHandler}
-            value={newUser.firstName}
-          />
-        </div>
-        <div>
-          <label htmlFor="lastName">Last Name</label>
-          <Input
-            id="lastName"
-            onChange={(e) => {
-              dispatch(
-                SetFieldNewUser({
-                  value: e.target.value,
-                  fieldname: "lastName",
-                })
-              );
-            }}
-            value={newUser.lastName}
-          />
-        </div>
-        <div>
-          <label htmlFor="username">Username</label>
-          <Input
-            id="username"
-            onChange={(e) => {
-              dispatch(
-                SetFieldNewUser({
-                  value: e.target.value,
-                  fieldname: "username",
-                })
-              );
-            }}
-            value={newUser.username}
-          />
-        </div>
-        <div>
-          <label htmlFor="password">Password</label>
-          <Input.Password
-            id="password"
-            onChange={(e) => {
-              dispatch(
-                SetFieldNewUser({
-                  value: e.target.value,
-                  fieldname: "password",
-                })
-              );
-            }}
-            value={newUser.password}
-          />
-        </div>
-        <div>
-          <label htmlFor="role">Role</label>
-          <Select
-            onChange={(value) => {
-              dispatch(
-                SetFieldNewUser({
-                  value: value,
-                  fieldname: "role",
-                })
-              );
-            }}
-            value={newUser.role}
-          >
-            <Select.Option value="WAITER">Waiter</Select.Option>
-            <Select.Option value="COOK">Cooker</Select.Option>
-            <Select.Option value="ADMIN">Admin</Select.Option>
-          </Select>
-        </div>
-        <div className="w-full">
-          <Button
-            onClick={(e) => {
-              e.preventDefault();
-              AddNewUser(e);
-            }}
-          >
-            Create new user
-          </Button>
-        </div>
+        <Form onFinish={handleSubmit(onSubmit)}>
+          <div style={{ marginBottom: "16px" }}>
+            <CoreInputRequired
+              name="firstName"
+              size="large"
+              control={control}
+              label=""
+              placeholder="First Name"
+              type="text"
+              rules={[{ required: true, message: "Please input first name!" }]}
+            />
+          </div>
+
+          <div style={{ marginBottom: "16px" }}>
+            <CoreInputRequired
+              name="lastName"
+              size="large"
+              control={control}
+              label=""
+              placeholder="Last Name"
+              type="text"
+              rules={[{ required: true, message: "Please input last name!" }]}
+            />
+          </div>
+          <div style={{ marginBottom: "16px" }}>
+            <CoreInputRequired
+              name="username"
+              size="large"
+              control={control}
+              label=""
+              placeholder="UserName"
+              type="text"
+              rules={[{ required: true, message: "Please input username!" }]}
+            />
+          </div>
+          <div style={{ marginBottom: "16px", display: "block" }}>
+            <CorePasswordInput
+              name="password"
+              size="large"
+              control={control}
+              label=""
+              placeholder="Password"
+              type="text"
+              rules={[{ required: true, message: "Please input password!" }]}
+            />
+          </div>
+          <div >
+              <CoreSelect
+                name="role"
+                size="large"
+                control={control}
+                placeholder="Role"
+                options={roleOptions}
+                rules={[{ required: true, message: "Please select role!" }]}
+              />
+          </div>
+
+          <div className="w-full">
+            <Button type="primary" htmlType="submit">
+              Create new user
+            </Button>
+          </div>
+        </Form>
       </div>
     </Modal>
   );

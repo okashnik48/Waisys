@@ -6,7 +6,6 @@ import {
   Path,
   useController,
 } from "react-hook-form";
-import adminDishesService from "../services/admin/admin-dishes.service";
 import { Select, SelectProps, Tag } from "antd";
 import DishesTagsService from "../services/dishes-tags.service";
 import { useAppSelector } from "../store/store-hooks";
@@ -32,7 +31,7 @@ export function TagSelect<T extends FieldValues>({
 
   const tagsList = useAppSelector(dishesTagsOptionsSelector);
 
-  const { colorMask } = DishesTagsService.useGetTagsQuery("", {
+  const { colorMask } = DishesTagsService.useGetTagsQuery(null, {
     selectFromResult: ({ data }) => ({
       colorMask: data ? data : {},
     }),

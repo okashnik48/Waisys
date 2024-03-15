@@ -16,7 +16,7 @@ const DoneDishesList = () => {
 
   const [isConnected, setIsConnected] = useState(socket.connected);
 
-  const { data, isLoading, refetch } = ordersService.useGetDeclinedDishesQuery("");
+  const { data, isLoading, refetch } = ordersService.useGetDeclinedDishesQuery(null);
 
   useEffect(() => {
     function onConnect() {

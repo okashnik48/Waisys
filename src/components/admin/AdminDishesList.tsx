@@ -8,27 +8,34 @@ import {
 } from "antd";
 
 import DishItem from "./ui-elements/DishItem";
+import { useForm, useWatch } from "react-hook-form";
+import { SearchFunction } from "../../configs/SearchFunction";
+import { CoreSearch } from "../../ui-kit/CoreSearch";
+
+type DefaultValues = {
+  searchText: string;
+  searchTags: string[];
+  sortOption: "name" | "priceDesc" | "priceAsc" | "";
+};
 
 const AdminDishesList = () => {
   const { data: dishesListReply } = postService.useDishesQuery(null);
+
+  const { handleSubmit, control, getValues } = useForm<DefaultValues>({
+    defaultValues: {
+      searchText: "",
+      searchTags: [],
+      sortOption: "",
+    },
+  });
+
+  const isSearchPropsUpdated = useWatch({ control });
 
   const dishesList = useMemo(() => {
     return dishesListReply ? dishesListReply : [];
   }, [dishesListReply]);
 
-  const [searchText, setSearchText] = useState("");
-
-  const SearchedPosts = useMemo(
-    () =>{
-      let SortedPosts = Object.values(dishesList).filter((Dish) =>
-        Dish.name.toLowerCase().includes(searchText.toLowerCase())
-      )
-      SortedPosts = Object.values(SortedPosts).sort((a, b) => new Date(a.createdAt).getDate() - new Date(b.createdAt).getDate())
-      return SortedPosts;
-    },
-    [searchText, dishesList]
-  );
-
+  const SearchedPosts = useMemo(() => {return SearchFunction(dishesList, getValues)}, [isSearchPropsUpdated, dishesList]);
   return (
     <div
       style={{
@@ -37,17 +44,12 @@ const AdminDishesList = () => {
       }}
     >
       <h1>Menu</h1>
-      <Input
-        size="large"
-        placeholder={searchText}
-        style={{ marginBottom: "10px" }}
-        onChange={(e) => {
-          setSearchText(e.target.value);
-        }}
-      />
-      {SearchedPosts.map((post, index) => (
+      <CoreSearch control={control} />
+      {SearchedPosts.map((post, index) => {
+        console.log(post)
+        return (
         <DishItem key={post.id} post={post} />
-      ))}
+      )})}
     </div>
   );
 };

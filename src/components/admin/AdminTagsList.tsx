@@ -1,14 +1,13 @@
 import React, { FC, useMemo } from "react";
 
-import adminDishesService from "../../services/admin/admin-dishes.service";
+import DishesTagsService from "../../services/dishes-tags.service";
 import { Empty, ColorPicker, Button, Space } from "antd";
 import TagInput from "../../ui-kit/TagInput";
-import DishesTagsService from "../../services/dishes-tags.service";
 
 const AdminTagsList: FC = () => {
-  const { data } = DishesTagsService.useGetTagsQuery("");
-  const [ChangeTagsTrigger] = adminDishesService.useChangeTagsMutation();
-  const [DeleteTagTrigger] = adminDishesService.useDeleteTagMutation();
+  const { data } = DishesTagsService.useGetTagsQuery(null);
+  const [ChangeTagsTrigger] = DishesTagsService.useChangeTagsMutation();
+  const [DeleteTagTrigger] = DishesTagsService.useDeleteTagMutation();
   
   const tagsList = useMemo(() => {
     console.log(data)

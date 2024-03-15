@@ -1,11 +1,11 @@
 import React from "react";
 
-import { OrderDish } from "../../../services/orders.service";
+import OrdersTypes from "../../../store/types/orders-types";
 import { Typography, Image, Button } from "antd";
 import ordersService from "../../../services/orders.service";
 
 interface Props {
-  post: OrderDish;
+  post: OrdersTypes.OrderDish;
 }
 
 export const CookItem: React.FC<Props> = ({ post }) => {

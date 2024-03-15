@@ -1,52 +1,19 @@
 import { toast } from "react-toastify";
 import { serviceApi } from "../app.service";
 
-type GetAllUsersReply = {
-    [x: string]: any;
-    users: {
-      id: string;
-      firstName: string;
-      lastName: string;
-      role: string;
-      username: string;
-      password: string;
-    }[];
-  };
-type CreateUsereRequest = {
-    body:{
-        firstName: string;
-        lastName: string;
-        role: string;
-        username: string;
-        password: string;
-    }
-  };
-  
-type ChangeUsereRequest = {
-    id: string,
-    body: {
-        id: string;
-        firstName: string;
-        lastName: string;
-        role: string;
-        username: string;
-        password: string;
-    };
-}
-type DeleteUserRequest = {
-    id: string,
-}
+import AdminUsersTypes from "../../store/types/admin-types/adminUsers-types";
+
 
 const adminUsersService = serviceApi.injectEndpoints({
     endpoints: (builder) => ({
-        users: builder.query<GetAllUsersReply, any>({
+        users: builder.query<AdminUsersTypes.API.GetAllUsersReply, null>({
             query: (Request) => ({
                 url: 'admin/users',
                 method: 'GET',
             }),
             providesTags: ["users"],
         }),
-        createUser: builder.mutation<any, CreateUsereRequest>({
+        createUser: builder.mutation<null, AdminUsersTypes.API.CreateUserRequest>({
             query: (Request) => ({
                 url: 'admin/users',
                 method: 'POST',
@@ -64,7 +31,7 @@ const adminUsersService = serviceApi.injectEndpoints({
                   });
               },
         }),
-        changeUser: builder.mutation<any, ChangeUsereRequest>({
+        changeUser: builder.mutation<null, AdminUsersTypes.API.ChangeUserRequest>({
             query: (Request) => ({
                 url: `admin/users/${Request.id}`,
                 method: 'PATCH',
@@ -82,7 +49,7 @@ const adminUsersService = serviceApi.injectEndpoints({
                   });
               },
         }),
-        deleteUser: builder.mutation<any, DeleteUserRequest>({
+        deleteUser: builder.mutation<null, AdminUsersTypes.API.DeleteUserRequest>({
             query: (Request) => ({
                 url: `admin/users/${Request.id}`,
                 method: 'DELETE',

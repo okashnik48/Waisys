@@ -1,10 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { useSelector, useDispatch } from "react-redux";
-import { initPosts, addPost, removePost, setComment } from "./posts";
 import DishesTypes from "../types/dishes-types";
 
 interface SelectedPostsState {
-  selectedPosts: { [key: string]: DishesTypes.SelectedDish };
+  selectedPosts:  Record<string, DishesTypes.SelectedDishForList>;
   tableNumber: string;
 }
 
@@ -19,10 +17,10 @@ export const SelectedPostsSlice = createSlice({
   reducers: {
     addSelectedPost: (
       state,
-      action: PayloadAction<{ listId: string; post: DishesTypes.SelectedDish }>
+      action: PayloadAction<{ listId: string; post: DishesTypes.SelectedDishForList }>
     ) => {
       let isPostAdded = false;
-      if (Object.keys(state.selectedPosts).length !== 0) {
+      if (Object.keys(state.selectedPosts).length !== 0 && state.selectedPosts !== undefined) {
         Object.values(state.selectedPosts).map((post) => {
           if (
             post.id === action.payload.post.id &&

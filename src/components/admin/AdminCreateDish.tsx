@@ -4,101 +4,66 @@ import React from "react";
 
 import {
   Modal,
-  Input,
-  Select,
   Button,
-  SelectProps,
-  Tag,
-  InputNumber,
+  Form,
+  Typography,
 } from "antd";
 
 import {
-  SetFieldNewDish,
   SetAddDishModal,
-  ClearNewDish,
 } from "../../store/slices/admin";
 
 import FileUploader from "./DownLoadImage";
 
 import adminDishesService from "../../services/admin/admin-dishes.service";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
-import { toast } from "react-toastify";
 import TagInput from "../../ui-kit/TagInput";
 
-import { CurrencyOptions } from "../../ui-kit/CorePriceInput";
-import DishesTagsService from "../../services/dishes-tags.service";
+import CorePriceInput from "../../ui-kit/CorePriceInput";
 
-type TagRender = SelectProps["tagRender"];
+import AdminDishesTypes from "../../store/types/admin-types/adminDishes-types";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { CoreInputRequired } from "../../ui-kit/CoreInputRequired";
+import { CoreInputTextAria } from "../../ui-kit/CoreInputTextAria";
+import { TagSelect } from "../../ui-kit/TagSelect";
 
-type NewDish = {
-  name: string;
-  description: string;
-  price: {
-    value: number | null;
-    currency: string;
-  };
-  image: string;
-  tags: Record<string, string>;
-};
+type DefaultValues = AdminDishesTypes.Dish;
 
 interface ModalType {
   modalAddDishStatus: boolean;
   modalAddUSerStatus: boolean;
 }
 
+const NewDishProps = {
+  name: "",
+  description: "",
+  price: {
+    value: null,
+    currency: "UAH",
+  },
+  image: "",
+  tags: {},
+};
+
 const AdminCreateDish = () => {
   const dispatch = useAppDispatch();
-  const NewDish: NewDish = useAppSelector((state) => state.admin.newDish);
-
   const modalStatus: ModalType = useAppSelector((state) => {
     return state.admin.modalStatus;
   });
 
-  const hasEmptyField = () => {
-    return Object.values(NewDish).some((value) => !value);
-  };
-
-  const [AddDishTrigger] = adminDishesService.useCreateDishMutation();
-  const { tagsProps } = DishesTagsService.useGetTagsQuery("", {
-    selectFromResult: ({ data }) => ({
-      tagsProps: data
-        ? Object.keys(data).map((tag) => ({
-            value: data[tag],
-            label: tag,
-          }))
-        : [],
-    }),
-  });
-
-  const AddNewDish = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-    if (!hasEmptyField()) {
-      AddDishTrigger({ body: NewDish }).then(() => {
-        dispatch(ClearNewDish(null));
-      });
-    } else {
-      toast.info("Some fields are empty");
+  const { control, handleSubmit, setValue, getValues } = useForm<DefaultValues>(
+    {
+      defaultValues: NewDishProps,
     }
+  );
+  const [AddDishTrigger] = adminDishesService.useCreateDishMutation();
+  const onSubmit: SubmitHandler<DefaultValues> = (formData) => {
+          AddDishTrigger({ body: formData }).then(() => {
+      });
+      console.log(formData)
   };
 
-  const tagRender: TagRender = (props) => {
-    const { label, value, closable, onClose } = props;
-    const onPreventMouseDown = (event: React.MouseEvent<HTMLSpanElement>) => {
-      event.preventDefault();
-      event.stopPropagation();
-    };
-    return (
-      <Tag
-        color={value}
-        onMouseDown={onPreventMouseDown}
-        closable={closable}
-        onClose={onClose}
-        style={{ marginRight: 3 }}
-      >
-        {label}
-      </Tag>
-    );
-  };
+
 
   const handleClose = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
@@ -114,129 +79,51 @@ const AdminCreateDish = () => {
     >
       <h2>Create new Dish</h2>
       <div style={{ minWidth: "400px", maxWidth: "600px" }}>
-        <div className="space-y-6">
-          <div>
-            <FileUploader />
-          </div>
-          <div className="mb-2 block">
-            <label htmlFor="name">Name</label>
-            <Input
-              id="name"
-              onChange={(e) => {
-                dispatch(
-                  SetFieldNewDish({
-                    value: e.target.value,
-                    fieldname: "name",
-                  })
-                );
-              }}
-              value={NewDish.name}
+        <Form onFinish={handleSubmit(onSubmit)}>
+        <FileUploader SetValue = {setValue} />
+          <div style={{ marginBottom: "16px" }}>
+            <CoreInputRequired
+              name="name"
+              size="large"
+              control={control}
+              label=""
+              placeholder="Dish Name"
+              type="text"
+              rules={[{ required: true, message: "Please input dish name!" }]}
             />
           </div>
-          <div className="mb-2 block">
-            <label htmlFor="description">Description</label>
-            <Input.TextArea
-              id="description"
-              onChange={(e) => {
-                dispatch(
-                  SetFieldNewDish({
-                    value: e.target.value,
-                    fieldname: "description",
-                  })
-                );
-              }}
-              value={NewDish.description}
-              autoSize
-            />
-          </div>
-          <div className="mb-2 block">
-            <label htmlFor="price">Price</label>
-            <InputNumber
-              value={NewDish.price?.value}
-              size={"large"}
-              type={"number"}
-              placeholder={"Enter Price"}
-              name={"price"}
-              prefix={CurrencyOptions[NewDish.price?.currency]}
-              style={{ width: "100%" }}
-              onChange={(value) => {
-                dispatch(
-                  SetFieldNewDish({
-                    value: { ...NewDish.price, value: value },
-                    fieldname: "price",
-                  })
-                );
-              }}
-              addonAfter={
-                <Select
-                  value={NewDish.price.currency}
-                  style={{ width: 80 }}
-                  onChange={(value) => {
-                    dispatch(
-                      SetFieldNewDish({
-                        value: { ...NewDish.price, currency: value },
-                        fieldname: "price",
-                      })
-                    );
-                  }}
-                >
-                  <Select.Option value="USD">USD</Select.Option>
-                  <Select.Option value="EUR">EUR</Select.Option>
-                  <Select.Option value="GBP">GBP</Select.Option>
-                  <Select.Option value="CNY">CNY</Select.Option>
-                  <Select.Option value="UAH">UAH</Select.Option>
-                </Select>
-              }
-            />
-          </div>
-          <label htmlFor="countries">Tag</label>
-          <Select
-            mode="multiple"
-            id="countries"
-            placeholder="Choose tag"
-            tagRender={tagRender}
-            style={{
-              marginLeft: "10px",
-              minWidth: "120px",
-              display: "inline-block",
-            }}
-            dropdownStyle={{ width: "auto" }}
-            onChange={(values, options) => {
-              const selectedTags: Record<string, string> = (
-                options as Array<{ value: string; label: string }>
-              ).reduce((acc, option) => {
-                acc[option.label] = option.value;
-                return acc;
-              }, {} as Record<string, string>);
-              dispatch(
-                SetFieldNewDish({
-                  value: selectedTags,
-                  fieldname: "tags",
-                })
-              );
-            }}
-            value={
-              NewDish.tags
-                ? Object.keys(NewDish.tags).map((tag) => ({
-                    value: NewDish.tags[tag],
-                    label: tag,
-                  }))
-                : []
-            }
-            options={tagsProps}
+          <CoreInputTextAria
+            name="description"
+            control={control}
+            placeholder="Description"
+            label=""
+            type="text"
+            size="large"
+            rules={[{ required: true, message: "Please input description!" }]}
           />
-          <TagInput type="New-Dish-Tag" />
-          <div className="w-full">
-            <Button
-              onClick={(e) => {
-                e.preventDefault();
-                AddNewDish(e);
-              }}
-            >
-              Create new Dish
-            </Button>
+          <CorePriceInput
+            control={control}
+            label=""
+            name="price"
+            placeholder="Enter Price"
+            size="large"
+            type="number"
+            rules={[{ required: true, message: "Please set price!" }]}
+          />
+          <div>
+            <div style={{ display: "block" }}>
+              <Typography.Title level={5} style={{ display: "inline-block" }}>
+                Tag
+              </Typography.Title>
+              <TagSelect control={control} name={"tags"} />
+            </div>
+            <TagInput SetTagValueForDish={setValue} GetTagsValues={getValues} />
           </div>
-        </div>
+          <Button type="primary" htmlType="submit">
+            Create new Dish
+          </Button>
+        </Form>
+
       </div>
     </Modal>
   );

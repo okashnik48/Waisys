@@ -14,6 +14,7 @@ import { useAppDispatch } from "../store/store-hooks";
 import { useForm } from "react-hook-form";
 
 import { CoreInputRequired } from "../ui-kit/CoreInputRequired";
+import { CorePasswordInput } from "../ui-kit/CorePasswordInput";
 
 const { Title } = Typography;
 
@@ -45,7 +46,7 @@ const Auth: FC = () => {
           "tokens",
           JSON.stringify({ accessToken, refreshToken })
         );
-        dispatch(userService.endpoints.userInfo.initiate(""))
+        dispatch(userService.endpoints.userInfo.initiate(null))
           .unwrap()
           .then((data) => {
             dispatch(SetUserProperties(data));
@@ -85,7 +86,7 @@ const Auth: FC = () => {
               placeholder="Your login"
               rules={[{ required: true, message: "Please input your login!" }]}
             />
-            <CoreInputRequired
+            <CorePasswordInput
               type="password"
               placeholder="Your password"
               label="Password"

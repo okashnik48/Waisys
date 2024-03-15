@@ -1,62 +1,18 @@
 import { serviceApi } from "./app.service";
 import { toast } from "react-toastify";
 
-export type OrderDish = {
-  name: string;
-  image: string;
-  description: string;
-  id: string;
-  comment: string;
-  quantity: number;
-  createdAt: string;
-  isAccepted?: boolean;
-  isCompleted?: boolean;
-  isDeclined?: boolean;
-};
-type ordersGetReply = Record<string, OrderDish>;
+import OrdersTypes from "../store/types/orders-types";
 
-type DishToCreateOrder = {
-  id: string;
-  comment: string;
-  quantity: number;
-};
-
-type DishCreateRequest = {
-  body: {
-    dishes: Array<DishToCreateOrder>;
-    tableNumber: number;
-  };
-};
-type DishChangeRequest = {
-  id: string;
-  body: {
-    isAccepted?: boolean;
-    isCompleted?: boolean;
-    isDeclined?: boolean;
-  };
-};
-type DeleteOrderRequest = {
-  id: string;
-};
-type CompletedDish = {
-  tableNumber: number;
-  name: string;
-  description: string;
-  image: string;
-  comment: string;
-  quantity: number;
-};
-type CompletedDishesReply = Record<string, CompletedDish>;
 const ordersService = serviceApi.injectEndpoints({
   endpoints: (builder) => ({
-    getOrders: builder.query<ordersGetReply, any>({
+    getOrders: builder.query<OrdersTypes.API.GetOrdersReply, OrdersTypes.API.GetOrdersRequest>({
       query: () => ({
         url: "orders",
         method: "GET",
       }),
       providesTags: ["orders"],
     }),
-    PostOrder: builder.mutation<null, DishCreateRequest>({
+    PostOrder: builder.mutation<OrdersTypes.API.PostOrderReply, OrdersTypes.API.PostOrderRequest>({
       query: (Request) => ({
         url: "orders",
         method: "POST",
@@ -74,7 +30,7 @@ const ordersService = serviceApi.injectEndpoints({
           });
       },
     }),
-    PatchOrder: builder.mutation<null, DishChangeRequest>({
+    PatchOrder: builder.mutation<OrdersTypes.API.PatchOrderDishReply, OrdersTypes.API.PatchOrderDishRequest>({
       query: (Request) => ({
         url: `orders/dishes/${Request.id}`,
         method: "PATCH",
@@ -91,14 +47,14 @@ const ordersService = serviceApi.injectEndpoints({
           });
       },
     }),
-    DeleteOrder: builder.mutation<any, DeleteOrderRequest>({
+    DeleteOrder: builder.mutation<OrdersTypes.API.DeleteOrderReply, OrdersTypes.API.DeleteOrderRequest>({
       query: (Request) => ({
         url: `orders:${Request.id}`,
         method: "PATCH",
       }),
       invalidatesTags: ["orders"],
     }),
-    GetCompletedDishes: builder.query<CompletedDishesReply, any>({
+    GetCompletedDishes: builder.query<OrdersTypes.API.GetCompletedDishesReply, OrdersTypes.API.GetCompletedDishesRequest>({
       query: () => ({
         url: "orders/dishes/completed",
         method: "GET",
@@ -106,7 +62,7 @@ const ordersService = serviceApi.injectEndpoints({
       providesTags: ["completed"],
 
     }),
-    DeleteDeliveredDish: builder.mutation<any, string>({
+    DeleteDeliveredDish: builder.mutation<null, string>({
       query: (id) => ({
         url: `orders/dishes/${id}`,
         method: "Delete",
@@ -122,7 +78,7 @@ const ordersService = serviceApi.injectEndpoints({
           });
       },
     }),
-    GetDeclinedDishes: builder.query<CompletedDishesReply, any>({
+    GetDeclinedDishes: builder.query<OrdersTypes.API.GetGetDeclinedDishesReply, OrdersTypes.API.GetGetDeclinedDishesRequest>({
       query: () => ({
         url: "orders/dishes/declined",
         method: "GET",

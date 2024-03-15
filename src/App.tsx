@@ -20,6 +20,7 @@ function App() {
   const [isTokensLoading, setIsTokensLoading] = useState<boolean>(true);
   const dispatch = useAppDispatch();
   useEffect(() => {
+    console.log("Work")
     type Tokens = {
       accessToken: string;
       refreshToken: string;
@@ -33,7 +34,7 @@ function App() {
       const { accessToken, refreshToken } = storedTokens;
       dispatch(SetTokens({ accessToken, refreshToken }));
 
-      dispatch(userService.endpoints.userInfo.initiate({ accessToken }))
+      dispatch(userService.endpoints.userInfo.initiate(null))
         .unwrap()
         .then((data) => {
           dispatch(SetUserProperties(data));

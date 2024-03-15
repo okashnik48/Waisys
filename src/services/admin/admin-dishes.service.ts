@@ -1,40 +1,10 @@
 import { toast } from "react-toastify";
 import { serviceApi } from "../app.service";
-
-type Dish = {
-  name: string;
-  description: string;
-  price: {
-    value: number | null;
-    currency: string;
-};
-  image: string;
-  tags: Record<string, string>;
-};
-
-type CreateDishRequest = {
-  body: Dish;
-};
-
-type ChangeDishRequest = {
-  id: string;
-  body: Dish;
-};
-
-type DeleteDishRequest = {
-  id: string;
-};
-
-export type TagsReply = Record<string, string>;
-
-type AddTagRequest = {
-  name: string;
-  color: string;
-};
+import AdminDishesTypes from "../../store/types/admin-types/adminDishes-types";
 
 const adminDishesService = serviceApi.injectEndpoints({
   endpoints: (builder) => ({
-    createDish: builder.mutation<any, CreateDishRequest>({
+    createDish: builder.mutation<null, AdminDishesTypes.API.CreateDishRequest>({
       query: (Request) => ({
         url: "admin/dishes",
         method: "POST",
@@ -52,7 +22,7 @@ const adminDishesService = serviceApi.injectEndpoints({
           });
       },
     }),
-    changeDish: builder.mutation<any, ChangeDishRequest>({
+    changeDish: builder.mutation<null, AdminDishesTypes.API.ChangeDishRequest>({
       query: (Request) => ({
         url: `admin/dishes/${Request.id}`,
         method: "PATCH",
@@ -70,7 +40,7 @@ const adminDishesService = serviceApi.injectEndpoints({
           });
       },
     }),
-    deleteDish: builder.mutation<any, DeleteDishRequest>({
+    deleteDish: builder.mutation<null, AdminDishesTypes.API.DeleteDishRequest>({
       query: (Request) => ({
         url: `admin/dishes/${Request.id}`,
         method: "DELETE",
@@ -87,59 +57,7 @@ const adminDishesService = serviceApi.injectEndpoints({
           });
       },
     }),
-    addTag: builder.mutation<AddTagRequest, any>({
-      query: (body) => ({
-        url: "tags",
-        method: "POST",
-        body,
-      }),
-      invalidatesTags: ["tags"],
-      async onQueryStarted(arg, api) {
-        api.queryFulfilled
-          .then(() => {
-            toast.success("Success");
-          })
-          .catch((data ) => {
-            console.log(data)
-            toast.error("data");
-          });
-      },
-    }),
-    changeTags: builder.mutation<any, TagsReply>({
-      query: (body) => ({
-        url: "tags",
-        method: "PATCH",
-        body,
-      }),
-      invalidatesTags: ["tags"],
-      async onQueryStarted(arg, api) {
-        api.queryFulfilled
-          .then(() => {
-            toast.success("Success");
-          })
-          .catch((data ) => {
-            console.log(data)
-            toast.error("data");
-          });
-      },
-    }),
-    deleteTag: builder.mutation<any, string>({
-      query: (name) => ({
-        url: `tags/${name}`,
-        method: "DELETE",
-      }),
-      invalidatesTags: ["tags"],
-      async onQueryStarted(arg, api) {
-        api.queryFulfilled
-          .then(() => {
-            toast.success("Success");
-          })
-          .catch((data ) => {
-            console.log(data)
-            toast.error("data");
-          });
-      },
-    }),
+
   }),
 });
 

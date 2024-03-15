@@ -10,7 +10,7 @@ import { addSelectedPostQuest } from "../../store/slices/guest";
 import DishesTypes from "../../store/types/dishes-types";
 
 interface Props {
-  post: DishesTypes.Dish;
+  post: DishesTypes.DishForList;
   index: number;
 }
 
@@ -23,7 +23,7 @@ export const UserDishCard = ({ post, index }: Props) => {
     useState<boolean>(false);
   const handlerAddDish = () => {
     const selectedPostId = crypto.randomUUID();
-    const NewSelectedPost: DishesTypes.SelectedDish = {
+    const NewSelectedPost = {
       ...post,
       selectedPostId: selectedPostId,
     };

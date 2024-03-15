@@ -15,13 +15,47 @@ namespace DishesTypes {
     comment?: string;
   };
 
+  export type SelectedDishForList = {
+    name: string;
+    description: string;
+    price: {
+      value: number;
+      currency: string;
+    };
+    image: string;
+    createdAt: string;
+    tags: Record<string, string>;
+    id: string;
+    post: string;
+    count: number;
+    comment: string;
+    selectedPostId: string;
+  };
+
+  export type DishForList = {
+    name: string;
+    description: string;
+    price: {
+      value: number;
+      currency: string;
+    };
+    image: string;
+    createdAt: string;
+    tags: Record<string, string>;
+    id: string;
+    post: string;
+    count: number;
+    comment: string;
+  };
+
   export type SelectedDish = Dish & {
-	selectedPostId: string;
-  }
+    selectedPostId: string;
+  };
 
   export namespace API {
-	export type GetDishesReply = Dish[];
-	export type GetDishesRequest = null;
+    export type GetDishesReply = Dish[];
+    export type GetDishesRequest = null;
+
   }
 }
 

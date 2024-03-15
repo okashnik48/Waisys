@@ -1,25 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
+import DishesTypes from '../types/dishes-types';
 interface SelectedPostsState {
-  selectedPosts: { [key: string]: Post };
+  selectedPosts: { [key: string]: DishesTypes.SelectedDishForList };
   tableNumber: number | null;
-}
-
-interface Post {
-  name: string;
-  description: string;
-      price: {
-        value: number;
-        currency: string;
-    };
-  image: string;
-  createdAt: string;
-  tags: Record<string, string>;
-  id: string;
-  post: string;
-  count: number;
-  comment: string;
-  selectedPostId: string;
 }
 
 const initialState: SelectedPostsState = {
@@ -31,7 +14,7 @@ export const GuestSlice = createSlice({
   name: 'SelectedPosts',
   initialState,
   reducers: {
-    addSelectedPostQuest: (state, action: PayloadAction<{ listId: string; post: Post }>) => {
+    addSelectedPostQuest: (state, action: PayloadAction<{ listId: string; post: DishesTypes.SelectedDishForList }>) => {
       let isPostAdded = false;
       if (Object.keys(state.selectedPosts).length !== 0) {
         Object.values(state.selectedPosts).map((post) => {

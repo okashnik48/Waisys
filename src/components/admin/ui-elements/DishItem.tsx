@@ -1,9 +1,9 @@
 import React from "react";
 
-import { dishesReply } from "../../../services/dishes.service";
+import DishesTypes from "../../../store/types/dishes-types";
 import adminDishesService from "../../../services/admin/admin-dishes.service";
 
-import { Button, Image, Typography } from "antd";
+import { Button, Form, Image, Typography } from "antd";
 
 import TagInput from "../../../ui-kit/TagInput";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -16,7 +16,7 @@ type DefaultValues = {
   name: string;
   description: string;
   price: {
-    value: number,
+    value: number;
     currency: string;
   };
   image: string;
@@ -24,14 +24,14 @@ type DefaultValues = {
 };
 
 type Props = {
-  post: dishesReply[0];
+  post: DishesTypes.Dish;
 };
 
 function DishItem({ post }: Props) {
   const [deleteDishTrigger] = adminDishesService.useDeleteDishMutation();
   const [changeDishTrigger] = adminDishesService.useChangeDishMutation();
-  const { control, handleSubmit, formState, setValue, getValues } = useForm<DefaultValues>(
-    {
+  const { control, handleSubmit, formState, setValue, getValues } =
+    useForm<DefaultValues>({
       defaultValues: {
         description: post.description,
         image: post.image,
@@ -39,11 +39,9 @@ function DishItem({ post }: Props) {
         price: post.price,
         tags: post.tags,
       },
-    }
-  );
-
+    });
+  console.debug(control);
   const onSubmit: SubmitHandler<DefaultValues> = (formData) => {
-    console.log(formData.tags)
     changeDishTrigger({ id: post.id, body: formData });
   };
 
@@ -52,8 +50,8 @@ function DishItem({ post }: Props) {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
+ <Form
+      onFinish={handleSubmit(onSubmit)}
       style={{
         display: "flex",
         flexDirection: "row",
@@ -96,6 +94,7 @@ function DishItem({ post }: Props) {
           placeholder="Enter Description"
           size="large"
           type="text"
+          rules={[{ required: true, message: "Please input dish name!" }]}
         />
 
         <div>
@@ -124,7 +123,7 @@ function DishItem({ post }: Props) {
           </Button>
         </div>
       </div>
-    </form>
+    </Form>
   );
 }
 

@@ -10,25 +10,12 @@ import {
 } from "../../store/slices/guest";
 import { RollbackOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-interface Dish {
-  id: string;
-  name: string;
-  comment: string;
-  price: {
-    value: number;
-    currency: string;
-  };
-  count: number;
-  image: string;
-  description: string;
-  selectedPostId: string;
-}
 
 const SelectedUserDishes: FC = () => {
   const navigate = useNavigate();
 
   // TODO: its bad, need to fix
-  const ListDish: Dish[] = Object.values(
+  const ListDish = Object.values(
     useAppSelector((state) => state.guest.selectedPosts)
   );
 
@@ -56,7 +43,7 @@ const SelectedUserDishes: FC = () => {
     if (Table === null) {
       toast.info("Set table number");
     } else {
-      const updatedListDish = ListDish.map((dish: Dish) => {
+      const updatedListDish = ListDish.map((dish) => {
         return {
           id: dish.id,
           comment: dish.comment,
@@ -92,7 +79,7 @@ const SelectedUserDishes: FC = () => {
           <Empty />
         ) : (
           <>
-            {ListDish.map((post: Dish) => (
+            {ListDish.map((post) => (
               <div
                 style={{
                   background: "white",

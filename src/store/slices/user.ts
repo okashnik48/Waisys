@@ -1,25 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
+import UsersTypes from '../types/users-types';
 
 interface UserState {
-  user: {
-    accessToken: string,
-    refreshToken: string,
-    id: string,
-    firstName: string,
-    lastName: string,
-    role: "ADMIN" | "COOK" | "WAITER" | "",
-    username: string
-  };
+  user: UsersTypes.UserProps
 }
 
 interface Tokens {
   accessToken: string;
   refreshToken: string;
-}
-
-interface UserProperties {
-  [key: string]: any;
 }
 
 const UserSlice = createSlice({
@@ -40,7 +28,7 @@ const UserSlice = createSlice({
       state.user.accessToken = action.payload.accessToken;
       state.user.refreshToken = action.payload.refreshToken;
     },
-    SetUserProperties: (state, action: PayloadAction<UserProperties>) => {
+    SetUserProperties: (state, action: PayloadAction<UsersTypes.UserInfo>) => {
       state.user = { ...state.user, ...action.payload };
     },
     ClearUserProperties: (state, action: PayloadAction<undefined>) => {

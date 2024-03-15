@@ -9,22 +9,9 @@ import {
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
 import { Image, Button, Input, Typography, Empty } from "antd";
 import { toast } from "react-toastify";
-interface Dish {
-  id: string;
-  name: string;
-  comment: string;
-  price: {
-    value: number,
-    currency: string
-  };
-  count: number;
-  image: string;
-  description: string;
-  selectedPostId: string;
-}
 
 const SelectedList: FC = () => {
-  const ListDish: Dish[] = Object.values(
+  const ListDish = Object.values(
     useAppSelector((state) => state.selectedPosts.selectedPosts)
   );
   const Table = useAppSelector((state) => state.selectedPosts.tableNumber);
@@ -46,7 +33,7 @@ const SelectedList: FC = () => {
     if (Table === "") {
       toast.info("Set table number");
     } else {
-      const updatedListDish = ListDish.map((dish: Dish) => {
+      const updatedListDish = ListDish.map((dish) => {
         return {
           id: dish.id,
           comment: dish.comment,
@@ -61,7 +48,7 @@ const SelectedList: FC = () => {
       });
     }
   };
-
+  console.debug(ListDish)
   return (
     <div>
       <div
@@ -75,7 +62,7 @@ const SelectedList: FC = () => {
           <Empty />
         ) : (
           <>
-            {ListDish.map((post: Dish) => (
+            {ListDish.map((post) => (
               <div
                 style={{
                   background: "white",

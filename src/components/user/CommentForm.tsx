@@ -2,7 +2,7 @@
 
 import React from "react";
 
-import { Modal, Input, Select, Button } from "antd";
+import { Modal, Input, Button } from "antd";
 import { useAppDispatch } from "../../store/store-hooks";
 import postService from "../../services/dishes.service";
 

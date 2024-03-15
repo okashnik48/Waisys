@@ -1,5 +1,5 @@
 import { FloatButton, Input, Select, Typography } from "antd";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 
 import { CheckOutlined } from "@ant-design/icons";
 import postService from "../../services/dishes.service";
@@ -7,44 +7,36 @@ import { UserDishCard } from "./UserDishCard";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
 import { useNavigate, useParams } from "react-router-dom";
 import { SetTableNumberForQuest } from "../../store/slices/guest";
-import DishesTagsService from "../../services/dishes-tags.service";
-import { dishesTagsOptionsSelector } from "../../store/slices/dishes-tags-hooks";
+import { useForm, useWatch } from "react-hook-form";
+import { CoreSearch } from "../../ui-kit/CoreSearch";
 
-const SortOptionProps = [
-  {
-    value: "priceDesc",
-    label: "price desc",
-  },
+import { SearchFunction } from "../../configs/SearchFunction";
 
-  {
-    value: "priceAsc",
-    label: "price asc",
-  },
-  {
-    value: "name",
-    label: "name",
-  },
-  {
-    value: "",
-    label: "none",
-  },
-];
+type DefaultValues = {
+  searchText: string;
+  searchTags: string[];
+  sortOption: "name" | "priceDesc" | "priceAsc" | "";
+};
 
 export const UserDishesList: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const { tableNumber } = useParams();
-  console.log(tableNumber);
-  const [searchText, setSearchText] = useState("");
-  const [searchTags, setSearchTags] = useState<string[]>([]);
-  const [sortOption, setSortOption] = useState<
-    "name" | "priceDesc" | "priceAsc" | ""
-  >("");
+  const {tableNumber} = useParams();
 
   useEffect(() => {
     dispatch(SetTableNumberForQuest(Number(tableNumber)));
   }, []);
+
+  const { handleSubmit, control, getValues } = useForm<DefaultValues>({
+    defaultValues: {
+      searchText: "",
+      searchTags: [],
+      sortOption: "",
+    },
+  });
+
+  const isSearchPropsUpdated = useWatch({ control });
 
   const selectedDishes = useAppSelector((state) => state.guest.selectedPosts);
   const countOfSelectedDishes = useMemo(() => {
@@ -53,9 +45,6 @@ export const UserDishesList: React.FC = () => {
       0
     );
   }, [selectedDishes]);
-
-  const tagsProps = useAppSelector(dishesTagsOptionsSelector);
-
   const { data: posts, isLoading } = postService.useDishesQuery(null, {
     selectFromResult: ({ data, isLoading }) => ({
       data: data
@@ -69,36 +58,7 @@ export const UserDishesList: React.FC = () => {
     }),
   });
 
-  const SearchedPosts = useMemo(() => {
-    let NewPosts = posts.filter((Dish) =>
-      Dish.name.toLowerCase().includes(searchText.toLowerCase())
-    );
-    if (searchTags.length !== 0) {
-      NewPosts = NewPosts.filter((dish) => {
-        return searchTags.every((element) =>
-          Object.keys(dish.tags).includes(element)
-        );
-      });
-    }
-
-    if (sortOption) {
-      if (sortOption === "name") {
-        NewPosts.sort((a, b) => {
-          return a[sortOption].localeCompare(b[sortOption]);
-        });
-      } else if (sortOption === "priceAsc") {
-        NewPosts.sort((a, b) => {
-          return a.price.value - b.price.value;
-        });
-      } else if (sortOption === "priceDesc") {
-        NewPosts.sort((a, b) => {
-          return b.price.value - a.price.value;
-        });
-      }
-    }
-    return NewPosts;
-  }, [searchTags, searchText, posts, sortOption]);
-
+  const SearchedPosts = useMemo(() => {return SearchFunction(posts, getValues) as typeof posts}, [isSearchPropsUpdated, posts]);
   return (
     <div
       style={{
@@ -107,65 +67,7 @@ export const UserDishesList: React.FC = () => {
       }}
     >
       <h1>Menu</h1>
-      <Input
-        size="large"
-        placeholder={searchText}
-        style={{ marginBottom: "10px" }}
-        onChange={(e) => {
-          setSearchText(e.target.value);
-        }}
-      />
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginBottom: "10px",
-        }}
-      >
-        <div style={{ marginRight: "10px" }}>
-          <div>
-            <Typography.Title
-              level={3}
-              style={{ marginBottom: "5px", display: "inline-block" }}
-            >
-              Tag
-            </Typography.Title>
-            <Select
-              id="tags"
-              mode="multiple"
-              onChange={(value) => {
-                setSearchTags(value);
-              }}
-              style={{
-                minWidth: "150px",
-                display: "inline-block",
-                marginLeft: "10px",
-              }}
-              options={tagsProps}
-            />
-          </div>
-        </div>
-        <div>
-          <Typography.Title
-            level={3}
-            style={{ marginBottom: "5px", display: "inline-block" }}
-          >
-            Sort by
-          </Typography.Title>
-          <Select
-            id="sort"
-            style={{
-              minWidth: "150px",
-              display: "inline-block",
-              marginLeft: "10px",
-            }}
-            onChange={(value) => {
-              setSortOption(value);
-            }}
-            options={SortOptionProps}
-          />
-        </div>
-      </div>
+      <CoreSearch control={control} />
       <div
         style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}
       >
