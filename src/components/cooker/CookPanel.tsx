@@ -42,7 +42,6 @@ const CookPanel = () => {
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
     socket.on("cook.orders.create", () => {
-      console.log("createDish");
       refetch();
     });
 
@@ -50,7 +49,6 @@ const CookPanel = () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
       socket.off("cook.orders.create", () => {
-        console.log("createDish");
         refetch();
       });
     };

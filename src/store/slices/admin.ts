@@ -33,18 +33,6 @@ const AdminSlice = createSlice({
   name: "admin",
   initialState,
   reducers: {
-    // SetFieldNewDish: (
-    //   state,
-    //   action: PayloadAction<{
-    //     fieldname: keyof AdminDishesTypes.Dish;
-    //     value: string  | Record<string, string> | {
-    //       value: number | null;
-    //       currency: string;
-    //   };
-    //   }>
-    // ) => {
-    //   state.newDish[action.payload.fieldname] = action.payload.value;
-    // },
     AddTagNewDish: (state, action: PayloadAction<Record<string, string>>) => {
       state.newDish.tags = {...state.newDish.tags, ...action.payload}
     },

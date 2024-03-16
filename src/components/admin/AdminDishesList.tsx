@@ -1,9 +1,10 @@
-import React, {  useMemo, useState } from "react";
+import React, {  useMemo } from "react";
 
 import postService from "../../services/dishes.service";
 
 import {
-  Input,
+  Empty,
+  Spin,
 
 } from "antd";
 
@@ -19,7 +20,7 @@ type DefaultValues = {
 };
 
 const AdminDishesList = () => {
-  const { data: dishesListReply } = postService.useDishesQuery(null);
+  const { data: dishesListReply, isLoading } = postService.useDishesQuery(null);
 
   const { handleSubmit, control, getValues } = useForm<DefaultValues>({
     defaultValues: {
@@ -45,11 +46,21 @@ const AdminDishesList = () => {
     >
       <h1>Menu</h1>
       <CoreSearch control={control} />
+      {isLoading ? (
+          <Spin tip="Loading" size="large">
+            <div className="content" />
+          </Spin>
+        ) : !dishesListReply ? (
+          <Empty />
+        ): (
+          <>
       {SearchedPosts.map((post, index) => {
         console.log(post)
         return (
         <DishItem key={post.id} post={post} />
       )})}
+      </>)
+      }
     </div>
   );
 };

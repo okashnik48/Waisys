@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
 
 import { Image as ImageAnt, Form, Upload, Button } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
@@ -7,8 +6,6 @@ import { UploadOutlined } from "@ant-design/icons";
 const FileUploader = ({ SetValue }: any) => {
   const [image, setImage] = useState<File>();
   const [imageURL, setImageURL] = useState<string | undefined>();
-
-  const dispatch = useDispatch();
 
   const handleOnChange = (event: any) => {
     const file = event.file;
@@ -41,9 +38,6 @@ const FileUploader = ({ SetValue }: any) => {
           const resizedDataURL = canvas.toDataURL("image/jpeg");
           setImageURL(resizedDataURL);
           SetValue("image", resizedDataURL);
-          // dispatch(
-          //   SetFieldNewDish({ value: resizedDataURL, fieldname: "image" })
-          // );
         };
       };
       fileReader.readAsDataURL(file);

@@ -34,6 +34,7 @@ const AdminUsersList = () => {
       <Row>
         <Col md={{ span: 12, offset: 6 }}>
           <h1>User List</h1>
+          
           <div style={{ marginBottom: "16px" }}>
             <Input
               size="large"

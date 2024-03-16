@@ -1,6 +1,6 @@
 import React from "react";
 import AdminUsersTypes from "../../../store/types/admin-types/adminUsers-types";
-import { Button, Typography } from "antd";
+import { Button } from "antd";
 import adminUsersService from "../../../services/admin/admin-users.service";
 import { SubmitHandler, useForm } from "react-hook-form";
 
