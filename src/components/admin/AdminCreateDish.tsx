@@ -24,7 +24,7 @@ import CorePriceInput from "../../ui-kit/CorePriceInput";
 import AdminDishesTypes from "../../store/types/admin-types/adminDishes-types";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CoreInputRequired } from "../../ui-kit/CoreInputRequired";
-import { CoreInputTextAria } from "../../ui-kit/CoreInputTextAria";
+import { CoreInputTextArea } from "../../ui-kit/CoreInputTextAria";
 import { TagSelect } from "../../ui-kit/TagSelect";
 
 type DefaultValues = AdminDishesTypes.Dish;
@@ -92,7 +92,7 @@ const AdminCreateDish = () => {
               rules={[{ required: true, message: "Please input dish name!" }]}
             />
           </div>
-          <CoreInputTextAria
+          <CoreInputTextArea
             name="description"
             control={control}
             placeholder="Description"

@@ -15,34 +15,36 @@ export type Props = {
   type: string;
 };
 
-export const CoreInputTextAria = ({
+export const CoreInputTextArea = ({
   label,
   size,
   placeholder = "Enter Response",
   ...rest
 }: Props) => {
   return (
-    <Form.Item name={rest.name} rules={rest.rules ? rest.rules : []}>
-      <Controller
-        name={rest.name}
-        control={rest.control}
-        render={({ field, fieldState }) => {
-          console.log(field.value);
-          return (
-            
-              <Input.TextArea
-                {...field}
-                size={size}
-                placeholder={placeholder}
-                autoSize={true}
-                className={
-                  fieldState.invalid ? "custom-input error" : "custom-input"
-                }
-              />
-            
-          );
-        }}
-      />
-      </Form.Item>
+    <Controller
+      name={rest.name}
+      control={rest.control}
+      render={({ field, fieldState }) => {
+        return (
+          <>
+            <Input.TextArea
+              // required
+              size={size}
+              placeholder={placeholder}
+              autoSize={true}
+              status={fieldState.error ? "error" : ""}
+              className={
+                fieldState.invalid ? "custom-input error" : "custom-input"
+              }
+              {...field}
+            />
+            {fieldState.error && (
+              <p style={{ color: "red" }}>{fieldState.error.message}</p>
+            )}
+          </>
+        );
+      }}
+    />
   );
 };

@@ -5,7 +5,7 @@ import {
   MailOutlined,
 } from "@ant-design/icons";
 import React, { PropsWithChildren, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useAppDispatch } from "../store/store-hooks";
 import { SetAddDishModal, SetAddUserModal } from "../store/slices/admin";
 import { ClearUserProperties } from "../store/slices/user";
@@ -83,7 +83,7 @@ export default function NavigationLayout({
       },
       {
         label: (
-          <Link to= "/login" onClick={ClearUserInfo} rel="noopener noreferrer">
+          <Link to="/login" onClick={ClearUserInfo} rel="noopener noreferrer">
             Exit
           </Link>
         ),
@@ -94,7 +94,7 @@ export default function NavigationLayout({
     "COOK": [
       {
         label: (
-          <Link to= "/login" onClick={ClearUserInfo} rel="noopener noreferrer">
+          <Link to="/login" onClick={ClearUserInfo} rel="noopener noreferrer">
             Exit
           </Link>
         ),

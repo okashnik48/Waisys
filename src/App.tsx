@@ -14,17 +14,17 @@ import "react-toastify/dist/ReactToastify.css";
 import userService from "./services/user.service";
 import { SetTokens, SetUserProperties } from "./store/slices/user";
 import { Spin } from "antd";
+type Tokens = {
+  accessToken: string;
+  refreshToken: string;
+};
 
 function App() {
   const userRole = useAppSelector((state) => state.user.user).role;
   const [isTokensLoading, setIsTokensLoading] = useState<boolean>(true);
   const dispatch = useAppDispatch();
   useEffect(() => {
-    console.log("Work")
-    type Tokens = {
-      accessToken: string;
-      refreshToken: string;
-    };
+  
     const storedTokensString = localStorage.getItem("tokens");
     const storedTokens: Tokens | null = storedTokensString
       ? JSON.parse(storedTokensString)
@@ -45,6 +45,9 @@ function App() {
       setIsTokensLoading(false);
     }
   }, []);
+
+  console.debug("userRole", userRole);
+
   if (isTokensLoading) {
     return (
       <div style={{ marginBottom: "50px" }}>
@@ -54,6 +57,7 @@ function App() {
       </div>
     );
   }
+
   if (!userRole) {
     return (
       <BrowserRouter>

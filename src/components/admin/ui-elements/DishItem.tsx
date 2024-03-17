@@ -4,13 +4,15 @@ import DishesTypes from "../../../store/types/dishes-types";
 import adminDishesService from "../../../services/admin/admin-dishes.service";
 
 import { Button, Form, Image, Typography } from "antd";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 import TagInput from "../../../ui-kit/TagInput";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CoreInput } from "../../../ui-kit/CoreInput";
 import { TagSelect } from "../../../ui-kit/TagSelect";
-import { CoreInputTextAria } from "../../../ui-kit/CoreInputTextAria";
+import { CoreInputTextArea } from "../../../ui-kit/CoreInputTextAria";
 import CorePriceInput from "../../../ui-kit/CorePriceInput";
+import * as yup from "yup";
 
 type DefaultValues = {
   name: string;
@@ -27,9 +29,21 @@ type Props = {
   post: DishesTypes.Dish;
 };
 
+const schema = yup.object().shape({
+  name: yup.string().required(),
+  description: yup.string().required("Description is required"),
+  price: yup.object().shape({
+    value: yup.number().required(),
+    currency: yup.string().required(),
+  }),
+  tags: yup.object<Record<string, string>>().defined(),
+  image: yup.string().defined(),
+});
+
 function DishItem({ post }: Props) {
   const [deleteDishTrigger] = adminDishesService.useDeleteDishMutation();
   const [changeDishTrigger] = adminDishesService.useChangeDishMutation();
+
   const { control, handleSubmit, formState, setValue, getValues } =
     useForm<DefaultValues>({
       defaultValues: {
@@ -39,9 +53,12 @@ function DishItem({ post }: Props) {
         price: post.price,
         tags: post.tags,
       },
+      resolver: yupResolver(schema),
     });
-  console.debug(control);
+  console.debug("formState", formState.errors);
+
   const onSubmit: SubmitHandler<DefaultValues> = (formData) => {
+    console.debug("formData", formData);
     changeDishTrigger({ id: post.id, body: formData });
   };
 
@@ -50,7 +67,7 @@ function DishItem({ post }: Props) {
   };
 
   return (
- <Form
+    <Form
       onFinish={handleSubmit(onSubmit)}
       style={{
         display: "flex",
@@ -87,14 +104,14 @@ function DishItem({ post }: Props) {
           type="number"
         />
         <Typography.Title level={5}>Description</Typography.Title>
-        <CoreInputTextAria
+        <CoreInputTextArea
           control={control}
           label=""
           name="description"
           placeholder="Enter Description"
           size="large"
           type="text"
-          rules={[{ required: true, message: "Please input dish name!" }]}
+          // rules={[{ required: true, message: "Please input dish name!" }]}
         />
 
         <div>
