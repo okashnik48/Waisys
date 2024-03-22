@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 
-import { Modal, Button, Form, Typography, Input, InputNumber } from "antd";
+import { Modal, Button, Form, Typography, Input, InputNumber, Select } from "antd";
 
 import { SetAddDishModal } from "../../store/slices/admin";
 
@@ -20,7 +20,7 @@ import { CoreInputRequired } from "../../ui-kit/CoreInputRequired";
 import { CoreInputTextArea } from "../../ui-kit/CoreInputTextAria";
 import { TagSelect } from "../../ui-kit/TagSelect";
 
-import { currencyOptionsMark } from "../../configs/SelectPatern";
+import { currencyOptions, currencyOptionsMark } from "../../configs/SelectPatern";
 
 import { suffixSelector } from "../../ui-kit/Ant-Design-Form/CorePriceInputAnt";
 
@@ -36,8 +36,10 @@ interface ModalType {
 const NewDishProps = {
   name: "",
   description: "",
-  value: null,
-  currency: "UAH",
+  price: {
+    value: null,
+    currency: "UAH",
+  },
   image: "",
   tags: {},
 };
@@ -63,14 +65,19 @@ const AdminCreateDish = () => {
 
   const onSubmitAndDesign = (value: DefaultValues) => {
     console.log(value);
-    // form.setFieldValue("image", "Kolya");
-    // console.log(form.getFieldValue("image"));
+    
   };
 
   const handleClose = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     dispatch(SetAddDishModal({ status: false }));
   };
+
+useEffect(() =>{
+  console.log()
+}, [Form.useWatch("price", form)])
+
+  
 
   return (
     <Modal
@@ -87,10 +94,11 @@ const AdminCreateDish = () => {
           initialValues={{
             name: "",
             description: "",
-            currency: "UAN",
-            value: null,
+            price: {
+              value: null,
+              currency: "UAN"
+            },
             image: "",
-            tags: {},
           }}
         >
           <Form.Item
@@ -121,9 +129,17 @@ const AdminCreateDish = () => {
               placeholder="Enter Price"
               size="large"
               type="number"
-              prefix={currencyOptionsMark[Form.useWatch("currency", form)]}
+              prefix={currencyOptionsMark[Form.useWatch("price.currency", form)]}
               style={{ width: "100%" }}
-              addonAfter={suffixSelector}
+              addonAfter={<Form.Item name="currency" noStyle>
+              <Select style={{ width: 70 }} onChange={(e) => form.setFieldValue("price.currency", e.values)}>
+                <Select.Option value="USD">USD</Select.Option>
+                <Select.Option value="EUR">EUR</Select.Option>
+                <Select.Option value="GBP">GBP</Select.Option>
+                <Select.Option value="CNY">CNY</Select.Option>
+                <Select.Option value="UAH">UAH</Select.Option>
+              </Select>
+            </Form.Item>}
             />
           </Form.Item>
           <div>
