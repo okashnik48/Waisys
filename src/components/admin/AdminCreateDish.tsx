@@ -2,16 +2,9 @@
 
 import React from "react";
 
-import {
-  Modal,
-  Button,
-  Form,
-  Typography,
-} from "antd";
+import { Modal, Button, Form, Typography, Input, InputNumber } from "antd";
 
-import {
-  SetAddDishModal,
-} from "../../store/slices/admin";
+import { SetAddDishModal } from "../../store/slices/admin";
 
 import FileUploader from "./DownLoadImage";
 
@@ -27,6 +20,12 @@ import { CoreInputRequired } from "../../ui-kit/CoreInputRequired";
 import { CoreInputTextArea } from "../../ui-kit/CoreInputTextAria";
 import { TagSelect } from "../../ui-kit/TagSelect";
 
+import { currencyOptionsMark } from "../../configs/SelectPatern";
+
+import { suffixSelector } from "../../ui-kit/Ant-Design-Form/CorePriceInputAnt";
+
+import ImageUploader from "./ui-kit/ImageUploader";
+
 type DefaultValues = AdminDishesTypes.Dish;
 
 interface ModalType {
@@ -37,10 +36,8 @@ interface ModalType {
 const NewDishProps = {
   name: "",
   description: "",
-  price: {
-    value: null,
-    currency: "UAH",
-  },
+  value: null,
+  currency: "UAH",
   image: "",
   tags: {},
 };
@@ -51,6 +48,8 @@ const AdminCreateDish = () => {
     return state.admin.modalStatus;
   });
 
+  const [form] = Form.useForm<DefaultValues>();
+
   const { control, handleSubmit, setValue, getValues } = useForm<DefaultValues>(
     {
       defaultValues: NewDishProps,
@@ -58,12 +57,15 @@ const AdminCreateDish = () => {
   );
   const [AddDishTrigger] = adminDishesService.useCreateDishMutation();
   const onSubmit: SubmitHandler<DefaultValues> = (formData) => {
-          AddDishTrigger({ body: formData }).then(() => {
-      });
-      console.log(formData)
+    AddDishTrigger({ body: formData }).then(() => {});
+    console.log(formData);
   };
 
-
+  const onSubmitAndDesign = (value: DefaultValues) => {
+    console.log(value);
+    // form.setFieldValue("image", "Kolya");
+    // console.log(form.getFieldValue("image"));
+  };
 
   const handleClose = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
@@ -79,37 +81,51 @@ const AdminCreateDish = () => {
     >
       <h2>Create new Dish</h2>
       <div style={{ minWidth: "400px", maxWidth: "600px" }}>
-        <Form onFinish={handleSubmit(onSubmit)}>
-        <FileUploader SetValue = {setValue} />
-          <div style={{ marginBottom: "16px" }}>
-            <CoreInputRequired
-              name="name"
-              size="large"
-              control={control}
-              label=""
-              placeholder="Dish Name"
-              type="text"
-              rules={[{ required: true, message: "Please input dish name!" }]}
-            />
-          </div>
-          <CoreInputTextArea
+        <Form
+          onFinish={(value) => onSubmitAndDesign(value)}
+          form={form}
+          initialValues={{
+            name: "",
+            description: "",
+            currency: "UAN",
+            value: null,
+            image: "",
+            tags: {},
+          }}
+        >
+          <Form.Item
+            name="image"
+            rules={[{ required: true, message: "Please input dish name!" }]}
+          >
+            <ImageUploader setValue = {form.setFieldValue as any}/>
+          </Form.Item>
+          <Form.Item
+            style={{ marginBottom: "16px" }}
+            name="name"
+            rules={[{ required: true, message: "Please input dish name!" }]}
+          >
+            <Input size="large" placeholder="Dish Name" type="text" />
+          </Form.Item>
+          <Form.Item
             name="description"
-            control={control}
-            placeholder="Description"
-            label=""
-            type="text"
-            size="large"
             rules={[{ required: true, message: "Please input description!" }]}
-          />
-          <CorePriceInput
-            control={control}
-            label=""
-            name="price"
-            placeholder="Enter Price"
-            size="large"
-            type="number"
+          >
+            <Input.TextArea placeholder="Description" size="large" />
+          </Form.Item>
+          <Form.Item
             rules={[{ required: true, message: "Please set price!" }]}
-          />
+            name="price"
+          >
+            <InputNumber
+              name="price"
+              placeholder="Enter Price"
+              size="large"
+              type="number"
+              prefix={currencyOptionsMark[Form.useWatch("currency", form)]}
+              style={{ width: "100%" }}
+              addonAfter={suffixSelector}
+            />
+          </Form.Item>
           <div>
             <div style={{ display: "block" }}>
               <Typography.Title level={5} style={{ display: "inline-block" }}>
@@ -123,7 +139,6 @@ const AdminCreateDish = () => {
             Create new Dish
           </Button>
         </Form>
-
       </div>
     </Modal>
   );

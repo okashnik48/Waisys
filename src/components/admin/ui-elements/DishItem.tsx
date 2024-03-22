@@ -104,17 +104,19 @@ function DishItem({ post }: Props) {
           type="number"
         />
         <Typography.Title level={5}>Description</Typography.Title>
-        <CoreInputTextArea
-          control={control}
-          label=""
-          name="description"
-          placeholder="Enter Description"
-          size="large"
-          type="text"
-          // rules={[{ required: true, message: "Please input dish name!" }]}
-        />
+        <div style={{ minHeight: "70px" }}>
+          <CoreInputTextArea
+            control={control}
+            label=""
+            name="description"
+            placeholder="Enter Description"
+            size="large"
+            type="text"
+            // rules={[{ required: true, message: "Please input dish name!" }]}
+          />
+        </div>
 
-        <div>
+        <div style = {{marginTop: "-20px"}}>
           <div style={{ display: "block" }}>
             <Typography.Title level={5} style={{ display: "inline-block" }}>
               Tag

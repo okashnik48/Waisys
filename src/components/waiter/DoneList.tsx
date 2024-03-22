@@ -20,7 +20,6 @@ const DoneDishesList = () => {
   const [setCompletedDishDoneTrigger] =
     ordersService.useDeleteDeliveredDishMutation();
 
-
   const DoneList = useMemo(() => {
     return data ? data : {};
   }, [data]);

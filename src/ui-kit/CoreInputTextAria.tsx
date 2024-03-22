@@ -28,20 +28,21 @@ export const CoreInputTextArea = ({
       render={({ field, fieldState }) => {
         return (
           <>
-            <Input.TextArea
-              // required
-              size={size}
-              placeholder={placeholder}
-              autoSize={true}
-              status={fieldState.error ? "error" : ""}
-              className={
-                fieldState.invalid ? "custom-input error" : "custom-input"
-              }
-              {...field}
-            />
-            {fieldState.error && (
-              <p style={{ color: "red" }}>{fieldState.error.message}</p>
-            )}
+<Input.TextArea
+  // required
+  size={size}
+  placeholder={placeholder}
+  autoSize={true}
+  status={fieldState.error ? "error" : ""}
+  className={
+    fieldState.invalid ? "custom-input error" : "custom-input"
+  }
+  {...field}
+/>
+{fieldState.error && (
+  <div style={{ color: "red", marginTop: "5px" }}>{fieldState.error.message}</div>
+)}
+
           </>
         );
       }}

@@ -34,3 +34,11 @@ export const currencyOptions = [
     value: "UAH",
   },
 ];
+
+export const currencyOptionsMark: Record<string, string> = {
+  UAH: "₴",
+  USD: "$",
+  EUR: "€",
+  GBP: "£",
+  CNY: "¥",
+};
