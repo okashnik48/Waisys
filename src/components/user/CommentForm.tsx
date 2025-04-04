@@ -31,7 +31,7 @@ const CommentForm = ({ isVisible, setIsVisible, comment, index }: Props) => {
     >
       <h2 style={{ textAlign: "center" }}>Your comment </h2>
       <Input.TextArea
-        placeholder="Write your comment"
+        placeholder="Додайте коментар"
         value={comment}
         autoSize
         onChange={(e) => ChangeCommentDish(e.target.value)}
@@ -45,7 +45,7 @@ const CommentForm = ({ isVisible, setIsVisible, comment, index }: Props) => {
         }}
       >
         <Button type="primary" onClick={() => setIsVisible(false)}>
-          Confirm
+          Підтвердити
         </Button>
       </div>
     </Modal>

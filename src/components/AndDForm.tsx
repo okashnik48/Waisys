@@ -136,11 +136,11 @@ const AndDForm: React.FC = () => {
         rules={[
           {
             type: 'email',
-            message: 'The input is not valid E-mail!',
+            message: 'Неправильно введений E-mail!',
           },
           {
             required: true,
-            message: 'Please input your E-mail!',
+            message: 'Введіть свій E-mail!',
           },
         ]}
       >
@@ -153,7 +153,7 @@ const AndDForm: React.FC = () => {
         rules={[
           {
             required: true,
-            message: 'Please input your password!',
+            message: 'Введіть пароль!',
           },
         ]}
         hasFeedback
@@ -169,14 +169,14 @@ const AndDForm: React.FC = () => {
         rules={[
           {
             required: true,
-            message: 'Please confirm your password!',
+            message: 'Підтвердіть свій пароль!',
           },
           ({ getFieldValue }) => ({
             validator(_, value) {
               if (!value || getFieldValue('password') === value) {
                 return Promise.resolve();
               }
-              return Promise.reject(new Error('The new password that you entered do not match!'));
+              return Promise.reject(new Error('Паролі не сходяться!'));
             },
           }),
         ]}
@@ -187,8 +187,8 @@ const AndDForm: React.FC = () => {
       <Form.Item
         name="nickname"
         label="Nickname"
-        tooltip="What do you want others to call you?"
-        rules={[{ required: true, message: 'Please input your nickname!', whitespace: true }]}
+        tooltip="Як ви хочете щоб вас називали?"
+        rules={[{ required: true, message: 'Введіть свій логін!', whitespace: true }]}
       >
         <Input />
       </Form.Item>
@@ -197,7 +197,7 @@ const AndDForm: React.FC = () => {
         name="residence"
         label="Habitual Residence"
         rules={[
-          { type: 'array', required: true, message: 'Please select your habitual residence!' },
+          { type: 'array', required: true, message: 'Виберіть своє звичайне місце проживання!' },
         ]}
       >
         <Cascader options={residences} />
@@ -206,7 +206,7 @@ const AndDForm: React.FC = () => {
       <Form.Item
         name="phone"
         label="Phone Number"
-        rules={[{ required: true, message: 'Please input your phone number!' }]}
+        rules={[{ required: true, message: 'Введіть свій номер телефону!' }]}
       >
         <Input addonBefore={prefixSelector} style={{ width: '100%' }} />
       </Form.Item>
@@ -214,7 +214,7 @@ const AndDForm: React.FC = () => {
       <Form.Item
         name="donation"
         label="Donation"
-        rules={[{ required: true, message: 'Please input donation amount!' }]}
+        rules={[{ required: true, message: 'Введіть сумму донату!' }]}
       >
         <InputNumber addonAfter={suffixSelector} style={{ width: '100%' }} />
       </Form.Item>
@@ -222,9 +222,9 @@ const AndDForm: React.FC = () => {
       <Form.Item
         name="website"
         label="Website"
-        rules={[{ required: true, message: 'Please input website!' }]}
+        rules={[{ required: true, message: 'Введіть вебсайт!' }]}
       >
-        <AutoComplete options={websiteOptions} onChange={onWebsiteChange} placeholder="website">
+        <AutoComplete options={websiteOptions} onChange={onWebsiteChange} placeholder="Вебсайт">
           <Input />
         </AutoComplete>
       </Form.Item>
@@ -232,7 +232,7 @@ const AndDForm: React.FC = () => {
       <Form.Item
         name="intro"
         label="Intro"
-        rules={[{ required: true, message: 'Please input Intro' }]}
+        rules={[{ required: true, message: 'Введіть інтро' }]}
       >
         <Input.TextArea showCount maxLength={100} />
       </Form.Item>
@@ -240,28 +240,28 @@ const AndDForm: React.FC = () => {
       <Form.Item
         name="gender"
         label="Gender"
-        rules={[{ required: true, message: 'Please select gender!' }]}
+        rules={[{ required: true, message: 'Виберіть гендер!' }]}
       >
-        <Select placeholder="select your gender">
-          <Option value="male">Male</Option>
-          <Option value="female">Female</Option>
-          <Option value="other">Other</Option>
+        <Select placeholder="виберіть гендер">
+          <Option value="male">Чоловік</Option>
+          <Option value="female">Жінка</Option>
+          <Option value="other">Інше</Option>
         </Select>
       </Form.Item>
 
-      <Form.Item label="Captcha" extra="We must make sure that your are a human.">
+      <Form.Item label="Captcha" extra="Ми хочемо впевнетися чи ви людина.">
         <Row gutter={8}>
           <Col span={12}>
             <Form.Item
               name="captcha"
               noStyle
-              rules={[{ required: true, message: 'Please input the captcha you got!' }]}
+              rules={[{ required: true, message: 'Введіть капчу!' }]}
             >
               <Input />
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Button>Get captcha</Button>
+            <Button>Отримати капчу</Button>
           </Col>
         </Row>
       </Form.Item>
@@ -272,18 +272,18 @@ const AndDForm: React.FC = () => {
         rules={[
           {
             validator: (_, value) =>
-              value ? Promise.resolve() : Promise.reject(new Error('Should accept agreement')),
+              value ? Promise.resolve() : Promise.reject(new Error('Потрібно прийняти угоду')),
           },
         ]}
         {...tailFormItemLayout}
       >
         <Checkbox>
-          I have read the <a href="">agreement</a>
+          Я прочитав <a href="">угода</a>
         </Checkbox>
       </Form.Item>
       <Form.Item {...tailFormItemLayout}>
         <Button type="primary" htmlType="submit">
-          Register
+          Зареєструватись
         </Button>
       </Form.Item>
     </Form>

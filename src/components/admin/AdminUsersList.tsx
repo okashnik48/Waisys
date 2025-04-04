@@ -33,12 +33,12 @@ const AdminUsersList = () => {
     <>
       <Row>
         <Col md={{ span: 12, offset: 6 }}>
-          <h1>User List</h1>
+          <h1>Список користувачів</h1>
           
           <div style={{ marginBottom: "16px" }}>
-            <Input
+            <Input.Search
               size="large"
-              placeholder={searchText}
+              placeholder={searchText? searchText : "Введіть ім'я"}
               style={{ marginBottom: "10px" }}
               onChange={(e) => {
                 setSearchText(e.target.value);

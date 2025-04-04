@@ -23,7 +23,7 @@ const beforeUpload = (file: FileType) => {
   return isJpgOrPng ;
 };
 
-const ImageUploader: React.FC = ({setValue} : any) => {
+const ImageUploader: React.FC<any> = ({setValue} : any) => {
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>();
 
@@ -45,7 +45,7 @@ const ImageUploader: React.FC = ({setValue} : any) => {
   const uploadButton = (
     <button style={{ border: 0, background: 'none' }} type="button">
       {loading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>Upload</div>
+      <div style={{ marginTop: 8 }}>Додати</div>
     </button>
   );
 
@@ -56,7 +56,7 @@ const ImageUploader: React.FC = ({setValue} : any) => {
         listType="picture-card"
         className="avatar-uploader"
         showUploadList={false}
-        action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
+        action="https://waisys.dev.m0e.space/api/upload"
         beforeUpload={beforeUpload}
         onChange={handleChange}
       >

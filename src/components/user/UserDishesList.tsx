@@ -11,6 +11,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { CoreSearch } from "../../ui-kit/CoreSearch";
 
 import { SearchFunction } from "../../configs/SearchFunction";
+import DishesTagsService from "../../services/dishes-tags.service";
 
 type DefaultValues = {
   searchText: string;
@@ -24,9 +25,12 @@ export const UserDishesList: React.FC = () => {
 
   const {tableNumber} = useParams();
 
+  const { data: tags, refetch: refreshTags } = DishesTagsService.useGetTagsQuery(null);
   useEffect(() => {
+    refreshTags();
     dispatch(SetTableNumberForQuest(Number(tableNumber)));
   }, []);
+
 
   const { handleSubmit, control, getValues } = useForm<DefaultValues>({
     defaultValues: {
@@ -66,7 +70,7 @@ export const UserDishesList: React.FC = () => {
         margin: "0 auto",
       }}
     >
-      <h1>Menu</h1>
+      <h1>Меню</h1>
       <CoreSearch control={control} />
       <div
         style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}

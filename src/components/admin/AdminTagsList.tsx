@@ -38,7 +38,7 @@ const AdminTagsList: FC = () => {
         textAlign: "center",
       }}
     >
-      <h1>Tag List</h1>
+      <h1>Список тегів</h1>
       {tagsList === undefined ? (
         <Empty />
       ) : (
@@ -66,14 +66,14 @@ const AdminTagsList: FC = () => {
                     ChangeHandler(e, label, color);
                   }}
                 >
-                  Confirm
+                  Підтвердити
                 </Button>
                 <Button
                   type="primary"
                   danger
                   onClick={(e) => DeleteTagHandler(label)}
                 >
-                  Delete
+                  Видалити
                 </Button>
               </Space>
             </div>

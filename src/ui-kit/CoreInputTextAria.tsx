@@ -18,7 +18,7 @@ export type Props = {
 export const CoreInputTextArea = ({
   label,
   size,
-  placeholder = "Enter Response",
+  placeholder = "Додати відповідь",
   ...rest
 }: Props) => {
   return (

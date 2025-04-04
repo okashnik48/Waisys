@@ -20,7 +20,7 @@ type Props = {
 
 export const CoreSelect = ({
   size,
-  placeholder = "Enter Response",
+  placeholder = "Додати відповідь",
   options,
   ...rest
 }: Props) => {

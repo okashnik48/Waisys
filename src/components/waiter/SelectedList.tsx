@@ -57,7 +57,7 @@ const SelectedList: FC = () => {
           margin: "0 auto",
         }}
       >
-        <h1 style={{ textAlign: "center" }}>List of selected Dishes</h1>
+        <h1 style={{ textAlign: "center" }}>Список вибраних страв</h1>
         {Object.keys(ListDish).length === 0 ? (
           <Empty />
         ) : (
@@ -132,7 +132,7 @@ const SelectedList: FC = () => {
                       DeleteDish(e, post.selectedPostId)
                     }
                   >
-                    Delete
+                    Видалити
                   </Button>
                   <Typography.Title level={2}>{post.count}</Typography.Title>
                 </div>
@@ -141,13 +141,13 @@ const SelectedList: FC = () => {
             <Typography.Title
               level={2}
               style={{ textAlign: "center" }}
-            >{`Total price: ${totalPrice}`}</Typography.Title>
+            >{`Ціна: ${totalPrice}`}</Typography.Title>
             <div style={{ marginTop: "1rem", textAlign: "center" }}>
               <div style={{ marginBottom: "1rem" }}>
                 <Input
                   value={Table}
                   onChange={(e) => dispatch(addTableNumber(e.target.value))}
-                  placeholder="Table Number"
+                  placeholder="Номер столика"
                   size="large"
                   style={{ width: 100 }}
                 />
@@ -160,7 +160,7 @@ const SelectedList: FC = () => {
                     backgroundColor: "rgba(0, 200, 0, 0.7)",
                   }}
                 >
-                  Confirm Order
+                  Підтвердити замовлення
                 </Button>
               </div>
             </div>

@@ -20,7 +20,7 @@ export const CorePasswordInput = ({
   type = "text",
   size,
   prefix,
-  placeholder = "Enter Response",
+  placeholder = "Відправити відповідь",
   ...rest
 }: Props) => {
   return (

@@ -58,7 +58,7 @@ const DoneDishesList = () => {
         }}
       >
         <Typography.Title level={1} style={{ textAlign: "center" }}>
-          Completed Dishes
+          Готові страви
         </Typography.Title>
         {isLoading ? (
           <Spin tip="Loading" size="large">
@@ -151,7 +151,7 @@ const DoneDishesList = () => {
                       size="large"
                       onClick={() => SetCompletedDishDone(id)}
                     >
-                      Delivered
+                      Доставлено
                     </Button>
                   </div>
                 </div>

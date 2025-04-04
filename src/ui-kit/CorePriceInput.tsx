@@ -40,7 +40,7 @@ export const CorePriceInput = ({
   type = "text",
   size,
   prefix,
-  placeholder = "Enter Response",
+  placeholder = "Додати відповідь",
   ...rest
 }: Props) => {
   return (

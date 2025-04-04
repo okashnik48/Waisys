@@ -69,7 +69,7 @@ const SelectedUserDishes: FC = () => {
           icon={<RollbackOutlined />}
           onClick={() => navigate(`/menu/${Table}`)}
         />
-        <h1 style={{ textAlign: "center" }}>List of selected Dishes</h1>
+        <h1 style={{ textAlign: "center" }}>Список вибраних страв</h1>
         {Object.keys(ListDish).length === 0 ? (
           <Empty />
         ) : (
@@ -80,7 +80,7 @@ const SelectedUserDishes: FC = () => {
             <Typography.Title
               level={2}
               style={{ textAlign: "center" }}
-            >{`Total price: ${totalPrice}`}</Typography.Title>
+            >{`До сплати: ${totalPrice}`}</Typography.Title>
             <div style={{ marginTop: "1rem", textAlign: "center" }}>
               <div>
                 <Button
@@ -90,7 +90,7 @@ const SelectedUserDishes: FC = () => {
                     backgroundColor: "rgba(0, 200, 0, 0.7)",
                   }}
                 >
-                  Confirm Order
+                  Підтвердити замовлення
                 </Button>
               </div>
             </div>

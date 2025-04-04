@@ -47,7 +47,7 @@ export const SelectedPostItem = ({post}: Props) =>{
             <Typography.Title
               level={3}
               style={{ marginBottom: "0.5rem" }}
-            >{`comment: ${post.comment}`}</Typography.Title>
+            >{`коментар: ${post.comment}`}</Typography.Title>
           )}
         </div>
 
@@ -86,7 +86,7 @@ export const SelectedPostItem = ({post}: Props) =>{
               DeleteDish(e, post.selectedPostId)
             }
           >
-            Delete
+            Видалити
           </Button>
           <Typography.Title level={2}>{post.count}</Typography.Title>
         </div>

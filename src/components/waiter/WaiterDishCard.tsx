@@ -121,7 +121,7 @@ export const WaiterDishCard = ({post, index}: Props) =>{
                           onChange={(e) =>
                             ChangeFieldDish(index, "comment", e.target.value)
                           }
-                          placeholder="Comment"
+                          placeholder="Коментар"
                           required
                           size="large"
                         />
@@ -132,7 +132,7 @@ export const WaiterDishCard = ({post, index}: Props) =>{
                             justifyContent: "center",
                           }}
                         >
-                          <Typography.Title level={3}>Count:</Typography.Title>
+                          <Typography.Title level={3}>Кількість:</Typography.Title>
                           <DishCounter post={post} index={index} />
                         </div>
                         <Button
@@ -146,7 +146,7 @@ export const WaiterDishCard = ({post, index}: Props) =>{
                             e: React.MouseEvent<HTMLButtonElement, MouseEvent>
                           ) => AddDish()}
                         >
-                          Add
+                          Додати
                         </Button>
                       </div>
                     </Card>

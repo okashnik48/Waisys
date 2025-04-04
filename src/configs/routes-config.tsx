@@ -24,10 +24,10 @@ function NotFound() {
     <Result
       status="404"
       title="404"
-      subTitle="Sorry, you are not authorized to access this page."
+      subTitle="Вибачте,щоб отримати доступ до сторінки потрібно авторизуватись."
       extra={
         <Button onClick={onClick} type="primary">
-          Back Home
+          Повернутись
         </Button>
       }
     />
@@ -41,7 +41,7 @@ export const ROUTES_CONFIG = {
       element: <Auth />,
     },
     {
-      path: "/:tableNumber",
+      path: "/user/:tableNumber",
       element: <UserDishesList />,
     },
     {

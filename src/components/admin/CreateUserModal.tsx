@@ -47,48 +47,48 @@ const CreateUserModal = () => {
       footer={null}
       width={600}
     >
-      <h2 style={{ textAlign: "center" }}>Create new User</h2>
+      <h2 style={{ textAlign: "center" }}>Створити нового користувача</h2>
       <div style={{ minWidth: "400px", maxWidth: "600px" }}>
         <Form onFinish={(value) => onSubmitAndDesign(value)} form={form}>
           <Form.Item
             style={{ marginBottom: "16px" }}
-            rules={[{ required: true, message: "Please input first name!" }]}
+            rules={[{ required: true, message: "Введіть Ім'я" }]}
             name="firstName"
           >
-            <Input size="large" placeholder="First Name" type="text" />
+            <Input size="large" placeholder="Ім'я" type="text" />
           </Form.Item>
 
           <Form.Item
             style={{ marginBottom: "16px" }}
-            rules={[{ required: true, message: "Please input last name!" }]}
+            rules={[{ required: true, message: "Введіть прізвище" }]}
             name="lastName"
           >
-            <Input size="large" placeholder="Last Name" type="text" />
+            <Input size="large" placeholder="Прізвище" type="text" />
           </Form.Item>
           <Form.Item
             style={{ marginBottom: "16px" }}
-            rules={[{ required: true, message: "Please input username!" }]}
+            rules={[{ required: true, message: "Введіть логін" }]}
             name="username"
           >
-            <Input size="large" placeholder="UserName" type="text" />
+            <Input size="large" placeholder="Логін" type="text" />
           </Form.Item>
           <Form.Item
             style={{ marginBottom: "16px", display: "block" }}
-            rules={[{ required: true, message: "Please input password!" }]}
+            rules={[{ required: true, message: "Введіть пароль!" }]}
             name="password"
           >
-            <Input.Password size="large" placeholder="Password" type="text" />
+            <Input.Password size="large" placeholder="Пароль" type="text" />
           </Form.Item>
           <Form.Item
-            rules={[{ required: true, message: "Please select role!" }]}
+            rules={[{ required: true, message: "Виберіть роль!" }]}
             name="role"
           >
-            <Select size="large" placeholder="Role" options={roleOptions} />
+            <Select size="large" placeholder="Роль" options={roleOptions} />
           </Form.Item>
 
           <Form.Item className="w-full">
             <Button type="primary" htmlType="submit">
-              Create new user
+              Створити користувача
             </Button>
           </Form.Item>
         </Form>

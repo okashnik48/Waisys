@@ -45,7 +45,7 @@ export default function NavigationLayout({
       {
         label: (
           <Link to="/admin-panel" rel="noopener noreferrer">
-            Dishes
+            Страви
           </Link>
         ),
         key: "dishes",
@@ -54,7 +54,7 @@ export default function NavigationLayout({
       {
         label: (
           <Link to="/admin-user-list" rel="noopener noreferrer">
-            Users
+            Користувачі
           </Link>
         ),
         key: "users",
@@ -63,20 +63,20 @@ export default function NavigationLayout({
       {
         label: (
           <Link to="/admin-tags-list" rel="noopener noreferrer">
-            Tags
+            Теги
           </Link>
         ),
         key: "tags",
         icon: <AppstoreOutlined />,
       },
       {
-        label: "Add Dish",
+        label: "Додати страву",
         key: "add-dish",
         icon: <AppstoreOutlined />,
         onClick: AddDishHandler,
       },
       {
-        label: "Add User",
+        label: "Додати користувача",
         key: "add-user",
         icon: <AppstoreOutlined />,
         onClick: AddUserHandler,
@@ -84,7 +84,7 @@ export default function NavigationLayout({
       {
         label: (
           <Link to="/login" onClick={ClearUserInfo} rel="noopener noreferrer">
-            Exit
+            Вийти
           </Link>
         ),
         key: "exit",
@@ -95,7 +95,7 @@ export default function NavigationLayout({
       {
         label: (
           <Link to="/login" onClick={ClearUserInfo} rel="noopener noreferrer">
-            Exit
+            Вийти
           </Link>
         ),
         key: "exit",
@@ -106,7 +106,7 @@ export default function NavigationLayout({
       {
         label: (
           <Link to="dishes" rel="noopener noreferrer">
-            Dish List
+            Список страв
           </Link>
         ),
         key: "dishes",
@@ -115,7 +115,7 @@ export default function NavigationLayout({
       {
         label: (
           <Link to="selected-list" rel="noopener noreferrer">
-            Selected Dish List
+            Список вибраних страв
           </Link>
         ),
         key: "users",
@@ -124,7 +124,7 @@ export default function NavigationLayout({
       {
         label: (
           <Link to="done-list" rel="noopener noreferrer">
-            Ready Dishes
+            Готові страви
           </Link>
         ),
         key: "done-list",
@@ -133,7 +133,7 @@ export default function NavigationLayout({
       {
         label: (
           <Link to="declined-list" rel="noopener noreferrer">
-            Decline Dishes
+            Відхилені страви
           </Link>
         ),
         key: "decline-list",
@@ -142,7 +142,7 @@ export default function NavigationLayout({
       {
         label: (
           <Link to= "/login" onClick={ClearUserInfo} rel="noopener noreferrer">
-            Exit
+            Вийти
           </Link>
         ),
         key: "exit",

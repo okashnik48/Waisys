@@ -58,7 +58,7 @@ const DoneDishesList = () => {
         }}
       >
         <Typography.Title level={1} style={{ textAlign: "center" }}>
-          Declined Dishes
+          Відхилені страви
         </Typography.Title>
         {isLoading ? (
           <Spin tip="Loading" size="large">
@@ -151,7 +151,7 @@ const DoneDishesList = () => {
                       size="large"
                       onClick={() => DeleteHandler(id)}
                     >
-                      Confirm
+                      Підтвердити
                     </Button>
                   </div>
                 </div>

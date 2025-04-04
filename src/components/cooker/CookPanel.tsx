@@ -10,8 +10,12 @@ import { io } from "socket.io-client";
 import { Empty, Spin } from "antd";
 
 import { CookItem } from "./ui-elements/CookItem";
+import { useAppSelector } from "../../store/store-hooks";
 
 const CookPanel = () => {
+  
+  const userRole = useAppSelector((state) => state.user.user).role;
+
   const socket = io("https://waisys.dev.m0e.space/", {
     transports: ["websocket"],
   });
@@ -30,6 +34,8 @@ const CookPanel = () => {
   }, [data]);
 
   useEffect(() => {
+    if (userRole != "COOK") return;
+    if( isConnected) return
     function onConnect() {
       console.log("Connect");
       setIsConnected(true);
@@ -61,7 +67,7 @@ const CookPanel = () => {
         margin: "0 auto",
       }}
     >
-      <h1 style={{ textAlign: "center" }}>Dishes</h1>
+      <h1 style={{ textAlign: "center" }}>Страви</h1>
       {isLoading ? (
         <Spin tip="Loading" size="large">
           <div className="content" />

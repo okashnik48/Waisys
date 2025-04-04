@@ -61,7 +61,7 @@ export const CookItem: React.FC<Props> = ({ post }) => {
                 onChangeDishStatus(e, post.id, "isAccepted");
               }}
             >
-              &nbsp; Accept &nbsp;
+              &nbsp; Підтвердити &nbsp;
             </Button>
           ) : (
             <Button
@@ -75,7 +75,7 @@ export const CookItem: React.FC<Props> = ({ post }) => {
               }}
             >
               {" "}
-              Complete{" "}
+              Завершити{" "}
             </Button>
           )}
           <Button
@@ -88,7 +88,7 @@ export const CookItem: React.FC<Props> = ({ post }) => {
             }}
           >
             {" "}
-            Decline{" "}
+            Відхилити{" "}
           </Button>
         </div>
       </div>

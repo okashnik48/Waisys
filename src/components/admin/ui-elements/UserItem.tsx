@@ -68,7 +68,7 @@ export const UserItem = ({ post }: Props) => {
             size="large"
             control={control}
             label=""
-            placeholder="First Name"
+            placeholder="Ім'я"
             type="text"
           />
         </div>
@@ -79,7 +79,7 @@ export const UserItem = ({ post }: Props) => {
             size="large"
             control={control}
             label=""
-            placeholder="Last Name"
+            placeholder="Прізвище"
             type="text"
           />
         </div>
@@ -89,7 +89,7 @@ export const UserItem = ({ post }: Props) => {
             size="large"
             control={control}
             label=""
-            placeholder="UserName"
+            placeholder="Логін"
             type="text"
           />
         </div>
@@ -99,25 +99,25 @@ export const UserItem = ({ post }: Props) => {
             size="large"
             control={control}
             label=""
-            placeholder="Password"
+            placeholder="Пароль"
             type="text"
           />
         </div>
         <div style={{ marginBottom: "16px", display: "block" }}>
-          <h3 style={{ display: "inline-block" }}>Role:</h3>
+          <h3 style={{ display: "inline-block" }}>Роль:</h3>
           <div style={{ display: "inline-block", marginLeft: "5px" }}>
             <CoreSelect
               name="role"
               size="large"
               control={control}
-              placeholder="Role"
+              placeholder="Роль"
               options={roleOptions}
             />
           </div>
         </div>
 
         <Button type="primary" htmlType="submit" style={{ marginRight: "8px" }}>
-          CONFIRM
+          Підтвердити
         </Button>
         <Button
           type="primary"
@@ -126,7 +126,7 @@ export const UserItem = ({ post }: Props) => {
             DeleteUserHandler(e, post.id);
           }}
         >
-          DELETE
+          Видалити
         </Button>
       </div>
     </form>

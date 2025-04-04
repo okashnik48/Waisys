@@ -12,20 +12,20 @@ export type Props = {
 const SortOptionProps = [
   {
     value: "priceDesc",
-    label: "price desc",
+    label: "ЦІна по спаданню",
   },
 
   {
     value: "priceAsc",
-    label: "price asc",
+    label: "Ціна по зростанню",
   },
   {
     value: "name",
-    label: "name",
+    label: "Назва",
   },
   {
     value: "",
-    label: "none",
+    label: "Без сортування",
   },
 ];
 
@@ -42,7 +42,7 @@ export const CoreSearch = ({ ...rest }: Props) => {
             <Input.Search
               id="search"
               {...field}
-              placeholder="Search"
+              placeholder="Пошук"
               size="large"
             />
           );
@@ -61,7 +61,7 @@ export const CoreSearch = ({ ...rest }: Props) => {
               level={3}
               style={{ marginBottom: "5px", display: "inline-block" }}
             >
-              Tag
+              Тег
             </Typography.Title>
             <Controller
               name={"searchTags"}
@@ -90,7 +90,7 @@ export const CoreSearch = ({ ...rest }: Props) => {
             level={3}
             style={{ marginBottom: "5px", display: "inline-block" }}
           >
-            Sort by
+            Сортувати
           </Typography.Title>
           <Controller
             name={"sortOption"}

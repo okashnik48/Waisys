@@ -22,11 +22,11 @@ const ordersService = serviceApi.injectEndpoints({
       async onQueryStarted(arg, api) {
         api.queryFulfilled
           .then(() => {
-            toast.success("Success");
+            toast.success("Успішно");
           })
           .catch((data ) => {
             console.log(data)
-            toast.error("data");
+            toast.error("Помилка даних");
           });
       },
     }),
@@ -40,7 +40,7 @@ const ordersService = serviceApi.injectEndpoints({
       onQueryStarted(arg, api) {
         api.queryFulfilled
           .then(() => {
-            toast.success("Success");
+            toast.success("Успішно");
           })
           .catch(({ data }) => {
             toast.error(data.error);
@@ -71,7 +71,7 @@ const ordersService = serviceApi.injectEndpoints({
       onQueryStarted(arg, api) {
         api.queryFulfilled
           .then(() => {
-            toast.success("Success");
+            toast.success("Успішно");
           })
           .catch(({ data }) => {
             toast.error(data.error);

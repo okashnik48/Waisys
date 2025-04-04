@@ -59,7 +59,7 @@ export function TagSelect<T extends FieldValues>({
     <Select
       mode="multiple"
       id="countries"
-      placeholder="Choose tag"
+      placeholder="Вибрати тег"
       tagRender={tagRender}
       style={{
         marginLeft: "10px",

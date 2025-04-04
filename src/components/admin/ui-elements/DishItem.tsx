@@ -31,7 +31,7 @@ type Props = {
 
 const schema = yup.object().shape({
   name: yup.string().required(),
-  description: yup.string().required("Description is required"),
+  description: yup.string().required("Потрібен опис"),
   price: yup.object().shape({
     value: yup.number().required(),
     currency: yup.string().required(),
@@ -85,31 +85,31 @@ function DishItem({ post }: Props) {
         <Image width={500} src={post.image} style={{ display: "block" }} />
       </div>
       <div style={{ marginLeft: "20px", marginBottom: "20px" }}>
-        <Typography.Title level={5}>Name</Typography.Title>
+        <Typography.Title level={5}>Назва</Typography.Title>
         <CoreInput
           control={control}
           label=""
           name="name"
-          placeholder="Enter Name"
+          placeholder="Введіть назву"
           size="large"
           type="text"
         />
-        <Typography.Title level={5}>Price</Typography.Title>
+        <Typography.Title level={5}>Ціна</Typography.Title>
         <CorePriceInput
           control={control}
           label=""
           name="price"
-          placeholder="Enter Price"
+          placeholder="Введіть ціну"
           size="large"
           type="number"
         />
-        <Typography.Title level={5}>Description</Typography.Title>
+        <Typography.Title level={5}>Опис</Typography.Title>
         <div style={{ minHeight: "70px" }}>
           <CoreInputTextArea
             control={control}
             label=""
             name="description"
-            placeholder="Enter Description"
+            placeholder="Введіть опис"
             size="large"
             type="text"
             // rules={[{ required: true, message: "Please input dish name!" }]}
@@ -119,7 +119,7 @@ function DishItem({ post }: Props) {
         <div style = {{marginTop: "-20px"}}>
           <div style={{ display: "block" }}>
             <Typography.Title level={5} style={{ display: "inline-block" }}>
-              Tag
+              Тег
             </Typography.Title>
             <TagSelect control={control} name={"tags"} />
           </div>
@@ -135,10 +135,10 @@ function DishItem({ post }: Props) {
               marginRight: "10px",
             }}
           >
-            Confirm
+            Підтвердити
           </Button>
           <Button type="primary" danger onClick={onDelete}>
-            Delete
+            Видалити
           </Button>
         </div>
       </div>

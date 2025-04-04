@@ -68,7 +68,7 @@ const Auth: FC = () => {
       }}
     >
       <div style={{ margin: "16px", width: "300px" }}>
-        <Title level={3}>Login</Title>
+        <Title level={3}>Авторизація</Title>
         <Form
           name="normal_login"
           initialValues={{ remember: true }}
@@ -78,23 +78,23 @@ const Auth: FC = () => {
         >
             <CoreInputRequired
               control={control}
-              label="Login"
+              label="Логін"
               name="name"
               type="text"
               prefix={<UserOutlined className="site-form-item-icon" />}
               size="large"
-              placeholder="Your login"
-              rules={[{ required: true, message: "Please input your login!" }]}
+              placeholder="Ваш логін"
+              rules={[{ required: true, message: "Введіть ваш логін!" }]}
             />
             <CorePasswordInput
               type="password"
-              placeholder="Your password"
-              label="Password"
+              placeholder="Ваш пароль"
+              label="Пароль"
               control={control}
               name="password"
               prefix={<LockOutlined className="site-form-item-icon" />}
               size="large"
-              rules={[{ required: true, message: "Please input your password!" }]}
+              rules={[{ required: true, message: "Введіть ваш пароль!" }]}
             />
           <Form.Item>
             <Button
@@ -102,7 +102,7 @@ const Auth: FC = () => {
               htmlType="submit"
               className="login-form-button"
             >
-              Log in to your account
+              Увійти в аккаунт
             </Button>
           </Form.Item>
         </Form>

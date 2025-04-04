@@ -23,11 +23,11 @@ const adminUsersService = serviceApi.injectEndpoints({
             async onQueryStarted(arg, api) {
                 api.queryFulfilled
                   .then(() => {
-                    toast.success("Success");
+                    toast.success("Успішно");
                   })
                   .catch((data ) => {
                     console.log(data)
-                    toast.error("data");
+                    toast.error("Помилка даних");
                   });
               },
         }),
@@ -41,11 +41,11 @@ const adminUsersService = serviceApi.injectEndpoints({
             async onQueryStarted(arg, api) {
                 api.queryFulfilled
                   .then(() => {
-                    toast.success("Success");
+                    toast.success("Успішно");
                   })
                   .catch((data ) => {
                     console.log(data)
-                    toast.error("data");
+                    toast.error("Помилка даних");
                   });
               },
         }),
@@ -58,11 +58,11 @@ const adminUsersService = serviceApi.injectEndpoints({
             async onQueryStarted(arg, api) {
                 api.queryFulfilled
                   .then(() => {
-                    toast.success("Success");
+                    toast.success("Успішно");
                   })
                   .catch((data ) => {
                     console.log(data)
-                    toast.error("data");
+                    toast.error("Помилка даних");
                   });
               },
         }),

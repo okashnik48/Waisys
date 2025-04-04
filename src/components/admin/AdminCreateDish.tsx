@@ -63,9 +63,9 @@ const AdminCreateDish = () => {
     console.log(formData);
   };
 
-  const onSubmitAndDesign = (value: DefaultValues) => {
-    console.log(value);
-    
+  const onSubmitAndDesign = (value: any) => {
+    AddDishTrigger({ body: {...value, tags: getValues().tags , price: {value: value.price, currency: value.currency} } }).then(() => {});
+
   };
 
   const handleClose = (e: React.MouseEvent<HTMLElement>) => {
@@ -86,7 +86,7 @@ useEffect(() =>{
       footer={null}
       width={600}
     >
-      <h2>Create new Dish</h2>
+      <h2>Додати страву</h2>
       <div style={{ minWidth: "400px", maxWidth: "600px" }}>
         <Form
           onFinish={(value) => onSubmitAndDesign(value)}
@@ -96,37 +96,37 @@ useEffect(() =>{
             description: "",
             price: {
               value: null,
-              currency: "UAN"
+              currency: "UAH"
             },
             image: "",
           }}
         >
           <Form.Item
             name="image"
-            rules={[{ required: true, message: "Please input dish name!" }]}
+            rules={[{ required: true, message: "Додайте зображення страви!" }]}
           >
             <ImageUploader setValue = {form.setFieldValue as any}/>
           </Form.Item>
           <Form.Item
             style={{ marginBottom: "16px" }}
             name="name"
-            rules={[{ required: true, message: "Please input dish name!" }]}
+            rules={[{ required: true, message: "Введіть назву страви!" }]}
           >
-            <Input size="large" placeholder="Dish Name" type="text" />
+            <Input size="large" placeholder="Назва страви" type="text" />
           </Form.Item>
           <Form.Item
             name="description"
-            rules={[{ required: true, message: "Please input description!" }]}
+            rules={[{ required: true, message: "Додайте опис!" }]}
           >
-            <Input.TextArea placeholder="Description" size="large" />
+            <Input.TextArea placeholder="Опис" size="large" />
           </Form.Item>
           <Form.Item
-            rules={[{ required: true, message: "Please set price!" }]}
+            rules={[{ required: true, message: "Додайте ціну!" }]}
             name="price"
           >
             <InputNumber
               name="price"
-              placeholder="Enter Price"
+              placeholder="Введіть ціну"
               size="large"
               type="number"
               prefix={currencyOptionsMark[Form.useWatch("price.currency", form)]}
@@ -145,14 +145,14 @@ useEffect(() =>{
           <div>
             <div style={{ display: "block" }}>
               <Typography.Title level={5} style={{ display: "inline-block" }}>
-                Tag
+                Тег
               </Typography.Title>
               <TagSelect control={control} name={"tags"} />
             </div>
             <TagInput SetTagValueForDish={setValue} GetTagsValues={getValues} />
           </div>
           <Button type="primary" htmlType="submit">
-            Create new Dish
+            Додати нову страву
           </Button>
         </Form>
       </div>

@@ -44,7 +44,7 @@ const AdminDishesList = () => {
         margin: "0 auto",
       }}
     >
-      <h1>Menu</h1>
+      <h1>Меню</h1>
       <CoreSearch control={control} />
       {isLoading ? (
           <Spin tip="Loading" size="large">

@@ -1,5 +1,5 @@
 /* eslint-disable array-callback-return */
-import React, { FC, useMemo } from "react";
+import React, { FC, useEffect, useMemo } from "react";
 
 import postService from "../../services/dishes.service";
 import { Spin, Empty } from "antd";
@@ -8,6 +8,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { CoreSearch } from "../../ui-kit/CoreSearch";
 import { WaiterDishCard } from "./WaiterDishCard";
 import { SearchFunction } from "../../configs/SearchFunction";
+import DishesTagsService from "../../services/dishes-tags.service";
 
 type DefaultValues = {
   searchText: string;
@@ -22,7 +23,13 @@ const Dishes: FC = () => {
       searchTags: [],
       sortOption: "",
     },
-  });
+  }); 
+     
+  const { data: tags, refetch: refreshTags } = DishesTagsService.useGetTagsQuery(null);
+  useEffect(() => {
+    refreshTags();
+  }, []);
+
   const isSearchPropsUpdated = useWatch({ control });
 
   const { data: posts, isLoading } = postService.useDishesQuery(null, {
@@ -47,7 +54,7 @@ const Dishes: FC = () => {
           margin: "0 auto",
         }}
       >
-        <h1>Menu</h1>
+        <h1>Меню</h1>
         {isLoading ? (
           <Spin tip="Loading" size="large">
             <div className="content" />

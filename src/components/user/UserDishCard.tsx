@@ -99,7 +99,7 @@ export const UserDishCard = ({ post, index }: Props) => {
                 }}
               >
                 {" "}
-                {`Price: ${post.price.value} ${post.price.currency}`}{" "}
+                {`Ціна: ${post.price.value} ${post.price.currency}`}{" "}
               </Typography.Title>
             </div>
           </div>
@@ -141,7 +141,7 @@ export const UserDishCard = ({ post, index }: Props) => {
                 alignItems: "center",
               }}
             >
-              Description
+              Опис
             </h3>
           }
           description={

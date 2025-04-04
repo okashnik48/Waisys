@@ -60,7 +60,7 @@ const FileUploader = ({ SetValue }: any) => {
           onChange={handleOnChange}
           onRemove={() => setImage(undefined)}
         >
-          <Button icon={<UploadOutlined />}>Upload File</Button>
+          <Button icon={<UploadOutlined />}>Загрузити файл</Button>
         </Upload>
       </Form.Item>
       <ImageAnt src={imageURL ? imageURL : "no_photo.jpg"} alt="Preview" />

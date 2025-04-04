@@ -20,7 +20,7 @@ export const CoreInputRequired = ({
   type = "text",
   size,
   prefix,
-  placeholder = "Enter Response",
+  placeholder = "Відправити",
   ...rest
 }: Props) => {
   return (

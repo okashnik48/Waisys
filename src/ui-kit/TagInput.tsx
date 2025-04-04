@@ -87,9 +87,9 @@ const TagInput: FC<{ type?: string, SetTagValueForDish?: any, GetTagsValues?: an
             label=""
             name="name"
             type="text"
-            rules={{ required: "Tag name is required" }}
+            rules={{ required: "Необхідна назва тегу" }}
             size="large"
-            placeholder="New tag"
+            placeholder="Новий тег"
           />
         </div>
         <ControlledColorPicker control={control} name="color" />
@@ -99,7 +99,7 @@ const TagInput: FC<{ type?: string, SetTagValueForDish?: any, GetTagsValues?: an
           onClick={handleSubmit(onSubmit)}
           style={{ marginLeft: "5px" }}
         >
-          Add
+          Додати
         </Button>
       </Space>
   );
