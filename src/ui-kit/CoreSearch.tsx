@@ -31,7 +31,6 @@ const SortOptionProps = [
 
 export const CoreSearch = ({ ...rest }: Props) => {
   const tagsOptions = useAppSelector(dishesTagsOptionsSelector);
-  console.log(tagsOptions)
   return (
     <div className="input-container">
       <Controller

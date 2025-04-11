@@ -60,7 +60,6 @@ const AdminCreateDish = () => {
   const [AddDishTrigger] = adminDishesService.useCreateDishMutation();
   const onSubmit: SubmitHandler<DefaultValues> = (formData) => {
     AddDishTrigger({ body: formData }).then(() => {});
-    console.log(formData);
   };
 
   const onSubmitAndDesign = (value: any) => {
@@ -70,11 +69,11 @@ const AdminCreateDish = () => {
 
   const handleClose = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
+
     dispatch(SetAddDishModal({ status: false }));
   };
 
 useEffect(() =>{
-  console.log()
 }, [Form.useWatch("price", form)])
 
   

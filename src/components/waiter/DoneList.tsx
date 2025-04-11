@@ -7,8 +7,10 @@ import { io } from "socket.io-client";
 import ordersService from "../../services/orders.service";
 
 import { Button, Empty, Image, Spin, Typography } from "antd";
+import { useAppSelector } from "../../store/store-hooks";
 
 const DoneDishesList = () => {
+  const userRole = useAppSelector((state) => state.user.user).role;
   const socket = io("https://waisys.dev.m0e.space/", {
     transports: ["websocket"],
   });
@@ -25,6 +27,8 @@ const DoneDishesList = () => {
   }, [data]);
 
   useEffect(() => {
+    if (socket.connected) socket.disconnect();
+    if (userRole != "WAITER") return;
     function onConnect() {
       console.log("Connect");
       setIsConnected(true);

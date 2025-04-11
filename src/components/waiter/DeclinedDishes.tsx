@@ -8,10 +8,11 @@ import ordersService from "../../services/orders.service";
 
 
 import { io } from "socket.io-client";
+import { useAppSelector } from "../../store/store-hooks";
 
 
 const DoneDishesList = () => {
-
+  const userRole = useAppSelector((state) => state.user.user).role;
   const socket = io("https://waisys.dev.m0e.space/", { transports: ["websocket"] });
 
   const [isConnected, setIsConnected] = useState(socket.connected);
@@ -19,6 +20,8 @@ const DoneDishesList = () => {
   const { data, isLoading, refetch } = ordersService.useGetDeclinedDishesQuery(null);
 
   useEffect(() => {
+    if (socket.connected) socket.disconnect();
+    if (userRole != "WAITER") return;
     function onConnect() {
       console.log("Connect");
       setIsConnected(true);

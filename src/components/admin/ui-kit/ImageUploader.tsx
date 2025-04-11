@@ -5,11 +5,6 @@ import type { GetProp, UploadProps } from 'antd';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
-const getBase64 = (img: FileType, callback: (url: string) => void) => {
-  const reader = new FileReader();
-  reader.addEventListener('load', () => callback(reader.result as string));
-  reader.readAsDataURL(img);
-};
 
 const beforeUpload = (file: FileType) => {
   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
@@ -23,7 +18,7 @@ const beforeUpload = (file: FileType) => {
   return isJpgOrPng ;
 };
 
-const ImageUploader: React.FC<any> = ({setValue} : any) => {
+const ImageUploader = ({setValue} : any) => {
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>();
 
@@ -32,20 +27,18 @@ const ImageUploader: React.FC<any> = ({setValue} : any) => {
       setLoading(true);
       return;
     }
-    if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj as FileType, (url) => {
-        setLoading(false);
-        setImageUrl(url);
-        setValue("image", url)
-      });
+    if (info.file.status === 'done' && info.file.originFileObj) {
+      const response = info.file.response;
+      setLoading(false);
+      setImageUrl(response);
+      setValue('image', response); 
     }
   };
 
   const uploadButton = (
     <button style={{ border: 0, background: 'none' }} type="button">
       {loading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>Додати</div>
+      <div style={{ marginTop: 8 }}>Upload</div>
     </button>
   );
 

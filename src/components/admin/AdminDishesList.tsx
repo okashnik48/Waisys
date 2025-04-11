@@ -55,7 +55,7 @@ const AdminDishesList = () => {
         ): (
           <>
       {SearchedPosts.map((post, index) => {
-        console.log(post)
+        
         return (
         <DishItem key={post.id} post={post} />
       )})}

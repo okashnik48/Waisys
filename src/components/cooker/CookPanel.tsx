@@ -35,7 +35,7 @@ const CookPanel = () => {
 
   useEffect(() => {
     if (userRole != "COOK") return;
-    if( isConnected) return
+    if (socket.connected) socket.disconnect();
     function onConnect() {
       console.log("Connect");
       setIsConnected(true);

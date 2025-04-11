@@ -10,7 +10,7 @@ const AdminTagsList: FC = () => {
   const [DeleteTagTrigger] = DishesTagsService.useDeleteTagMutation();
   
   const tagsList = useMemo(() => {
-    console.log(data)
+    
     if (data){
       return data;
     }

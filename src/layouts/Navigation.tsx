@@ -153,7 +153,7 @@ export default function NavigationLayout({
   const items: MenuProps["items"] = switchMenu[role];
 
   const onClick: MenuProps["onClick"] = (e) => {
-    console.log("click ", e);
+   
     setCurrent(e.key);
   };
 
